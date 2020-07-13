@@ -1,0 +1,3 @@
+Sitemap: https://sites-reviews.com/storage/sitemap/sitemap.xml
+User-agent: *
+Disallow:

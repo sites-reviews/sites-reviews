@@ -1,0 +1,283 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Site;
+use Artesaos\SEOTools\Facades\SEOMeta;
+use Artesaos\SEOTools\Facades\SEOTools;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ConnectException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
+use Litlife\Url\Url;
+
+class SiteController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $sites = Site::simplePaginate(5);
+
+        return view('site.index', ['sites' => $sites]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param \App\Site $site
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Request $request, Site $site)
+    {
+        $this->authorize('show', $site);
+
+        $reviews = $site->reviews()
+            ->when(auth()->check(), function ($query) {
+                $query->where('create_user_id', '!=', Auth::id());
+            })
+            ->with('create_user', 'authUserRatings');
+
+        if (empty($request->reviews_order_by))
+            $request->reviews_order_by = 'latest';
+
+        switch ($request->reviews_order_by) {
+            case 'latest':
+                $reviews->latest();
+                break;
+            case 'rating_desc':
+                $reviews->orderBy('rating', 'desc');
+                break;
+        }
+
+        if (auth()->check()) {
+            $authReview = $site->reviews()
+                ->where('create_user_id', Auth::id())
+                ->first();
+        }
+
+        if (!empty($site->preview))
+        {
+            SEOTools::addImages($site->preview->fullUrlMaxSize(200, 200));
+        }
+
+        SEOTools::setTitle(__('site.browser_title', ['title' => $site->title, 'domain' => $site->domain]).' - '.config('app.name'))
+            ->setDescription(__('Reviews and rating of a site or company :title - :domain', [
+                'title' => $site->title,
+                'domain' => $site->domain
+            ]));
+
+        return view('site.show', [
+            'site' => $site,
+            'reviews' => $reviews->simplePaginate(),
+            'authReview' => $authReview ?? null,
+            'reviews_order_by' => $request->reviews_order_by
+        ]);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param \App\Site $site
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Site $site)
+    {
+        return view('site.edit', ['site' => $site]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Site $site
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, Site $site)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param \App\Site $site
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Site $site)
+    {
+        //
+    }
+
+    public function ratingImage(Site $site)
+    {
+        if (App::isLocal())
+            \Debugbar::startMeasure('render_image','Render image');
+
+        $blob = $site->getRatingImageBlob();
+
+        if (App::isLocal())
+            \Debugbar::stopMeasure('render_image');
+
+        $seconds = 3600;
+
+        return response($blob, 200)
+            //->setLastModified(new \DateTime($site->latest_rating_changes_at))
+            ->header('Cache-control', 'max-age='.$seconds.', public')
+            ->header('Pragma', 'cache')
+            ->setTtl($seconds)
+            ->setExpires(new \DateTime(now()->addSeconds($seconds)))
+            ->header('Content-Type', 'image/png')
+            ->header('Content-length', strlen($blob));
+    }
+
+    public function ratingsColors()
+    {
+        return view('rating_colors');
+    }
+
+    public function search(Request $request)
+    {
+        $query = Site::fulltextSearch($request->term);
+
+        $url = trim(filter_var($request->term,FILTER_SANITIZE_STRING));
+
+        preg_match('/(?:https|http)?(?:\:\/\/)?([[:graph:]\-\.]+)/iu', $url, $matches);
+
+        if (!empty($matches[1]))
+            $domain = $matches[1];
+
+        if (preg_match('/([[:graph:]\-\.]+)\.([A-z]+)/iu', $url))
+            $isDomain = true;
+        else
+            $isDomain = false;
+
+        if ($isDomain)
+        {
+            $domain = trim(mb_strtolower(Url::fromString('http://'.$domain)->getHost()));
+
+            if (preg_match('/^(?:www\.?)(.*)$/iu', $domain, $matches)) {
+                $domain = $matches[1];
+            }
+
+            $query->orWhereDomain($domain);
+        }
+
+        $sites = $query->simplePaginate();
+
+        if ($isDomain and $sites->where('domain', $domain)->count() < 1)
+        {
+            $addSite = true;
+        }
+        else
+        {
+            $addSite = false;
+        }
+
+        return view('site.search', [
+            'term' => $request->term,
+            'sites' => $sites,
+            'isDomain' => $isDomain,
+            'addSite' => $addSite,
+            'domain' => $domain ?? null
+        ]);
+    }
+
+    public function createOrShow(Request $request, $domain, Client $client)
+    {
+        $domain = trim($domain);
+
+        $site = Site::whereDomain($domain)->first();
+
+        if ($site)
+        {
+            return redirect()
+                ->route('sites.show', $site)
+                ->with('site_exists', true);
+        }
+        else
+        {
+            $url = Url::fromString('')
+                ->withHost($domain)
+                ->withScheme('http');
+
+            try
+            {
+                $response = $client->request(
+                    'GET',
+                    (string)$url,
+                    [
+                        'allow_redirects' => false,
+                        'connect_timeout' => 5,
+                        'read_timeout' => 5,
+                        'timeout' => 5
+                    ]
+                );
+
+            } catch (ClientException $exception) {
+
+                report($exception);
+
+                return redirect()
+                    ->back()
+                    ->withErrors(['error' => __("Error adding a site")], 'create_site');
+            } catch (ConnectException $exception) {
+
+                report($exception);
+
+                $context = $exception->getHandlerContext();
+
+                return redirect()
+                    ->back()
+                    ->withErrors(['error' => __("Error adding a site")], 'create_site');
+
+            } catch (\Exception $exception) {
+
+                report($exception);
+
+                return redirect()
+                    ->back()
+                    ->withErrors(['error' => __("Error adding a site")], 'create_site');
+            }
+
+            $domain = $url->getHost();
+
+            $site = new Site();
+            $site->domain = $domain;
+            $site->title = mb_ucfirst($domain);
+            $site->update_the_preview = true;
+            $site->update_the_page = true;
+            $site->save();
+
+            return redirect()
+                ->route('sites.show', $site)
+                ->with('site_created', true);
+        }
+    }
+}
