@@ -9,12 +9,12 @@
 
     @if (empty($title = SEOMeta::getTitle()))
         <title>{{ \DaveJamesMiller\Breadcrumbs\Facades\Breadcrumbs::pageTitle() }}</title>
-    @endif
+@endif
 
-    {!! SEOMeta::generate() !!}
-    {!! \Artesaos\SEOTools\Facades\OpenGraph::generate() !!}
-    {!! Twitter::generate() !!}
-    {!! JsonLd::generate() !!}
+{!! SEOMeta::generate() !!}
+{!! \Artesaos\SEOTools\Facades\OpenGraph::generate() !!}
+{!! Twitter::generate() !!}
+{!! JsonLd::generate() !!}
 
 <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -42,7 +42,7 @@
 
             <div class="left-side navbar-nav flex-row align-items-center">
 
-                <a id="logo" class="navbar-brand mr-2" href="{{ url('/') }}">
+                <a id="logo" class="navbar-brand mr-2" href="{{ route('home') }}">
 
                     <div class="logo_svg d-inline-block align-top"
                          style="width:4rem; height:2rem; background-size:contain;"></div>
@@ -59,7 +59,7 @@
 
                     <input name="term" class="form-control mr-2 d-none d-sm-block" type="search"
                            @if (\Illuminate\Support\Facades\Route::currentRouteName() == 'sites.search') value="{{ request()->term }}" @endif
-                           placeholder="{{ __('common.search') }}" aria-label="Search" required>
+                           placeholder="{{ __('Search') }}" aria-label="Search" required>
 
                     <button class="btn btn-outline-success my-2 my-sm-0 text-nowrap" type="submit">
                         <i class="fas fa-search"></i>
@@ -194,6 +194,17 @@
         </main>
 
         <footer style="height:50px;">
+
+            <div class="container">
+
+                <div id="select_language" data-url="{{ route('locale.list') }}" class="btn btn-light">
+                    {{ __('Language') }}:
+
+                    <span class="flag-icon flag-icon-{{ config('app.local_flag_map.'.App::getLocale()) }}"></span>
+
+                    {{ __('app.on_english') }} - {{ __('app.on_origin') }}
+                </div>
+            </div>
 
         </footer>
 

@@ -147,5 +147,22 @@
     "Edit review": "Редактировать отзыв",
     "New": "Новое",
     "Site image will be updated soon": "Изображение сайта скоро обновится",
-    "Reviews and rating of a site or company :title - :domain": "Отзывы и рейтинг сайта или компании :title - :domain"
+    "Reviews and rating of a site or company :title - :domain": "Отзывы и рейтинг сайта или компании :title - :domain",
+    "Rating and reviews of the site": "Рейтинг и отзывы о сайте",
+    "Search": "Поиск",
+    "Sort": "Сортировка",
+    "by date": "по дате",
+    "by rating": "по полезности",
+    "Save": "Сохранить",
+    "Upload": "Загрузить",
+    "Male": "Мужской",
+    "Female": "Женский",
+    "Unknown": "Неизвестный",
+    "You dont have the right to edit this review": "вы не имеете права редактировать этот отзыв",
+    "Review was already deleted": "Отзыв уже был удален",
+    "You dont have the right to delete this review": "Вы не имеете права удалять этот отзыв",
+    "Review was not deleted": "Отзыв не был удален",
+    "You dont have the right to restore this review": "Вы не имеете права восстанавливать этот отзыв",
+    "You cant rate your reviews": "Вы не можете оценить свои отзывы",
+    "Language": "Язык"
 }

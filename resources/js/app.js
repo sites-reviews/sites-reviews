@@ -47,3 +47,9 @@ let $headerSearch = new HeaderSearch;
 $headerSearch.$header = $('header').first();
 $headerSearch.init();
 
+import SelectLanguageModal from './components/select-language-modal';
+
+let $selectLanguageModal = new SelectLanguageModal;
+$selectLanguageModal.$button = $('#select_language').first();
+$selectLanguageModal.init();
+

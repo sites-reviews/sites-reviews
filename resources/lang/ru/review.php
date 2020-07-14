@@ -25,11 +25,6 @@ return [
     'review_was_already_deleted' => 'Отзыв уже был удален',
     'review_was_not_deleted' => 'Отзыв не удален',
     'you_cant_rate_your_reviews' => 'Нельзя ставить оценки своим отзывам',
-    'sort' => 'Сортировать',
-    'order_by' => [
-        'latest' => 'по дате',
-        'rating_desc' => 'по полезности'
-    ],
     'successfully_published' => 'Отзыв успешно опубликован',
     'site_id' => 'ID сайта',
     'create_user_id' => 'ID пользователя написавшего отзыв',

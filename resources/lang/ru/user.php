@@ -17,5 +17,6 @@ return [
     'email' => 'Адрес электронной почты',
     'email_verified_at' => 'Дата подтверждения электорнной почты',
     'avatar_image_id' => 'ID изображения аватара',
-    'avatar_preview_image_id' => 'ID изображения превью аватара'
+    'avatar_preview_image_id' => 'ID изображения превью аватара',
+    'selected_locale' => 'Выбранный язык'
 ];

@@ -182,14 +182,14 @@
         @if ($reviews->count() > 0)
 
             <div class="py-2 d-flex flex-row">
-                <div class="text-body mr-3">{{ __('review.sort') }}:</div>
+                <div class="text-body mr-3">{{ __('Sort') }}:</div>
                 <a href="{{ route('sites.show', ['site' => $site, 'reviews_order_by' => 'latest']) }}"
                    class="mr-3 @if ($reviews_order_by == 'latest') text-primary @else text-secondary @endif">
-                    {{ __('review.order_by.latest') }}
+                    {{ __('by date') }}
                 </a>
                 <a href="{{ route('sites.show', ['site' => $site, 'reviews_order_by' => 'rating_desc']) }}"
                    class="mr-3 @if ($reviews_order_by == 'rating_desc') text-primary @else text-secondary @endif">
-                    {{ __('review.order_by.rating_desc') }}
+                    {{ __('by rating') }}
                 </a>
             </div>
 

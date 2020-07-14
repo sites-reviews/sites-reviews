@@ -70,6 +70,10 @@ use Litlife\Url\Url;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Site orWhereDomain($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Site whereLatestRatingChangesAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Site whereUpdateThePage($value)
+ * @property int|null $number_of_attempts_update_the_preview Количество попыток обновить превью сайта
+ * @property int|null $number_of_attempts_update_the_page Количество попыток обновить страницу
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Site whereNumberOfAttemptsUpdateThePage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Site whereNumberOfAttemptsUpdateThePreview($value)
  */
 class Site extends Model
 {
@@ -228,7 +232,7 @@ class Site extends Model
 
     public function buttonImageAltText()
     {
-        return __('Rating and reviews of the site ') . $this->domain;
+        return __('Rating and reviews of the site') .' '. $this->domain;
     }
 
     public function getNumberOfReviewsHumanReadable()

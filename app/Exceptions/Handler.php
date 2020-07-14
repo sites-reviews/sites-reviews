@@ -56,7 +56,7 @@ class Handler extends ExceptionHandler
 
             if ($request->expectsJson()) {
                 if ($exception->getMessage() == 'This action is unauthorized.')
-                    return response()->json(['error' => __('error.this_action_is_unauthorized')], 403);
+                    return response()->json(['error' => __('This action is unauthorized.')], 403);
                 else
                     return response()->json(['error' => $exception->getMessage()], 403);
             }

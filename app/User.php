@@ -154,4 +154,15 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\PasswordReset', 'user_id', 'id');
     }
+
+    public function setSelectedLocaleAttribute($value)
+    {
+        $value = trim($value);
+        $value = mb_strtolower($value);
+
+        if (!in_array($value, config('app.locales')))
+            $value = null;
+
+        $this->attributes['selected_locale'] = $value;
+    }
 }

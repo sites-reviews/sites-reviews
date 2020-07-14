@@ -23,7 +23,7 @@ class SiteReviewUpdateTest extends TestCase
             ->assertSeeText(__('review.advantages'))
             ->assertSeeText(__('review.disadvantages'))
             ->assertSeeText(__('review.comment'))
-            ->assertSeeText(__('common.save'));
+            ->assertSeeText(__('Save'));
     }
 
     public function testPatchRouteIsOk()

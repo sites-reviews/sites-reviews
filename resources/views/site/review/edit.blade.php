@@ -58,7 +58,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary">
-                        {{ __('common.save') }}
+                        {{ __('Save') }}
                     </button>
                 </form>
 

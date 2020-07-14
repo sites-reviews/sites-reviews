@@ -21,7 +21,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary">
-                        {{ __('common.upload') }}
+                        {{ __('Upload') }}
                     </button>
                 </form>
 
@@ -60,7 +60,7 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary">
-                    {{ __('common.save') }}
+                    {{ __('Save') }}
                 </button>
             </form>
 

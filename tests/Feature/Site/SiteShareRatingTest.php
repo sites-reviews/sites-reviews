@@ -44,7 +44,7 @@ class SiteShareRatingTest extends TestCase
         $site = factory(Site::class)
             ->create();
 
-        $this->assertEquals(__('Rating and reviews of the site ').$site->domain,
+        $this->assertEquals(__('Rating and reviews of the site').' '.$site->domain,
             $site->buttonImageAltText());
     }
 }

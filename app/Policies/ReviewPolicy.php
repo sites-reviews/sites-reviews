@@ -42,35 +42,35 @@ class ReviewPolicy extends Policy
         if ($review->isUserCreator($authUser))
             return $this->allow();
         else
-            return $this->deny(__('review.you_dont_have_the_right_to_edit_this_review'));
+            return $this->deny(__('You dont have the right to edit this review'));
     }
 
     public function delete(User $authUser, Review $review)
     {
         if ($review->trashed())
-            return $this->deny(__('review.review_was_already_deleted'));
+            return $this->deny(__('Review was already deleted'));
 
         if ($review->isUserCreator($authUser))
             return $this->allow();
         else
-            return $this->deny(__('review.you_dont_have_the_right_to_delete_this_review'));
+            return $this->deny(__('You dont have the right to delete this review'));
     }
 
     public function restore(User $authUser, Review $review)
     {
         if (!$review->trashed())
-            return $this->deny(__('review.review_was_not_deleted'));
+            return $this->deny(__('Review was not deleted'));
 
         if ($review->isUserCreator($authUser))
             return $this->allow();
         else
-            return $this->deny(__('review.you_dont_have_the_right_to_restore_this_review'));
+            return $this->deny(__('You dont have the right to restore this review'));
     }
 
     public function rateUp(User $authUser, Review $review)
     {
         if ($review->isUserCreator($authUser))
-            return $this->deny(__('review.you_cant_rate_your_reviews'));
+            return $this->deny(__('You cant rate your reviews'));
         else
             return $this->allow();
     }
@@ -78,7 +78,7 @@ class ReviewPolicy extends Policy
     public function rateDown(User $authUser, Review $review)
     {
         if ($review->isUserCreator($authUser))
-            return $this->deny(__('review.you_cant_rate_your_reviews'));
+            return $this->deny(__('You cant rate your reviews'));
         else
             return $this->allow();
     }

@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Listeners\SendPasswordChangeIsSuccessfulNotification;
 use App\Listeners\SendWelcomeNotification;
+use App\Listeners\TryRestoreSavedLocale;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -23,6 +25,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         PasswordReset::class => [
             SendPasswordChangeIsSuccessfulNotification::class
+        ],
+        Login::class => [
+            TryRestoreSavedLocale::class
         ],
     ];
 

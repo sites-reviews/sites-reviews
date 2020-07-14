@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b9794c7442371e809cc34151e50c1c53",
+    "content-hash": "492fec2e31b8fc7f1c6e7d0ed1223b57",
     "packages": [
         {
             "name": "arcanedev/log-viewer",
@@ -3810,6 +3810,55 @@
             ],
             "description": "Yandex OAuth2 Provider for Laravel Socialite",
             "time": "2020-04-28T10:25:08+00:00"
+        },
+        {
+            "name": "sokil/php-isocodes",
+            "version": "3.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sokil/php-isocodes.git",
+                "reference": "89b1c153afd1e27c48634a06469a4cab27858833"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sokil/php-isocodes/zipball/89b1c153afd1e27c48634a06469a4cab27858833",
+                "reference": "89b1c153afd1e27c48634a06469a4cab27858833",
+                "shasum": ""
+            },
+            "require": {
+                "ext-gettext": "*",
+                "ext-json": "*",
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
+                "php-coveralls/php-coveralls": "^2.1",
+                "phpbench/phpbench": "^0.16.9",
+                "phpmd/phpmd": "@stable",
+                "phpunit/phpunit": "^7.0",
+                "slevomat/coding-standard": "^5.0",
+                "squizlabs/php_codesniffer": "^3.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sokil\\IsoCodes\\": [
+                        "src/"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dmytro Sokil",
+                    "email": "dmytro.sokil@gmail.com"
+                }
+            ],
+            "description": "ISO country, subdivision, language, currency and script definitions and their translations. Based on pythons pycountry and Debian's iso-codes.",
+            "time": "2020-05-28T22:28:43+00:00"
         },
         {
             "name": "spatie/browsershot",
