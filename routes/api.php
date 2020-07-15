@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Resources\SiteResource;
 
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -15,5 +16,7 @@ use App\Http\Resources\SiteResource;
 |
 */
 
-Route::get('/sites/{site}', 'Api\SiteController@show')->name('api.sites.show');
+$sitePregPattern = '([A-Za-z0-9\-\.]+)\.([A-z]+)';
+
+Route::get('/sites/{site}', 'Api\SiteController@show')->name('api.sites.show')->where('site', $sitePregPattern);
 Route::get('/sites', 'Api\SiteController@index')->name('api.sites.index');

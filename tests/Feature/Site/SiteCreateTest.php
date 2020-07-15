@@ -82,6 +82,9 @@ class SiteCreateTest extends TestCase
                 ->andThrow($connectException);
         });
 
+        $this->get(route('home'))
+            ->assertOk();
+
         $response = $this->get(route('sites.create.or_show', ['domain' => $domain]))
             ->assertRedirect(route('home'))
             ->assertSessionHasErrors(['error' => __("Error adding a site")],'',  'create_site');

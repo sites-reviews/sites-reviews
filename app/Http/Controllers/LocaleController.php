@@ -2,37 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use App\Image;
-use App\Notifications\TestNotification;
 use Illuminate\Http\Request;
-use Illuminate\Mail\Markdown;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
 
 class LocaleController extends Controller
 {
-    public function setLocale(string $locale)
+    public function setLocale(URL $url, string $locale)
     {
-        $response = redirect()->back();
+        $previousRequest = Request::create(url()->previous());
 
-        if (in_array($locale, \Config::get('app.locales')))
-        {
-            session(['locale' => $locale]);
+        $previousRoute = Route::getRoutes()->match($previousRequest);
+
+        $parameters = array_merge($previousRoute->parameters(), $previousRequest->all());
+
+        if ($previousRoute->uri() != '{fallbackPlaceholder}' and in_array($locale, \Config::get('app.locales'))) {
 
             cookie('locale', $locale);
 
-            if (Auth::check())
-            {
+            if (Auth::check()) {
                 $user = Auth::user();
                 $user->selected_locale = $locale;
                 $user->save();
             }
 
-            return $response->cookie('locale', $locale, (60 * 24 * 31));
-        }
+            $parameters['locale'] = $locale;
 
-        return $response;
+            return redirect()
+                ->route($previousRoute->getName(), $parameters)
+                ->cookie('locale', $locale, (60 * 24 * 31));
+        } else {
+            return redirect()
+                ->route('home');
+        }
     }
 
     public function dropdownList()

@@ -7,7 +7,10 @@ use App\Notifications\TestNotification;
 use Illuminate\Http\Request;
 use Illuminate\Mail\Markdown;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 
 class OtherController extends Controller
 {
@@ -16,8 +19,53 @@ class OtherController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function error404()
+    public function error404(Request $request)
     {
+        if (Auth::check())
+        {
+            if (!empty(Auth::user()->selected_locale))
+            {
+                $locale = Auth::user()->selected_locale;
+            }
+        }
+
+        if (empty($locale))
+        {
+            if ($request->hasCookie('locale')) {
+                if (in_array($request->cookie('locale'), Config::get('app.locales'))) {
+                    $locale = $request->cookie('locale');
+                }
+            }
+        }
+
+        if (empty($locale)) {
+            foreach ($request->getLanguages() as $value) {
+                if (mb_strlen($value) == 2) {
+                    if (empty($locale)) {
+                        if (in_array($value, config('app.locales'))) {
+                            $locale = $value;
+
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (empty($locale))
+            $locale = Config::get('app.locale');
+
+        $url = \Litlife\Url\Url::fromString($request->fullUrl());
+
+        if ($url->getSegment(1) != $locale)
+        {
+            $url = $url->withPath('/'.$locale.$url->getPath());
+
+            return redirect()->to($url);
+        }
+
+        URL::defaults(['locale' => $locale]);
+
         return response()
             ->view('errors.404', [], 404);
     }
@@ -39,10 +87,6 @@ class OtherController extends Controller
 
     public function test()
     {
-        \Notification::route('mail', 'sites.reviews.com@gmail.com')
-            ->notify(new TestNotification());
-
-        return view('test');
 
     }
 

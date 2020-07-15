@@ -9,8 +9,8 @@
             </div>
 
             <div class="small text-lowercase">
-                {{ mb_ucfirst(trans_choice('user.reviews', auth()->user()->number_of_reviews)) }}:
                 {{ auth()->user()->number_of_reviews }}
+                {{ mb_ucfirst(trans_choice('user.reviews', auth()->user()->number_of_reviews)) }}
             </div>
 
         </div>
@@ -52,7 +52,7 @@
                               placeholder="{{ __('review.comment_placeholder') }}"></textarea>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Опубликовать</button>
+                <button type="submit" class="btn btn-primary">{{ __('Publish') }}</button>
             </form>
 
         </div>

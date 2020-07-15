@@ -2,8 +2,11 @@
 
 namespace App\Providers;
 
+use App\Site;
+use App\User;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -30,9 +33,15 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Route::pattern('review', '[0-9]{1,9}');
-
         parent::boot();
+
+        Route::pattern('locale', '[a-zA-Z]{2}');
+        Route::pattern('review', '[0-9]{1,9}');
+        Route::pattern('site', '([A-Za-z0-9\-\.]+)\.([A-z]+)');
+        Route::pattern('user', '[0-9]{1,9}');
+
+        //Route::model('site', Site::class);
+        //Route::model('user', User::class);
     }
 
     /**

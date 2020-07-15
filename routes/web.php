@@ -15,12 +15,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/sitemap.xml', 'OtherController@sitemapRedirect')->name('sitemap');
 
-Route::middleware(['setlocale', 'setDefaultLocaleForUrls'])
-    ->prefix('{locale}')
-    ->where(['locale' => '[a-zA-Z]{2}'])
-    ->group(function () {
+$sitePregPattern = '([A-Za-z0-9\-\.]+)\.([A-z]+)';
 
-        $sitePregPattern = '([A-Za-z0-9\-\.]+)\.([A-z]+)';
+Route::prefix('{locale}')
+    ->where(['locale' => '[a-zA-Z]{2}'])
+    ->group(function () use ($sitePregPattern) {
 
         Route::get('/', 'HomeController@index')->name('home');
         Route::get('/sites', 'SiteController@index')->name('sites.index');
@@ -114,13 +113,6 @@ Route::middleware(['setlocale', 'setDefaultLocaleForUrls'])
             Route::get('/users/{user}/notifications', 'UserController@notifications')->name('users.notifications');
         });
 
-        Route::get('/sites_rating/{site}.png', 'SiteController@ratingImage')->name('sites.rating.image')
-            ->where('site', $sitePregPattern)
-            ->withoutMiddleware(\Illuminate\View\Middleware\ShareErrorsFromSession::class)
-            ->withoutMiddleware(\Illuminate\Session\Middleware\StartSession::class)
-            ->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class)
-            ->withoutMiddleware(\App\Http\Middleware\Locale::class);
-
         Route::get('/ratings_colors', 'SiteController@ratingsColors')->name('ratings.colors');
 
         Route::get('/sites_search', 'SiteController@search')->name('sites.search');
@@ -136,12 +128,19 @@ Route::middleware(['setlocale', 'setDefaultLocaleForUrls'])
         Route::get('/auth/{provider}/callback', 'UserSocialAccountController@handleProviderCallback')
             ->name('social_accounts.callback')
             ->where('provider', '(google|facebook|vkontakte)');
-
-        Route::get('/home', 'HomeController@index')->name('home');
     });
 
-Route::fallback('OtherController@error404')->name('error.404');
+Route::get('/sites_rating/{site}.png', 'SiteController@ratingImage')->name('sites.rating.image')
+    ->where('site', $sitePregPattern)
+    ->withoutMiddleware(\Illuminate\View\Middleware\ShareErrorsFromSession::class)
+    ->withoutMiddleware(\Illuminate\Session\Middleware\StartSession::class)
+    ->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class)
+    ->withoutMiddleware(\App\Http\Middleware\SetLocale::class);
 
 Route::get('locale/list', 'LocaleController@dropdownList')->name('locale.list');
-Route::get('locale/set/{locale}', 'LocaleController@setLocale')->name('locale.set');
+Route::get('locale/set/{set_locale}', 'LocaleController@setLocale')->name('locale.set');
+
+Route::fallback('OtherController@error404')
+    ->name('error.404')
+    ->withoutMiddleware(\App\Http\Middleware\SetLocale::class);
 

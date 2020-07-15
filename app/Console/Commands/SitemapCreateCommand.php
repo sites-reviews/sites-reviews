@@ -40,6 +40,7 @@ class SitemapCreateCommand extends Command
     private $olderThanDate;
     private $createNew = true;
     private $currentSitemapName;
+    private $locales;
 
     /**
      * Create a new command instance.
@@ -62,6 +63,8 @@ class SitemapCreateCommand extends Command
         $this->storage = $this->option('storage');
 
         $this->createNew = $this->argument('create_new');
+
+        $this->locales = config('app.locales');
 
         if (!empty($this->argument('later_than_date')))
             $this->olderThanDate = Carbon::parse($this->argument('later_than_date'));
@@ -142,6 +145,13 @@ class SitemapCreateCommand extends Command
     public function home()
     {
         $this->info('home');
+
+        foreach ($this->locales as $locale) {
+            $this->addUrl(
+                route('home', ['locale' => $locale]),
+                now(), 'weekly', 0.6
+            );
+        }
     }
 
     public function addUrl($location, $lastmod = null, $changefreq = 'weekly', $priority = '0.5')
@@ -202,7 +212,7 @@ class SitemapCreateCommand extends Command
             })
             ->chunkById(1000, function ($items) use ($bar) {
                 foreach ($items as $item) {
-                    $this->book($item);
+                    $this->site($item);
                     $bar->advance();
                 }
             });
@@ -211,12 +221,14 @@ class SitemapCreateCommand extends Command
         $this->info('');
     }
 
-    public function book(Site $site)
+    public function site(Site $site)
     {
-        $this->addUrl(
-            route('sites.show', $site),
-            $site->updated_at, 'weekly', 0.6
-        );
+        foreach ($this->locales as $locale) {
+            $this->addUrl(
+                route('sites.show', ['site' => $site, 'locale' => $locale]),
+                $site->updated_at, 'weekly', 0.6
+            );
+        }
     }
 
     public function users()
@@ -244,10 +256,13 @@ class SitemapCreateCommand extends Command
 
     public function user(User $user)
     {
-        $this->addUrl(
-            route('users.show', $user),
-            $user->updated_at, 'weekly', 0.6
-        );
+        foreach ($this->locales as $locale)
+        {
+            $this->addUrl(
+                route('users.show', ['user' => $user, 'locale' => $locale]),
+                $user->updated_at, 'weekly', 0.6
+            );
+        }
     }
 
     public function saveSitemapIndexToFile()

@@ -53,3 +53,15 @@ function replaceAsc194toAsc32($s)
 
     return mb_str_replace(chr(194) . chr(160), ' ', $s);
 }
+
+function currentRouteUrlWithParameters(array $array)
+{
+    $route = \Route::current();
+
+    foreach ($array as $key => $value)
+    {
+        $route->setParameter($key, $value);
+    }
+
+    return route($route->getName(), array_merge($route->parameters(), \Illuminate\Support\Facades\Request::all()));
+}

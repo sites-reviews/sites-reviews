@@ -15,11 +15,11 @@ Breadcrumbs::for('sites.edit', function ($trail, $site) {
     $trail->parent('sites.show', $site);
     $trail->push(__('Edit'), route('sites.edit', $site));
 });
-
+/*
 Breadcrumbs::for('users.show', function ($trail, $name) {
     $trail->parent('home');
     $trail->push(mb_substr($name->name, 0, 50), route('users.show', $name));
-});
+});*/
 
 Breadcrumbs::for('sites.verification.request', function ($trail, $site) {
     $trail->parent('sites.show', $site);

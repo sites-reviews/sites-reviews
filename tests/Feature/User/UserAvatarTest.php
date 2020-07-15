@@ -7,6 +7,7 @@ use App\Site;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
@@ -106,7 +107,7 @@ class UserAvatarTest extends TestCase
         $user = factory(User::class)
             ->create();
 
-        $this->get(route('users.avatar', $user))
-            ->assertRedirect(route('users.show', $user));
+        $this->get(route('users.avatar', ['user' => $user]))
+            ->assertRedirect(route('users.show', ['user' => $user]));
     }
 }

@@ -16,7 +16,7 @@ class HomeTest extends TestCase
      */
     public function test()
     {
-        $this->get('/')
+        $this->get('/'.config('app.locale'))
             ->assertOk();
     }
 }

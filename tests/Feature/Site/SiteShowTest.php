@@ -5,6 +5,7 @@ namespace Tests\Feature\Site;
 use App\Review;
 use App\Site;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
@@ -32,7 +33,7 @@ class SiteShowTest extends TestCase
         $site = factory(Site::class)
             ->create();
 
-        $this->get(route('sites.show', ['site' => Str::random(8).'.'.Str::random(8)]))
+        $this->get(route('sites.show', ['site' => Str::random(8).'.com']))
             ->assertNotFound();
     }
 
@@ -41,7 +42,7 @@ class SiteShowTest extends TestCase
         $site = factory(Site::class)
             ->create();
 
-        $this->assertEquals(config('app.url').'/'.$site->domain,
+        $this->assertEquals(config('app.url').'/'.config('app.locale').'/'.$site->domain,
             route('sites.show', $site));
     }
 

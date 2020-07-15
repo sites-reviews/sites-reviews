@@ -16,6 +16,6 @@ class UrlContentTest extends TestCase
     {
         $class = new UrlContent();
 
-        $this->assertNotNull($class->getContent('https://google.com'));
+        $this->assertNotNull($class->getContent('https://example.com'));
     }
 }
