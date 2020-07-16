@@ -135,12 +135,12 @@ class SiteController extends Controller
         //
     }
 
-    public function ratingImage(Site $site)
+    public function ratingImage($size, Site $site)
     {
         if (App::isLocal())
             \Debugbar::startMeasure('render_image','Render image');
 
-        $blob = $site->getRatingImageBlob();
+        $blob = $site->getRatingImageBlob($size, true);
 
         if (App::isLocal())
             \Debugbar::stopMeasure('render_image');

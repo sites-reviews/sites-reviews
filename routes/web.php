@@ -130,8 +130,9 @@ Route::prefix('{locale}')
             ->where('provider', '(google|facebook|vkontakte)');
     });
 
-Route::get('/sites_rating/{site}.png', 'SiteController@ratingImage')->name('sites.rating.image')
+Route::get('/sites_rating/{size}/{site}.png', 'SiteController@ratingImage')->name('sites.rating.image')
     ->where('site', $sitePregPattern)
+    ->where('size', '(1x|2x|3x)')
     ->withoutMiddleware(\Illuminate\View\Middleware\ShareErrorsFromSession::class)
     ->withoutMiddleware(\Illuminate\Session\Middleware\StartSession::class)
     ->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class)

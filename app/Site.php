@@ -219,14 +219,16 @@ class Site extends Model
     public function buttonHtmlCode()
     {
         return '<a href="' . route('sites.show', $this) . '">' . "\n" .
-            '<img src="' . route('sites.rating.image', $this) . '" width="88" height="31" border="0" alt="' . $this->buttonImageAltText() . '" />' . "\n" .
+            '<img srcset="' . route('sites.rating.image', ['site' => $this, 'size' => '2x']) . ' 2x, ' . route('sites.rating.image', ['site' => $this, 'size' => '3x']) . ' 3x" '.
+            'data-src="'.route('sites.rating.image', ['site' => $this, 'size' => '1x']).'" '.
+            'width="88" height="31" border="0" alt="' . $this->buttonImageAltText() . '" />' . "\n" .
             '</a>';
     }
 
     public function buttonBBCode()
     {
         return '[url=' . route('sites.show', $this) . ']' . "\n" .
-            '[img]' . route('sites.rating.image', $this) . '[/img]' . "\n" .
+            '[img]' . route('sites.rating.image', ['site' => $this, 'size' => '1x']) . '[/img]' . "\n" .
             '[/url]';
     }
 
@@ -253,9 +255,10 @@ class Site extends Model
         return number_format($this->rating, 1);
     }
 
-    public function getRatingImageBlob()
+    public function getRatingImageBlob($size = '1x', $cache = true)
     {
-        $blob = Cache::get($this->id . ':ri');
+        if ($cache)
+            $blob = Cache::get($this->id . ':ri');
 
         if (empty($blob)) {
             $rating = $this->rating;
@@ -263,12 +266,13 @@ class Site extends Model
             $siteFullness = new StarFullness();
             $siteFullness->setRate($rating);
 
-            $width = 10;
-            $height = 10;
-            $leftMargin = 6;
-            $pixelsBetween = 1;
-            $topMargin = 4;
-            $rightMargin = 6;
+            $width = 100;
+            $height = 100;
+            $leftMargin = 40;
+            $pixelsBetween = 10;
+            $topMargin = 40;
+            $rightMargin = 40;
+            $fontSize = 90;
 
             $solidStar = '<?xml version="1.0" ?><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star" class="svg-inline--fa fa-star fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="' . $siteFullness->getColor() . '" d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"></path></svg>';
             $regularStar = '<?xml version="1.0" ?><svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="star" class="svg-inline--fa fa-star fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="' . $siteFullness->getColor() . '" d="M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z"></path></svg>';
@@ -292,7 +296,7 @@ class Site extends Model
             $halfStarImagick->resizeImage($width, $height, Imagick::FILTER_SINC, true, true);
 
             $imagick = new Imagick();
-            $imagick->newImage(88, 31, new ImagickPixel('white'));
+            $imagick->newImage(880, 310, new ImagickPixel('white'));
             $imagick->setImageFormat('png');
 
             foreach ($siteFullness->getArray() as $number => $value) {
@@ -314,27 +318,32 @@ class Site extends Model
             $imagick->setImageFormat('png');
 
             $draw = new ImagickDraw();
-            $draw->setFontSize(9);
+            $draw->setFontSize($fontSize);
             $draw->setFillColor('black');
-            $imagick->annotateImage($draw, $leftMargin, 27, 0, config('app.name'));
+            $imagick->annotateImage($draw, $leftMargin, 270, 0, config('app.name'));
 
             $numberOfReviewsDraw = new ImagickDraw();
-            $numberOfReviewsDraw->setFontSize(9);
+            $numberOfReviewsDraw->setFontSize($fontSize);
             $numberOfReviewsDraw->setFillColor('black');
             $numberOfReviewsDraw->setTextAlignment(Imagick::ALIGN_RIGHT);
-            $numberOfReviewsDraw->annotation(88 - $rightMargin, 27, $this->getNumberOfReviewsHumanReadable());
+            $numberOfReviewsDraw->annotation(880 - $rightMargin, 270, $this->getNumberOfReviewsHumanReadable());
             $imagick->drawImage($numberOfReviewsDraw);
 
             $ratingDraw = new ImagickDraw();
-            $ratingDraw->setFontSize(11);
+            $ratingDraw->setFontSize(110);
             $ratingDraw->setFillColor('black');
             $ratingDraw->setTextAlignment(Imagick::ALIGN_RIGHT);
-            $ratingDraw->annotation(88 - $rightMargin, 13, $this->getRatingForButton());
+            $ratingDraw->annotation(880 - $rightMargin, 130, $this->getRatingForButton());
             $imagick->drawImage($ratingDraw);
+
+            $size = intval($size);
+
+            $imagick->resizeImage(88 * $size, 31 * $size, Imagick::FILTER_BLACKMAN, true, true);
 
             $blob = $imagick->getImageBlob();
 
-            Cache::forever($this->id . ':ri', $blob);
+            if ($cache)
+                Cache::forever($this->id . ':ri', $blob);
         }
 
         return $blob;

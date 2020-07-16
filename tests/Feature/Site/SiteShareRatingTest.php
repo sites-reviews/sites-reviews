@@ -21,7 +21,9 @@ class SiteShareRatingTest extends TestCase
             ->create();
 
         $content = "<a href=\"" . route('sites.show', $site) . "\">" . "\n" .
-            "<img src=\"".route('sites.rating.image', $site)."\" width=\"88\" height=\"31\" border=\"0\" alt=\"".htmlspecialchars($site->buttonImageAltText())."\" />" . "\n" .
+            '<img srcset="' . route('sites.rating.image', ['site' => $site, 'size' => '2x']) . ' 2x, ' . route('sites.rating.image', ['site' => $site, 'size' => '3x']) . ' 3x" '.
+            'data-src="'.route('sites.rating.image', ['site' => $site, 'size' => '1x']).'" '.
+            'width="88" height="31" border="0" alt="' . $site->buttonImageAltText() . '" />' . "\n" .
             "</a>";
 
         $this->assertEquals($content, $site->buttonHtmlCode());
@@ -33,7 +35,7 @@ class SiteShareRatingTest extends TestCase
             ->create();
 
         $content = '[url='.route('sites.show', $site).']'."\n".
-            '[img]'.route('sites.rating.image', $site).'[/img]'."\n".
+            '[img]'.route('sites.rating.image', ['site' => $site, 'size' => '1x']).'[/img]'."\n".
             '[/url]';
 
         $this->assertEquals($content, $site->buttonBBCode());

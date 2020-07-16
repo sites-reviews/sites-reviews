@@ -16,7 +16,7 @@ class SiteRatingImageTest extends TestCase
     {
         $site = factory(Site::class)->create();
 
-        $response = $this->get(route('sites.rating.image', $site))
+        $response = $this->get(route('sites.rating.image', ['site' => $site, 'size' => '1x']))
             ->assertOk()
             ->assertHeader('Content-Type', 'image/png')
             //->assertHeader('Last-Modified', $site->latest_rating_changes_at->format('D, d M Y H:i:s').' GMT')
