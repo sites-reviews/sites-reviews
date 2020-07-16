@@ -41,7 +41,7 @@ class SiteShowTest extends TestCase
      */
     public function testNotFound()
     {
-        $this->get(route('api.sites.show', ['site' => Str::random(8).'.'.Str::random(2)]))
+        $this->get(route('api.sites.show', ['site' => Str::random(8).'.com']))
             ->assertOk();
     }
 }

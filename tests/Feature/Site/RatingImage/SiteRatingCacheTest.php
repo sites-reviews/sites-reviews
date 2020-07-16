@@ -17,11 +17,11 @@ class SiteRatingCacheTest extends TestCase
     {
         $site = factory(Site::class)->create();
 
-        $this->assertNull(Cache::get($site->id . ':ri'));
+        $this->assertNull(Cache::get($site->id . ':ri:1x'));
 
         $this->assertNotEmpty($site->getRatingImageBlob());
 
-        $this->assertNotNull(Cache::get($site->id . ':ri'));
+        $this->assertNotNull(Cache::get($site->id . ':ri:1x'));
     }
 
     public function testClear()
@@ -30,10 +30,10 @@ class SiteRatingCacheTest extends TestCase
 
         $this->assertNotEmpty($site->getRatingImageBlob());
 
-        $this->assertNotNull(Cache::get($site->id . ':ri'));
+        $this->assertNotNull(Cache::get($site->id . ':ri:1x'));
 
         $this->assertTrue($site->clearRatingImageBlob());
 
-        $this->assertNull(Cache::get($site->id . ':ri'));
+        $this->assertNull(Cache::get($site->id . ':ri:1x'));
     }
 }

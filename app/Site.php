@@ -258,7 +258,7 @@ class Site extends Model
     public function getRatingImageBlob($size = '1x', $cache = true)
     {
         if ($cache)
-            $blob = Cache::get($this->id . ':ri');
+            $blob = Cache::get($this->id . ':ri:' . $size);
 
         if (empty($blob)) {
             $rating = $this->rating;
@@ -336,14 +336,12 @@ class Site extends Model
             $ratingDraw->annotation(880 - $rightMargin, 130, $this->getRatingForButton());
             $imagick->drawImage($ratingDraw);
 
-            $size = intval($size);
-
-            $imagick->resizeImage(88 * $size, 31 * $size, Imagick::FILTER_BLACKMAN, true, true);
+            $imagick->resizeImage(88 * intval($size), 31 * intval($size), Imagick::FILTER_BLACKMAN, true, true);
 
             $blob = $imagick->getImageBlob();
 
             if ($cache)
-                Cache::forever($this->id . ':ri', $blob);
+                Cache::forever($this->id . ':ri:' . $size, $blob);
         }
 
         return $blob;
@@ -351,7 +349,11 @@ class Site extends Model
 
     public function clearRatingImageBlob(): bool
     {
-        return Cache::forget($this->id . ':ri');
+        Cache::forget($this->id . ':ri:1x');
+        Cache::forget($this->id . ':ri:2x');
+        Cache::forget($this->id . ':ri:3x');
+
+        return true;
     }
 
     public function updateDescriptionFromPage()
