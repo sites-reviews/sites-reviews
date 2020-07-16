@@ -9,12 +9,12 @@
 
     @if (empty($title = SEOMeta::getTitle()))
         <title>{{ \DaveJamesMiller\Breadcrumbs\Facades\Breadcrumbs::pageTitle() }}</title>
-@endif
+    @endif
 
-{!! SEOMeta::generate() !!}
-{!! \Artesaos\SEOTools\Facades\OpenGraph::generate() !!}
-{!! Twitter::generate() !!}
-{!! JsonLd::generate() !!}
+    {!! SEOMeta::generate() !!}
+    {!! \Artesaos\SEOTools\Facades\OpenGraph::generate() !!}
+    {!! Twitter::generate() !!}
+    {!! JsonLd::generate() !!}
 
 <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -33,6 +33,13 @@
     <link rel="manifest" href="/site.webmanifest">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+    @foreach (config('app.locales') as $locale)
+        @if ($locale != \Illuminate\Support\Facades\App::getLocale())
+            <link rel="alternate" hreflang="{{ $locale }}"
+                  href="{{ route(\Route::currentRouteName(), array_merge(\Illuminate\Support\Facades\Route::current()->parameters(), \Illuminate\Support\Facades\Request::all(), ['locale' => $locale])) }}"/>
+        @endif
+    @endforeach
 
 </head>
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -206,7 +213,8 @@
                 </button>
 
                 <!-- Modal -->
-                <div class="modal fade" id="selectLanguageModal" tabindex="-1" role="dialog" aria-labelledby="selectLanguageModalLabel" aria-hidden="true">
+                <div class="modal fade" id="selectLanguageModal" tabindex="-1" role="dialog" aria-labelledby="selectLanguageModalLabel"
+                     aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -253,7 +261,11 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-172840850-1"></script>
 <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
     gtag('js', new Date());
 
     gtag('config', 'UA-172840850-1');
