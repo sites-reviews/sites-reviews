@@ -87,10 +87,14 @@ class SiteController extends Controller
             SEOTools::addImages($site->preview->fullUrlMaxSize(200, 200));
         }
 
-        SEOTools::setTitle(__('site.browser_title', ['title' => $site->title, 'domain' => $site->domain]).' - '.config('app.name'))
-            ->setDescription(__('Reviews and rating of a site or company :title - :domain', [
-                'title' => $site->title,
-                'domain' => $site->domain
+        if ($site->isDomainLikeTitle())
+            $title = $site->title;
+        else
+            $title = $site->title.' - '.$site->domain;
+
+        SEOTools::setTitle(__('site.browser_title', ['title' => $title]).' - '.config('app.name'))
+            ->setDescription(__('Reviews and rating of a site or company :title', [
+                'title' => $title
             ]));
 
         return view('site.show', [

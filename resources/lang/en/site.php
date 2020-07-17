@@ -16,5 +16,5 @@ return [
     'latest_rating_changes_at' => 'Date of the last rating change',
     'number_of_attempts_update_the_preview' => 'Number of attempts to update the site preview',
     'number_of_attempts_update_the_page' => 'Number of attempts to refresh the page',
-    'browser_title' => ':title - :domain - reviews about sites and companies'
+    'browser_title' => ':title - reviews about sites and companies'
 ];

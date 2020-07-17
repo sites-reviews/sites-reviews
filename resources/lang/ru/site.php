@@ -16,5 +16,5 @@ return [
     'latest_rating_changes_at' => 'Дата последнего изменения рейтинга',
     'number_of_attempts_update_the_preview' => 'Количество попыток обновить превью сайта',
     'number_of_attempts_update_the_page' => 'Количество попыток обновить страницу',
-    'browser_title' => ':title - :domain - отзывы о сайте или компании'
+    'browser_title' => ':title - отзывы о сайте или компании'
 ];

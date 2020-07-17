@@ -417,4 +417,20 @@ class Site extends Model
 
         return $value;
     }
+
+    public function isDomainLikeTitle() :bool
+    {
+        $title = mb_strtolower(trim($this->title));
+        $domain = mb_strtolower(trim($this->domain));
+
+        if (preg_match('/^(?:www\.?)(.*)$/iu', $title, $matches)) {
+            $title = $matches[1];
+        }
+
+        if (preg_match('/^(?:www\.?)(.*)$/iu', $domain, $matches)) {
+            $domain = $matches[1];
+        }
+
+        return $title == $domain;
+    }
 }
