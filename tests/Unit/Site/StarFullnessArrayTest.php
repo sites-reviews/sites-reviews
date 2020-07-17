@@ -229,4 +229,16 @@ class StarFullnessArrayTest extends \PHPUnit\Framework\TestCase
 
         $this->assertTrue(true);
     }
+
+    public function testGetHexColor()
+    {
+        $starFullness = new StarFullness();
+        $starFullness->setRate(4);
+
+        $this->assertEquals('#64af00', $starFullness->getHexColor());
+
+        $starFullness->setRate(3);
+
+        $this->assertEquals('#c8e100', $starFullness->getHexColor());
+    }
 }

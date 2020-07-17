@@ -433,4 +433,15 @@ class Site extends Model
 
         return $title == $domain;
     }
+
+    public function getRatingColor($type = 'hex')
+    {
+        $starFullness = new StarFullness();
+        $starFullness->setRate($this->rating);
+
+        if ($type == 'hex')
+            return $starFullness->getHexColor();
+        elseif ($type == 'rgb')
+            return $starFullness->getColor();
+    }
 }

@@ -22,7 +22,11 @@ class SiteResource extends JsonResource
             'rating' => $this->rating,
             'number_of_views' => $this->number_of_views,
             'number_of_reviews' => $this->number_of_reviews,
-            'url' => (string)$this->getUrl()
+            'url' => (string)$this->getUrl(),
+            'rating_color' => [
+                'hex' => $this->getRatingColor('hex'),
+                'rgb' => $this->getRatingColor('rgb'),
+            ]
         ];
     }
 }

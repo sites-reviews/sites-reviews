@@ -110,6 +110,15 @@ class StarFullness
         return $color;
     }
 
+    public function getHexColor()
+    {
+        preg_match('/rgb\(([0-9]{1,3}),\ ([0-9]{1,3}),\ ([0-9]{1,3})\)/iu',
+            $this->getColor(),
+            $matches);
+
+        return sprintf("#%02x%02x%02x", $matches[1], $matches[2], $matches[3]);
+    }
+
     public function getClassname()
     {
         if ($this->rate < 1) {
