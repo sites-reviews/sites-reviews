@@ -52,11 +52,12 @@ class SiteCreateCommand extends Command
             return false;
         }
 
-        $site = Site::url($this->url->getHost())
+        $site = Site::whereDomain($this->url->getHost())
             ->first();
 
         if (!empty($site)) {
             $this->error(__('The site is already in the database'));
+            return false;
         } else {
 
             $site = new Site();
@@ -68,11 +69,7 @@ class SiteCreateCommand extends Command
             $site->save();
 
             $this->info(__('The site was added successfully'));
+            return true;
         }
-    }
-
-    public function getMetaData()
-    {
-        return \OpenGraph::fetch((string)$this->url, true);
     }
 }

@@ -3,6 +3,7 @@
 namespace Tests\Feature\Api;
 
 use App\Notifications\NewResponseToReviewNotification;
+use App\PossibleDomain;
 use App\Review;
 use App\Comment;
 use App\Site;
@@ -41,7 +42,44 @@ class SiteShowTest extends TestCase
      */
     public function testNotFound()
     {
-        $this->get(route('api.sites.show', ['site' => Str::random(8).'.com']))
+        $host = mb_strtolower(Str::random(8).'.com');
+
+        $response = $this->get(route('api.sites.show', ['site' => $host]))
             ->assertOk();
+    }
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testNotFoundAddPossibleDomain()
+    {
+        $host = mb_strtolower(Str::random(8).'.com');
+
+        $response = $this->get(route('api.sites.show', ['site' => $host]))
+            ->assertOk();
+
+        $site = PossibleDomain::whereDomain($host)->get();
+
+        $this->assertNotNull($site);
+    }
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testNotFoundAndPossibleDomainAlreadyExists()
+    {
+        $host = mb_strtolower(Str::random(8).'.com');
+
+        $possibleDomain = factory(PossibleDomain::class)
+            ->create(['domain' => $host]);
+
+        $response = $this->get(route('api.sites.show', ['site' => $host]))
+            ->assertOk();
+
+        $this->assertNotNull(1, PossibleDomain::whereDomain($host)->count());
     }
 }

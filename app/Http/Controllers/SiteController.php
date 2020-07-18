@@ -22,7 +22,8 @@ class SiteController extends Controller
      */
     public function index()
     {
-        $sites = Site::simplePaginate(5);
+        $sites = Site::query()
+            ->simplePaginate(5);
 
         return view('site.index', ['sites' => $sites]);
     }
@@ -219,7 +220,7 @@ class SiteController extends Controller
 
         $site = Site::whereDomain($domain)->first();
 
-        if ($site)
+        if (!empty($site))
         {
             return redirect()
                 ->route('sites.show', $site)
@@ -231,18 +232,12 @@ class SiteController extends Controller
                 ->withHost($domain)
                 ->withScheme('http');
 
+            $site = new Site();
+            $site->domain = $url->getHost();
+
             try
             {
-                $response = $client->request(
-                    'GET',
-                    (string)$url,
-                    [
-                        'allow_redirects' => false,
-                        'connect_timeout' => 5,
-                        'read_timeout' => 5,
-                        'timeout' => 5
-                    ]
-                );
+                $site->isAvailableThroughInternet($client);
 
             } catch (ClientException $exception) {
 
@@ -270,11 +265,7 @@ class SiteController extends Controller
                     ->withErrors(['error' => __("Error adding a site")], 'create_site');
             }
 
-            $domain = $url->getHost();
-
-            $site = new Site();
-            $site->domain = $domain;
-            $site->title = mb_ucfirst($domain);
+            $site->title = $url->getHost();
             $site->update_the_preview = true;
             $site->update_the_page = true;
             $site->save();

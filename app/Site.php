@@ -5,6 +5,7 @@ namespace App;
 use App\Library\StarFullness;
 use App\Traits\UserCreate;
 use Eloquent;
+use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -15,6 +16,7 @@ use Imagick;
 use ImagickDraw;
 use ImagickPixel;
 use Litlife\Url\Url;
+use phpDocumentor\Reflection\Types\Boolean;
 
 /**
  * App\Site
@@ -89,13 +91,15 @@ class Site extends Model
         'number_of_attempts_update_the_page' => 'integer',
         'update_the_preview' => 'boolean',
         'update_the_page' => 'boolean',
+        'available' => 'boolean'
     ];
 
     public $timestamps = [
         'created_at',
         'updated_at',
         'latest_rating_changes_at',
-        'deleted_at'
+        'deleted_at',
+        'available_check_at'
     ];
 
     /**
@@ -443,5 +447,28 @@ class Site extends Model
             return $starFullness->getHexColor();
         elseif ($type == 'rgb')
             return $starFullness->getColor();
+    }
+
+    public function isAvailableThroughInternet(Client $client) :bool
+    {
+        $url = Url::fromString('')
+            ->withHost($this->domain)
+            ->withScheme('http');
+
+        $response = $client->request(
+            'GET',
+            (string)$url,
+            [
+                'allow_redirects' => false,
+                'connect_timeout' => 5,
+                'read_timeout' => 5,
+                'timeout' => 5
+            ]
+        );
+
+        if ($response->getStatusCode() == 200 or $response->getStatusCode() == 302)
+            return true;
+        else
+            return false;
     }
 }

@@ -36,6 +36,11 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('sitemap:create')
             ->daily();
+/*
+        $schedule->command('site:possible_handle')
+            ->everyMinute()
+            ->withoutOverlapping(5);
+        */
     }
 
     /**
