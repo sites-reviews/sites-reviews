@@ -196,9 +196,19 @@ class SiteController extends Controller
 
         $sites = $query->simplePaginate();
 
-        if ($isDomain and $sites->where('domain', $domain)->count() < 1)
+        if ($isDomain)
         {
-            $addSite = true;
+            $count = $sites->where('domain', $domain)->count();
+
+            if ($count < 1)
+            {
+                $addSite = true;
+            }
+            elseif ($count == 1 and $sites->count() == 1)
+            {
+                return redirect()
+                    ->route('sites.show', ['site' => $sites->first()]);
+            }
         }
         else
         {

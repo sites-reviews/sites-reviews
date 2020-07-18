@@ -109,16 +109,20 @@ class SearchTest extends TestCase
             ->create();
 
         $response = $this->get(route('sites.search', ['term' => (string)$site->getUrl()]))
+            ->assertRedirect(route('sites.show', ['site' => $site]));
+            /*
             ->assertOk()
             ->assertViewHas('term', (string)$site->getUrl())
             ->assertViewHas('isDomain', true)
             ->assertViewHas('domain', $site->domain)
             ->assertViewHas('addSite', false);
 
+
         $sites = $response->original->gatherData()['sites'];
 
         $this->assertEquals(1, $sites->count());
         $this->assertEquals($site->domain, $sites->first()->domain);
+             */
     }
 
     /**
@@ -134,10 +138,27 @@ class SearchTest extends TestCase
         $domainWithWWW = $site->getUrl()->withHost('www.'.$site->getUrl()->getHost());
 
         $response = $this->get(route('sites.search', ['term' => (string)$domainWithWWW]))
+            ->assertRedirect(route('sites.show', ['site' => $site]));
+            /*
             ->assertOk()
             ->assertViewHas('term', (string)$domainWithWWW)
             ->assertViewHas('isDomain', true)
             ->assertViewHas('domain', $site->domain)
             ->assertViewHas('addSite', false);
+        */
+    }
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testRedirectToSiteIfOnlyOneFound()
+    {
+        $site = factory(Site::class)
+            ->create();
+
+        $response = $this->get(route('sites.search', ['term' => (string)$site->domain]))
+            ->assertRedirect(route('sites.show', ['site' => $site]));
     }
 }
