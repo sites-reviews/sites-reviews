@@ -55,6 +55,8 @@ class SiteUpdatePreviewCommand extends Command
                     ->windowSize(1000, 1000)
                     ->setScreenshotType('jpeg', 100)
                     ->setDelay(5000)
+                    ->dismissDialogs()
+                    ->ignoreHttpsErrors()
                     ->screenshot();
 
                 $image = new Image;

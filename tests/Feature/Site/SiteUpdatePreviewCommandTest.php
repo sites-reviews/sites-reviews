@@ -43,6 +43,10 @@ class SiteUpdatePreviewCommandTest extends TestCase
                 ->shouldReceive('setDelay')
                 ->with(5000)
                 ->andReturn($mock)
+                ->shouldReceive('dismissDialogs')
+                ->andReturn($mock)
+                ->shouldReceive('ignoreHttpsErrors')
+                ->andReturn($mock)
                 ->shouldReceive('screenshot')
                 ->andReturn(file_get_contents($fakeImage));
         });
