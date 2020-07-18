@@ -145,3 +145,5 @@ Route::fallback('OtherController@error404')
     ->name('error.404')
     ->withoutMiddleware(\App\Http\Middleware\SetLocale::class);
 
+Route::get('/extension/redirect/', 'BrowserExtensionController@redirect')->name('browser.extension.redirect');
+
