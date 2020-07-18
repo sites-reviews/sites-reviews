@@ -65,21 +65,13 @@ class SitePossibleHandleCommandTest extends TestCase
 
         $this->assertNull($possibleDomain->handeled_at);
 
-        $stream = Psr7\stream_for('');
+        $this->mock(Client::class, function ($mock) {
 
-        $response = new Response(404, [
-            'Content-Type' => [
-                'text/html; charset=UTF-8'
-            ],
-            'Transfer-Encoding' => [
-                'chunked'
-            ]
-        ], $stream);
+            $request = new Psr7\Request('get', '');
 
-        $this->mock(Client::class, function ($mock) use ($response) {
             $mock->shouldReceive('request')
                 ->once()
-                ->andReturn($response);
+                ->andThrow(new ConnectException('test', $request));
         });
 
         $this->artisan('site:possible_handle', ['count' => '1', 'latest_id' => $possibleDomain->id]);
@@ -104,4 +96,16 @@ class SitePossibleHandleCommandTest extends TestCase
 
         $this->artisan('site:possible_handle', ['count' => '1', 'latest_id' => $possibleDomain->id]);
     }
+/*
+    public function test()
+    {
+        $possibleDomain = factory(PossibleDomain::class)
+            ->create(['domain' => 'sdfgfdgdgdgdfgfg234234f.com']);
+
+        $site = new Site();
+        $site->domain = $possibleDomain->domain;
+
+        $site->isAvailableThroughInternet(new Client());
+    }
+    */
 }

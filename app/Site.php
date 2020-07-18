@@ -459,14 +459,14 @@ class Site extends Model
             'GET',
             (string)$url,
             [
-                'allow_redirects' => false,
+                'allow_redirects' => true,
                 'connect_timeout' => 5,
                 'read_timeout' => 5,
                 'timeout' => 5
             ]
         );
 
-        if ($response->getStatusCode() == 200 or $response->getStatusCode() == 302)
+        if (!empty($response->getStatusCode()))
             return true;
         else
             return false;
