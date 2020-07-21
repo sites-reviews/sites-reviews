@@ -202,9 +202,9 @@
 
         <footer class="mt-3" style="height:50px;">
 
-            <div class="container">
+            <div class="container d-flex flex-sm-row flex-column align-items-center">
 
-                <button type="button" class="btn btn-light" data-toggle="modal" data-target="#selectLanguageModal">
+                <button type="button" class="btn btn-light mr-3" data-toggle="modal" data-target="#selectLanguageModal">
                     {{ __('Language') }}:
 
                     <span class="flag-icon flag-icon-{{ config('app.local_flag_map.'.App::getLocale()) }}"></span>
@@ -239,6 +239,8 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="mt-3 mt-sm-0">{{ __('Contacts') }}: sites.reviews.com@gmail.com</div>
             </div>
 
         </footer>
