@@ -4,7 +4,7 @@
             <tr>
                 <td>
                     <a href="{{ $url }}" style="display: block; vertical-align: middle; text-align: right">
-                        <img class="logo_svg" src="{{ asset('/img/logo.svg') }}" />
+                        <img class="logo_svg" src="{{ asset('/img/logo50x25.png') }}" />
                     </a>
                 </td>
                 <td>
