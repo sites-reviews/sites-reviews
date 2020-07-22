@@ -166,5 +166,7 @@
     "You cant rate your reviews": "Вы не можете оценить свои отзывы",
     "Language": "Язык",
     "Select language": "Выбрать язык",
-    "Contacts": "Контакты"
+    "Contacts": "Контакты",
+    "The user with this email address is already registered with the mailbox.": "Пользователь с таким почтовым ящиком уже зарегистрирован.",
+    "Please log in or restore your password": "Пожалуйста, войдите в свой аккаунт или восстановите пароль"
 }
