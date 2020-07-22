@@ -54,7 +54,7 @@
                     <div class="logo_svg d-inline-block align-top"
                          style="width:4rem; height:2rem; background-size:contain;"></div>
 
-                    <span class="d-none d-md-inline">{{ config('app.name') }}</span>
+                    <h1 class="d-none d-md-inline h5">{{ config('app.name') }}</h1>
                 </a>
 
                 <button id="close_header_search" class="btn btn-secondary mr-3" style="display:none;">
@@ -200,7 +200,15 @@
 
         </main>
 
-        <footer class="mt-3" style="height:50px;">
+        <footer class="mt-3 mb-5" style="height:50px;">
+
+            @if (\Browser::isFirefox())
+                <div class="container  mb-3 text-center">
+                    <a href="https://addons.mozilla.org/firefox/addon/sites-reviews-com/" class="h4 d-block" rel="nofollow">
+                        <i class="fab fa-firefox-browser"></i> {{ __('Install extension for Firefox') }}
+                    </a>
+                </div>
+            @endif
 
             <div class="container d-flex flex-sm-row flex-column align-items-center">
 

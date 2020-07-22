@@ -5,7 +5,7 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
-    * Generated on 2020-07-14 11:28:20.
+    * Generated on 2020-07-22 10:55:35.
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
@@ -68,6 +68,7 @@ namespace PHPSTORM_META {
         'auth.password' => \Illuminate\Auth\Passwords\PasswordBrokerManager::class,
         'auth.password.broker' => \Illuminate\Auth\Passwords\PasswordBroker::class,
         'blade.compiler' => \Illuminate\View\Compilers\BladeCompiler::class,
+        'browser-detect' => \hisorange\BrowserDetect\Parser::class,
         'cache' => \Illuminate\Cache\CacheManager::class,
         'cache.store' => \Illuminate\Cache\Repository::class,
         'command.auth.resets.clear' => \Illuminate\Auth\Console\ClearResetsCommand::class,
@@ -253,6 +254,7 @@ namespace PHPSTORM_META {
         'auth.password' => \Illuminate\Auth\Passwords\PasswordBrokerManager::class,
         'auth.password.broker' => \Illuminate\Auth\Passwords\PasswordBroker::class,
         'blade.compiler' => \Illuminate\View\Compilers\BladeCompiler::class,
+        'browser-detect' => \hisorange\BrowserDetect\Parser::class,
         'cache' => \Illuminate\Cache\CacheManager::class,
         'cache.store' => \Illuminate\Cache\Repository::class,
         'command.auth.resets.clear' => \Illuminate\Auth\Console\ClearResetsCommand::class,
@@ -438,6 +440,7 @@ namespace PHPSTORM_META {
         'auth.password' => \Illuminate\Auth\Passwords\PasswordBrokerManager::class,
         'auth.password.broker' => \Illuminate\Auth\Passwords\PasswordBroker::class,
         'blade.compiler' => \Illuminate\View\Compilers\BladeCompiler::class,
+        'browser-detect' => \hisorange\BrowserDetect\Parser::class,
         'cache' => \Illuminate\Cache\CacheManager::class,
         'cache.store' => \Illuminate\Cache\Repository::class,
         'command.auth.resets.clear' => \Illuminate\Auth\Console\ClearResetsCommand::class,
@@ -623,6 +626,7 @@ namespace PHPSTORM_META {
         'auth.password' => \Illuminate\Auth\Passwords\PasswordBrokerManager::class,
         'auth.password.broker' => \Illuminate\Auth\Passwords\PasswordBroker::class,
         'blade.compiler' => \Illuminate\View\Compilers\BladeCompiler::class,
+        'browser-detect' => \hisorange\BrowserDetect\Parser::class,
         'cache' => \Illuminate\Cache\CacheManager::class,
         'cache.store' => \Illuminate\Cache\Repository::class,
         'command.auth.resets.clear' => \Illuminate\Auth\Console\ClearResetsCommand::class,
@@ -808,6 +812,7 @@ namespace PHPSTORM_META {
         'auth.password' => \Illuminate\Auth\Passwords\PasswordBrokerManager::class,
         'auth.password.broker' => \Illuminate\Auth\Passwords\PasswordBroker::class,
         'blade.compiler' => \Illuminate\View\Compilers\BladeCompiler::class,
+        'browser-detect' => \hisorange\BrowserDetect\Parser::class,
         'cache' => \Illuminate\Cache\CacheManager::class,
         'cache.store' => \Illuminate\Cache\Repository::class,
         'command.auth.resets.clear' => \Illuminate\Auth\Console\ClearResetsCommand::class,
@@ -993,6 +998,7 @@ namespace PHPSTORM_META {
         'auth.password' => \Illuminate\Auth\Passwords\PasswordBrokerManager::class,
         'auth.password.broker' => \Illuminate\Auth\Passwords\PasswordBroker::class,
         'blade.compiler' => \Illuminate\View\Compilers\BladeCompiler::class,
+        'browser-detect' => \hisorange\BrowserDetect\Parser::class,
         'cache' => \Illuminate\Cache\CacheManager::class,
         'cache.store' => \Illuminate\Cache\Repository::class,
         'command.auth.resets.clear' => \Illuminate\Auth\Console\ClearResetsCommand::class,
@@ -1178,6 +1184,7 @@ namespace PHPSTORM_META {
         'auth.password' => \Illuminate\Auth\Passwords\PasswordBrokerManager::class,
         'auth.password.broker' => \Illuminate\Auth\Passwords\PasswordBroker::class,
         'blade.compiler' => \Illuminate\View\Compilers\BladeCompiler::class,
+        'browser-detect' => \hisorange\BrowserDetect\Parser::class,
         'cache' => \Illuminate\Cache\CacheManager::class,
         'cache.store' => \Illuminate\Cache\Repository::class,
         'command.auth.resets.clear' => \Illuminate\Auth\Console\ClearResetsCommand::class,
@@ -1363,6 +1370,7 @@ namespace PHPSTORM_META {
         'auth.password' => \Illuminate\Auth\Passwords\PasswordBrokerManager::class,
         'auth.password.broker' => \Illuminate\Auth\Passwords\PasswordBroker::class,
         'blade.compiler' => \Illuminate\View\Compilers\BladeCompiler::class,
+        'browser-detect' => \hisorange\BrowserDetect\Parser::class,
         'cache' => \Illuminate\Cache\CacheManager::class,
         'cache.store' => \Illuminate\Cache\Repository::class,
         'command.auth.resets.clear' => \Illuminate\Auth\Console\ClearResetsCommand::class,

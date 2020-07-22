@@ -56,6 +56,8 @@ use Illuminate\Support\Facades\Hash;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\PasswordReset[] $passwordResets
  * @property-read int|null $password_resets_count
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereAvatarPreviewImageId($value)
+ * @property string|null $selected_locale Выбранный язык
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereSelectedLocale($value)
  */
 class User extends Authenticatable
 {

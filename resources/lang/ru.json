@@ -168,5 +168,8 @@
     "Select language": "Выбрать язык",
     "Contacts": "Контакты",
     "The user with this email address is already registered with the mailbox.": "Пользователь с таким почтовым ящиком уже зарегистрирован.",
-    "Please log in or restore your password": "Пожалуйста, войдите в свой аккаунт или восстановите пароль"
+    "Please log in or restore your password": "Пожалуйста, войдите в свой аккаунт или восстановите пароль",
+    "Install extension for Firefox": "Установить расширение для FireFox",
+    "Install extension for Opera": "Установить расширение для Opera",
+    "Install extension for Chrome": "Установить расширение для Chrome"
 }
