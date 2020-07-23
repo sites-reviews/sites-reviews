@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-
+/*
         $schedule->command('site:update_page_waiting')
             ->everyMinute()
             ->withoutOverlapping(2);
@@ -33,10 +33,10 @@ class Kernel extends ConsoleKernel
         $schedule->command('site:update_preview_waiting')
             ->everyMinute()
             ->withoutOverlapping(2);
-
+*/
         $schedule->command('sitemap:create')
             ->daily();
-
+/*
         $schedule->command('site:possible_handle')
             ->everyMinute()
             ->withoutOverlapping(5);
@@ -44,6 +44,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('site_page:search_for_new_domains')
             ->everyMinute()
             ->withoutOverlapping(10);
+        */
     }
 
     /**
