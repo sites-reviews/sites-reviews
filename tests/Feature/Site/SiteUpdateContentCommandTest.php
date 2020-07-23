@@ -6,6 +6,11 @@ use App\Review;
 use App\Service\DNS;
 use App\Service\UrlContent;
 use App\Site;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
@@ -19,7 +24,7 @@ class SiteUpdateContentCommandTest extends TestCase
      *
      * @return void
      */
-    public function testUpdateSuccessfully()
+    public function testUpdateSuccessfullyGetEncodingFromHeader()
     {
         $site = factory(Site::class)
             ->create();
@@ -27,12 +32,66 @@ class SiteUpdateContentCommandTest extends TestCase
         $title = $this->faker->realText(100);
         $description = $this->faker->realText(300);
 
-        $html = $this->faker->realText(300);
+        $html = <<<EOF
+<html>
+<head>
+<meta charset="windows-1252" />
+</head>
+<body>
+привет
+</body>
+</html>
+EOF;
 
-        $this->mock(UrlContent::class, function ($mock) use ($html) {
-            $mock->shouldReceive('getContent')
+        $response = new Response(200, [
+            'Content-Type' => 'text/html; charset=windows-1251'
+        ], iconv('utf-8', 'windows-1251', $html));
+
+        $this->mock(Client::class, function ($mock) use ($response) {
+            $mock->shouldReceive('request')
                 ->once()
-                ->andReturn($html);
+                ->andReturn($response);
+        });
+
+        $this->artisan('site:update_content', ['site_id' => $site->id])
+            ->expectsOutput(__('Site content was updated successfully'))
+            ->assertExitCode(1);
+
+        $site->refresh();
+
+        $this->assertEquals($html, $site->page->content);
+    }
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testUpdateSuccessfullyGetEncodingFromHtml()
+    {
+        $site = factory(Site::class)
+            ->create();
+
+        $title = $this->faker->realText(100);
+        $description = $this->faker->realText(300);
+
+        $html = <<<EOF
+<html>
+<head>
+<meta charset="windows-1251" />
+</head>
+<body>
+привет
+</body>
+</html>
+EOF;
+
+        $response = new Response(200, [], iconv('utf-8', 'windows-1251', $html));
+
+        $this->mock(Client::class, function ($mock) use ($response) {
+            $mock->shouldReceive('request')
+                ->once()
+                ->andReturn($response);
         });
 
         $this->artisan('site:update_content', ['site_id' => $site->id])
@@ -57,10 +116,10 @@ class SiteUpdateContentCommandTest extends TestCase
                 'number_of_attempts_update_the_page' => 0
             ]);
 
-        $this->mock(UrlContent::class, function ($mock) {
-            $mock->shouldReceive('getContent')
+        $this->mock(Client::class, function ($mock) {
+            $mock->shouldReceive('request')
                 ->once()
-                ->andThrow(\Exception::class);
+                ->andThrow(new ConnectException('123', new Request('get', '')));
         });
 
         $this->artisan('site:update_content', ['site_id' => $site->id])
@@ -88,10 +147,10 @@ class SiteUpdateContentCommandTest extends TestCase
 
         $this->assertEquals(2, $site->number_of_attempts_update_the_page);
 
-        $this->mock(UrlContent::class, function ($mock) {
-            $mock->shouldReceive('getContent')
+        $this->mock(Client::class, function ($mock) {
+            $mock->shouldReceive('request')
                 ->once()
-                ->andThrow(\Exception::class);
+                ->andThrow(new ConnectException('123', new Request('get', '')));
         });
 
         $this->artisan('site:update_content', ['site_id' => $site->id])

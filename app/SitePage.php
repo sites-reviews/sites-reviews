@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\SitePage whereSiteId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\SitePage whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string|null $search_for_new_domains_is_completed_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\SitePage whereSearchForNewDomainsIsCompletedAt($value)
  */
 class SitePage extends Model
 {

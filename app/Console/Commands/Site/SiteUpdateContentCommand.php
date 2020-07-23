@@ -5,10 +5,13 @@ namespace App\Console\Commands\Site;
 use App\Image;
 use App\Service\UrlContent;
 use App\Site;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Litlife\Url\Url;
 use Spatie\Browsershot\Browsershot;
+use Symfony\Component\DomCrawler\Crawler;
 
 class SiteUpdateContentCommand extends Command
 {
@@ -41,15 +44,43 @@ class SiteUpdateContentCommand extends Command
     /**
      * Execute the console command.
      *
-     * @param UrlContent $urlContent
+     * @param Client $client
      * @return mixed
      */
-    public function handle(UrlContent $urlContent)
+    public function handle(Client $client)
     {
         $this->site = Site::findOrFail($this->argument('site_id'));
 
         try {
-            $content = $urlContent->getContent($this->site->getUrl());
+            $response = $this->getResponse($client, $this->site->getUrl());
+
+            $headers = $response->getHeaders();
+
+            if (!empty($headers['Content-Type']))
+            {
+                if (is_array($headers['Content-Type']))
+                    $header = pos($headers['Content-Type']);
+                else
+                    $header = $headers['Content-Type'];
+
+                $encoding = $this->parseEncodingFromHeader($header);
+            }
+
+            $content = $response->getBody()
+                ->getContents();
+
+            if (empty($encoding))
+            {
+                $encoding = $this->parseEncodingFromHtml($content);
+            }
+
+            if ($encoding != 'utf-8')
+            {
+                if (!empty($encoding))
+                {
+                    $content = $this->convertToUtf8Encoding($content, $encoding);
+                }
+            }
 
             $this->site->page->content = $content;
             $this->site->updateDescriptionFromPage();
@@ -62,6 +93,8 @@ class SiteUpdateContentCommand extends Command
 
         } catch (\Exception $exception) {
 
+            report($exception);
+
             $this->site->number_of_attempts_update_the_page++;
 
             if ($this->site->number_of_attempts_update_the_page >= 3)
@@ -73,5 +106,71 @@ class SiteUpdateContentCommand extends Command
 
             return false;
         }
+    }
+
+    public function getResponse(Client $client, $url) : \Psr\Http\Message\ResponseInterface
+    {
+        $headers = [
+            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.170 Safari/537.36',
+            'Referer' => (string)Url::fromString($url)->withPath('/')
+        ];
+
+        $response = $client->request('GET', (string)$url, [
+            'allow_redirects' => [
+                'max' => 5,             // allow at most 10 redirects.
+                'strict' => false,      // use "strict" RFC compliant redirects.
+                'referer' => true,      // add a Referer header
+            ],
+            'connect_timeout' => 15,
+            'read_timeout' => 15,
+            'headers' => $headers,
+            'timeout' => 15
+        ]);
+
+        return $response;
+    }
+
+    public function parseEncodingFromHeader(string $headerStr)
+    {
+        if (preg_match('/charset=([A-z0-9\-]*)/iu', $headerStr, $matches))
+        {
+            $encoding = $matches[1];
+        }
+
+        $encoding = mb_strtolower($encoding);
+
+        if (!empty($encoding))
+            return $encoding;
+        else
+            return false;
+    }
+
+    public function parseEncodingFromHtml($html)
+    {
+        $crawler = new Crawler($html);
+
+        $result = $crawler
+            ->filter('head > meta[charset]')
+            ->first()
+            ->extract(['charset']);
+
+        if (!empty($result))
+            $encoding = pos($result);
+
+        if (!empty($encoding))
+        {
+            $encoding = trim($encoding);
+            $encoding = mb_strtolower($encoding);
+            return $encoding;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function convertToUtf8Encoding($content, $encoding) :string
+    {
+        return (string)mb_convert_encoding($content, 'utf-8', $encoding);
     }
 }
