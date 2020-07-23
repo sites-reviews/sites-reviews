@@ -36,6 +36,10 @@ class SitePage extends Model
         'content' => ''
     ];
 
+    public $timestamps = [
+        'search_for_new_domains_is_completed_at'
+    ];
+
     public function site()
     {
         return $this->belongsTo('App\Site', 'site_id', 'id');
