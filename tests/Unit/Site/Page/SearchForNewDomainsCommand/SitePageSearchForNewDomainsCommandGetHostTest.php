@@ -59,4 +59,11 @@ class SitePageSearchForNewDomainsCommandGetHostTest extends \PHPUnit\Framework\T
 
         $this->assertEquals(false, $command->getHost('test'));
     }
+
+    public function test8()
+    {
+        $command = new SitePageSearchForNewDomainsCommand();
+
+        $this->assertEquals(false, $command->getHost('https://1.1.1.1/test'));
+    }
 }

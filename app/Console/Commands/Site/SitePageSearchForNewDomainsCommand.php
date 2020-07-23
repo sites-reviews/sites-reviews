@@ -122,6 +122,12 @@ class SitePageSearchForNewDomainsCommand extends Command
                 $host = $matches[1];
             }
 
+            if (preg_match('/^([1-9]+)\.([1-9]+)\.([1-9]+)\.([1-9]+)$/iu', $host))
+                return false;
+
+            if (inet_pton($host))
+                return false;
+
             return trim($host);
         }
 
