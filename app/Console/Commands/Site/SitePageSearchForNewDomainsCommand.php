@@ -128,6 +128,9 @@ class SitePageSearchForNewDomainsCommand extends Command
             if (inet_pton($host))
                 return false;
 
+            if (substr_count($host, '.') > 1)
+                return false;
+
             return trim($host);
         }
 
