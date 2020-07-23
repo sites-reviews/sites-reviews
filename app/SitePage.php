@@ -47,6 +47,7 @@ class SitePage extends Model
 
     public function setContentAttribute($value)
     {
+
         $value = trim($value);
 
         if (preg_match('/^(?:[0-9]+)\,(?:[0-9]+)\ (?:[A-z]{1})B\ \((?:[0-9]+)\,(?:[0-9]+)\ (?:[A-z]{1})B\ loaded\)(.*)/iu', $value, $matches))
