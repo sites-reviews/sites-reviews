@@ -28,6 +28,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         if (App::isProduction())
         {
+            /*
             $schedule->command('site:update_page_waiting')
                 ->everyMinute()
                 ->withoutOverlapping(2);
@@ -43,6 +44,7 @@ class Kernel extends ConsoleKernel
             $schedule->command('site_page:search_for_new_domains')
                 ->everyMinute()
                 ->withoutOverlapping(10);
+            */
         }
 
         $schedule->command('sitemap:create')
