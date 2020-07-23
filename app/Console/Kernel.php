@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\App;
 
 class Kernel extends ConsoleKernel
 {
@@ -25,26 +26,27 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-/*
-        $schedule->command('site:update_page_waiting')
-            ->everyMinute()
-            ->withoutOverlapping(2);
+        if (App::isProduction())
+        {
+            $schedule->command('site:update_page_waiting')
+                ->everyMinute()
+                ->withoutOverlapping(2);
 
-        $schedule->command('site:update_preview_waiting')
-            ->everyMinute()
-            ->withoutOverlapping(2);
-*/
+            $schedule->command('site:update_preview_waiting')
+                ->everyMinute()
+                ->withoutOverlapping(2);
+
+            $schedule->command('site:possible_handle')
+                ->everyMinute()
+                ->withoutOverlapping(5);
+
+            $schedule->command('site_page:search_for_new_domains')
+                ->everyMinute()
+                ->withoutOverlapping(10);
+        }
+
         $schedule->command('sitemap:create')
             ->daily();
-/*
-        $schedule->command('site:possible_handle')
-            ->everyMinute()
-            ->withoutOverlapping(5);
-
-        $schedule->command('site_page:search_for_new_domains')
-            ->everyMinute()
-            ->withoutOverlapping(10);
-        */
     }
 
     /**

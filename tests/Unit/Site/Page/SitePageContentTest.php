@@ -43,4 +43,12 @@ class SitePageContentTest extends TestCase
 
         $this->assertEquals('      ', $page->content);
     }
+
+    public function testSetGetString()
+    {
+        $page = new SitePage();
+        $page->content = 'привет';
+
+        $this->assertEquals('привет', $page->content);
+    }
 }

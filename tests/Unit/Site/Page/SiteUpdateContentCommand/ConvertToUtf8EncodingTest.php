@@ -22,6 +22,7 @@ class ConvertToUtf8EncodingTest extends TestCase
 <head>
 <title>название</title>
 <meta charset="windows-1251" />
+<meta name="test" content="description" />
 </head>
 <body>
 содержание
@@ -36,7 +37,8 @@ EOF;
 <html>
 <head>
 <title>название</title>
-<meta charset="windows-1251" />
+
+<meta name="test" content="description" />
 </head>
 <body>
 содержание

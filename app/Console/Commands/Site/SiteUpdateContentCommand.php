@@ -171,6 +171,10 @@ class SiteUpdateContentCommand extends Command
 
     public function convertToUtf8Encoding($content, $encoding) :string
     {
-        return (string)mb_convert_encoding($content, 'utf-8', $encoding);
+        $content = mb_convert_encoding($content, 'utf-8', $encoding);
+
+        $content = preg_replace('/\<meta.*?charset.*?\>/iu', '', $content);
+
+        return (string)$content;
     }
 }

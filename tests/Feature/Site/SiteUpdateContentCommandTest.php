@@ -32,7 +32,7 @@ class SiteUpdateContentCommandTest extends TestCase
         $title = $this->faker->realText(100);
         $description = $this->faker->realText(300);
 
-        $html = <<<EOF
+        $input = <<<EOF
 <html>
 <head>
 <meta charset="windows-1252" />
@@ -45,7 +45,7 @@ EOF;
 
         $response = new Response(200, [
             'Content-Type' => 'text/html; charset=windows-1251'
-        ], iconv('utf-8', 'windows-1251', $html));
+        ], iconv('utf-8', 'windows-1251', $input));
 
         $this->mock(Client::class, function ($mock) use ($response) {
             $mock->shouldReceive('request')
@@ -59,7 +59,18 @@ EOF;
 
         $site->refresh();
 
-        $this->assertEquals($html, $site->page->content);
+        $output = <<<EOF
+<html>
+<head>
+
+</head>
+<body>
+привет
+</body>
+</html>
+EOF;
+
+        $this->assertEquals($output, $site->page->content);
     }
 
     /**
@@ -100,7 +111,18 @@ EOF;
 
         $site->refresh();
 
-        $this->assertEquals($html, $site->page->content);
+        $output = <<<EOF
+<html>
+<head>
+
+</head>
+<body>
+привет
+</body>
+</html>
+EOF;
+
+        $this->assertEquals($output, $site->page->content);
     }
 
     /**

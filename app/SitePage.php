@@ -74,6 +74,7 @@ class SitePage extends Model
         {
             $this->dom = new \DOMDocument();
             @$this->dom->loadHTML('<?xml encoding="utf-8" ?>'.$this->content);
+            $this->dom->encoding = 'utf-8';
         }
 
         return $this->dom;
