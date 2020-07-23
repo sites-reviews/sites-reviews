@@ -28,23 +28,21 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         if (App::isProduction())
         {
-            /*
             $schedule->command('site:update_page_waiting')
-                ->everyMinute()
-                ->withoutOverlapping(2);
+                ->everyFiveMinutes()
+                ->withoutOverlapping();
 
             $schedule->command('site:update_preview_waiting')
-                ->everyMinute()
-                ->withoutOverlapping(2);
+                ->everyFiveMinutes()
+                ->withoutOverlapping();
 
             $schedule->command('site:possible_handle')
-                ->everyMinute()
-                ->withoutOverlapping(5);
+                ->everyFiveMinutes()
+                ->withoutOverlapping();
 
             $schedule->command('site_page:search_for_new_domains')
-                ->everyMinute()
-                ->withoutOverlapping(10);
-            */
+                ->everyTenMinutes()
+                ->withoutOverlapping();
         }
 
         $schedule->command('sitemap:create')
