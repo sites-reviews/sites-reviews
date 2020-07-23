@@ -47,6 +47,7 @@ class SitePage extends Model
 
     public function setContentAttribute($value)
     {
+        mb_substitute_character(0x20);
 
         $value = trim($value);
 

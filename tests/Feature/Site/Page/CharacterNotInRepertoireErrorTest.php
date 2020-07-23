@@ -27,6 +27,6 @@ class CharacterNotInRepertoireErrorTest extends TestCase
         $page->content = $bytes;
         $page->save();
 
-        $this->assertEquals('?..', $page->content);
+        $this->assertEquals(' ..', $page->content);
     }
 }

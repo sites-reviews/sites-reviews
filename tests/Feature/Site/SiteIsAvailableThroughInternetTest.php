@@ -27,7 +27,7 @@ class SiteIsAvailableThroughInternetTest extends TestCase
     public function testOk()
     {
         $site = factory(Site::class)
-            ->create(['domain' => 'example.com']);
+            ->create();
 
         $mock = new MockHandler([
             new Response(200, ['X-Foo' => 'Bar'], 'Hello, World')

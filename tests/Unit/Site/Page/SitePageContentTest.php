@@ -41,6 +41,6 @@ class SitePageContentTest extends TestCase
         $page = new SitePage();
         $page->content = iconv('utf-8', 'windows-1251', 'привет');
 
-        $this->assertEquals('??????', $page->content);
+        $this->assertEquals('      ', $page->content);
     }
 }
