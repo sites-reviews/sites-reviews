@@ -254,7 +254,7 @@ class SiteController extends Controller
                 report($exception);
 
                 return redirect()
-                    ->route('sites.search', ['domain' => $domain])
+                    ->route('sites.search', ['term' => $domain])
                     ->withInput()
                     ->withErrors(['error' => __("Error adding a site")], 'create_site');
             } catch (ConnectException $exception) {
@@ -264,7 +264,7 @@ class SiteController extends Controller
                 $context = $exception->getHandlerContext();
 
                 return redirect()
-                    ->route('sites.search', ['domain' => $domain])
+                    ->route('sites.search', ['term' => $domain])
                     ->withInput()
                     ->withErrors(['error' => __("Error adding a site")], 'create_site');
 
@@ -273,7 +273,7 @@ class SiteController extends Controller
                 report($exception);
 
                 return redirect()
-                    ->route('sites.search', ['domain' => $domain])
+                    ->route('sites.search', ['term' => $domain])
                     ->withInput()
                     ->withErrors(['error' => __("Error adding a site")], 'create_site');
             }

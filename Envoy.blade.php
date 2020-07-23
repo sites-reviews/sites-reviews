@@ -6,7 +6,6 @@ php artisan down --message="Сейчас мы обновляем движок с
 php artisan optimize:clear
 git pull origin master
 php -d memory_limit=-1 composer.phar install --no-dev
-php artisan down --message="Проходит обновление базы данных" --allow=127.0.0.1
 php artisan migrate --force
 php artisan optimize
 php artisan up
@@ -19,7 +18,6 @@ php artisan optimize:clear
 git reset --hard
 git pull origin master
 php -d memory_limit=-1 composer.phar install --no-dev
-php artisan down --message="Проходит обновление базы данных" --allow=127.0.0.1
 php artisan migrate --force
 php artisan optimize
 php artisan up
