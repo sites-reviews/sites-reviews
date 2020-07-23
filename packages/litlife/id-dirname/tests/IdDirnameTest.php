@@ -112,4 +112,16 @@ class IdDirnameTest extends TestCase
 			$this->assertEquals($number, $class->decode($class->encode($number)));
 		}
 	}
+
+	public function testEncodeDecodeRandom()
+    {
+        for($a = 0; $a < 100; $a++)
+        {
+            $class = new IdDirname(rand(1, 10));
+
+            $number = rand(1, 10000000);
+
+            $this->assertEquals($number, $class->decode($class->encode($number)));
+        }
+    }
 }

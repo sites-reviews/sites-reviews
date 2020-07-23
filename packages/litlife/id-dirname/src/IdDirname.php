@@ -85,7 +85,7 @@ class IdDirname
 			$integer = $integer - ($a * bcpow($base, $t));
 		}
 
-		$out = mb_strrev($out); // reverse
+		$out = strrev($out); // reverse
 
 		return $out;
 	}
@@ -94,7 +94,7 @@ class IdDirname
 	{
 		$base = mb_strlen($this->dictionary);
 
-		$code = mb_strrev($code);
+		$code = strrev($code);
 		$out = 0;
 		$length = mb_strlen($code) - 1;
 
