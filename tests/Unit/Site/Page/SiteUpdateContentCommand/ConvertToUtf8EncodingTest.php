@@ -100,25 +100,25 @@ EOF;
      *
      * @return void
      */
-    public function testConvertWindows1253Encoding()
+    public function testConvertWindows1254Encoding()
     {
         $input = <<<EOF
 <!DOCTYPE html>
 <html>
 <head>
-<title>δοκιμή</title>
+<title>Merhaba nasılsın</title>
 </head>
 <body>
 </body>
 </html>
 EOF;
-        $input = iconv('utf-8', 'windows-1253', $input);
+        $input = iconv('utf-8', 'windows-1254', $input);
 
         $expected = <<<EOF
 <!DOCTYPE html>
 <html>
 <head>
-<title>δοκιμή</title>
+<title>Merhaba nasılsın</title>
 </head>
 <body>
 </body>
@@ -126,9 +126,7 @@ EOF;
 EOF;
 
         $command = new SiteUpdateContentCommand();
-        $output = $command->convertToUtf8Encoding($input, 'windows-1253');
-
-        dump($output);
+        $output = $command->convertToUtf8Encoding($input, 'windows-1254');
 
         $this->assertEquals($expected, $output);
     }

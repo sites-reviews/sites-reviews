@@ -71,7 +71,7 @@ EOF;
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=GB2312" />
+<meta http-equiv="Content-Type" content="text/html; CHARSET=GB2312" />
 <title>название</title>
 </head>
 </html>
@@ -93,7 +93,7 @@ EOF;
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html;" />
+<meta http-equiv="Content-type" CONTENT="text/html;" />
 <title>название</title>
 </head>
 </html>
@@ -118,7 +118,7 @@ EOF;
 <html>
 <head>
 <meta http-equiv="Cache-Control" content="no-siteapp" />
-<meta http-equiv="Content-Type" content="text/html; charset=gbk"/>
+<META htTP-equiv="content-Type" Content="text/html; charset=gbk"/>
 <title>название</title>
 </head>
 </html>

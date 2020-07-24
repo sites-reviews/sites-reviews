@@ -35,7 +35,6 @@ class SiteUpdateContentCommandTest extends TestCase
         $input = <<<EOF
 <html>
 <head>
-<meta charset="windows-1252" />
 </head>
 <body>
 привет
@@ -62,7 +61,6 @@ EOF;
         $output = <<<EOF
 <html>
 <head>
-
 </head>
 <body>
 привет
@@ -184,6 +182,61 @@ EOF;
         $this->assertEquals(3, $site->number_of_attempts_update_the_page);
         $this->assertFalse($site->update_the_page);
     }
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testHtmlEncodingIsPriorityInstedHeader()
+    {
+        $site = factory(Site::class)
+            ->create();
+
+        $title = $this->faker->realText(100);
+        $description = $this->faker->realText(300);
+
+        $input = <<<EOF
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html;charset=iso-8859-1">
+</head>
+<body>
+&#160;&#160;&#160;
+</body>
+</html>
+EOF;
+
+        $response = new Response(200, [
+            'Content-Type' => 'text/html; charset=UTF-8'
+        ], iconv('utf-8','iso-8859-1', $input));
+
+        $this->mock(Client::class, function ($mock) use ($response) {
+            $mock->shouldReceive('request')
+                ->once()
+                ->andReturn($response);
+        });
+
+        $this->artisan('site:update_content', ['site_id' => $site->id])
+            ->expectsOutput(__('Site content was updated successfully'))
+            ->assertExitCode(1);
+
+        $site->refresh();
+
+        $output = <<<EOF
+<html>
+<head>
+
+</head>
+<body>
+&#160;&#160;&#160;
+</body>
+</html>
+EOF;
+
+        $this->assertEquals($output, $site->page->content);
+    }
+
 /*
     public function test()
     {

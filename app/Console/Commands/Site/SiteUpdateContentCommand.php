@@ -56,24 +56,27 @@ class SiteUpdateContentCommand extends Command
         try {
             $response = $this->getResponse($client, $this->site->getUrl());
 
-            $headers = $response->getHeaders();
-
-            if (!empty($headers['Content-Type']))
-            {
-                if (is_array($headers['Content-Type']))
-                    $header = pos($headers['Content-Type']);
-                else
-                    $header = $headers['Content-Type'];
-
-                $encoding = $this->parseEncodingFromHeader($header);
-            }
-
             $content = $response->getBody()
                 ->getContents();
 
             if (empty($encoding))
             {
                 $encoding = $this->parseEncodingFromHtml($content);
+            }
+
+            if (empty($encoding))
+            {
+                $headers = $response->getHeaders();
+
+                if (!empty($headers['Content-Type']))
+                {
+                    if (is_array($headers['Content-Type']))
+                        $header = pos($headers['Content-Type']);
+                    else
+                        $header = $headers['Content-Type'];
+
+                    $encoding = $this->parseEncodingFromHeader($header);
+                }
             }
 
             if ($encoding != 'utf-8')
@@ -171,16 +174,20 @@ class SiteUpdateContentCommand extends Command
 
         if (empty($encoding))
         {
-            $result = $crawler
-                ->filter('head > meta[http-equiv="Content-Type"]')
-                ->first()
-                ->extract(['content']);
+            $results = $crawler
+                ->filter('head > meta[http-equiv]');
 
-            if (!empty($result))
+            foreach ($results as $node)
             {
-                if (preg_match('/charset=([A-z0-9\-]*)/iu', pos($result), $matches))
+                if (mb_strtolower($node->getAttribute('http-equiv')) == 'content-type')
                 {
-                    $encoding = $matches[1];
+                    if ($node->hasAttribute('content'))
+                    {
+                        if (preg_match('/charset=([A-z0-9\-]*)/iu', $node->getAttribute('content'), $matches))
+                        {
+                            $encoding = $matches[1];
+                        }
+                    }
                 }
             }
         }
