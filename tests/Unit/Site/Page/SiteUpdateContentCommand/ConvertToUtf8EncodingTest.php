@@ -94,4 +94,40 @@ EOF;
 
         $this->assertEquals($expectOutput, $output);
     }
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testConvertWindows1253Encoding()
+    {
+        $input = <<<EOF
+<!DOCTYPE html>
+<html>
+<head>
+<title>χρηστών</title>
+</head>
+<body>
+</body>
+</html>
+EOF;
+        $input = iconv('utf-8', 'windows-1253', $input);
+
+        $expectOutput = <<<EOF
+<!DOCTYPE html>
+<html>
+<head>
+<title>χρηστών</title>
+</head>
+<body>
+</body>
+</html>
+EOF;
+
+        $command = new SiteUpdateContentCommand();
+        $output = $command->convertToUtf8Encoding($input, 'windows-1253');
+
+        $this->assertEquals($expectOutput, $output);
+    }
 }

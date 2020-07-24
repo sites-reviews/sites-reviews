@@ -8,6 +8,7 @@ use App\Site;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Litlife\Url\Url;
@@ -94,9 +95,16 @@ class SiteUpdateContentCommand extends Command
 
         } catch (\Exception $exception) {
 
-            Log::warning('Error when update content of site ID: '.$this->site->id.' '.$this->site->domain);
+            if (App::isLocal())
+            {
+                throw $exception;
+            }
+            else
+            {
+                Log::warning('Error when update content of site ID: '.$this->site->id.' '.$this->site->domain);
 
-            report($exception);
+                report($exception);
+            }
 
             $this->site->number_of_attempts_update_the_page++;
 
@@ -191,7 +199,14 @@ class SiteUpdateContentCommand extends Command
 
     public function convertToUtf8Encoding($content, $encoding) :string
     {
-        $content = mb_convert_encoding($content, 'utf-8', $encoding);
+        try {
+            $content = mb_convert_encoding($content, 'utf-8', $encoding);
+        } catch (\Exception $exception) {
+            if ($exception->getCode() == 2)
+            {
+                $content = iconv($encoding, 'utf-8', $content);
+            }
+        }
 
         $content = preg_replace('/\<meta.*?charset.*?\>/iu', '', $content);
 
