@@ -11,6 +11,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        URL::defaults(['locale' => config('app.locale')]);
+
         $this->call(SiteSeeder::class);
 
         $user = factory(\App\User::class)

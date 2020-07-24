@@ -9,6 +9,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Litlife\Url\Url;
 use Spatie\Browsershot\Browsershot;
 use Symfony\Component\DomCrawler\Crawler;
@@ -92,6 +93,8 @@ class SiteUpdateContentCommand extends Command
             return true;
 
         } catch (\Exception $exception) {
+
+            Log::warning('Error when update content of site ID: '.$this->site->id.' '.$this->site->domain);
 
             report($exception);
 

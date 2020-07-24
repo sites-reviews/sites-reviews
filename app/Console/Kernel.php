@@ -20,22 +20,22 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param \Illuminate\Console\Scheduling\Schedule $schedule
      * @return void
      */
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        if (App::isProduction())
-        {
-            $schedule->command('site:update_page_waiting')
-                ->everyFiveMinutes()
-                ->withoutOverlapping();
 
-            $schedule->command('site:update_preview_waiting')
-                ->everyFiveMinutes()
-                ->withoutOverlapping();
+        $schedule->command('site:update_page_waiting')
+            ->everyFiveMinutes()
+            ->withoutOverlapping();
 
+        $schedule->command('site:update_preview_waiting')
+            ->everyFiveMinutes()
+            ->withoutOverlapping();
+
+        if (App::isProduction()) {
             $schedule->command('site:possible_handle')
                 ->everyFiveMinutes()
                 ->withoutOverlapping();
@@ -56,7 +56,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }
