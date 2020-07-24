@@ -62,7 +62,18 @@ class SitePage extends Model
 
         if (!$result)
         {
-            $value = mb_convert_encoding($value, 'utf-8', 'auto');
+            try {
+                $value = mb_convert_encoding($value, 'utf-8', 'auto');
+            } catch (\Exception $exception) {
+                if ($exception->getCode() == 2)
+                {
+                    $value = utf8_encode($value);
+                }
+                else
+                {
+                    throw $exception;
+                }
+            }
         }
 
         $this->attributes['content'] = $value;

@@ -51,4 +51,12 @@ class SitePageContentTest extends TestCase
 
         $this->assertEquals('привет', $page->content);
     }
+
+    public function testForceUtf8EncodeIfAutoConvertEncodingIsFail()
+    {
+        $page = new SitePage();
+        $page->content = iconv('UTF-8', 'windows-1255', 'היי, מה שלומך?').' hello';
+
+        $this->assertEquals('   ,         ? hello', $page->content);
+    }
 }
