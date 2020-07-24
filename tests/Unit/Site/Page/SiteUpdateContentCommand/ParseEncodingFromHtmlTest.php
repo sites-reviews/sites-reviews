@@ -105,4 +105,27 @@ EOF;
 
         $this->assertEquals(false, $command->parseEncodingFromHtml($input));
     }
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testReturnGbkEncoding()
+    {
+        $input = <<<EOF
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Content-Type" content="text/html; charset=gbk"/>
+<title>название</title>
+</head>
+</html>
+EOF;
+
+        $command = new SiteUpdateContentCommand();
+
+        $this->assertEquals('gbk', $command->parseEncodingFromHtml($input));
+    }
 }

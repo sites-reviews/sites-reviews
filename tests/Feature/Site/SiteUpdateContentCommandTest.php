@@ -184,14 +184,15 @@ EOF;
         $this->assertEquals(3, $site->number_of_attempts_update_the_page);
         $this->assertFalse($site->update_the_page);
     }
-
+/*
     public function test()
     {
         $site = factory(Site::class)
-            ->create(['domain' => 'tjzngb588.com']);
+            ->create(['domain' => 'szsoufun.cn']);
 
         $this->artisan('site:update_content', ['site_id' => $site->id])
             ->expectsOutput(__('Site content was updated successfully'))
             ->assertExitCode(1);
     }
+    */
 }

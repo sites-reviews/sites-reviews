@@ -164,7 +164,7 @@ class SiteUpdateContentCommand extends Command
         if (empty($encoding))
         {
             $result = $crawler
-                ->filter('head > meta[http-equiv]')
+                ->filter('head > meta[http-equiv="Content-Type"]')
                 ->first()
                 ->extract(['content']);
 
