@@ -32,7 +32,7 @@ EOF;
 
         $input = iconv('utf-8', 'windows-1251', $input);
 
-        $expectOutput = <<<EOF
+        $expected = <<<EOF
 <!DOCTYPE html>
 <html>
 <head>
@@ -49,7 +49,7 @@ EOF;
         $command = new SiteUpdateContentCommand();
         $output = $command->convertToUtf8Encoding($input, 'windows-1251');
 
-        $this->assertEquals($expectOutput, $output);
+        $this->assertEquals($expected, $output);
     }
 
     /**
@@ -75,7 +75,7 @@ EOF;
 
         $input = iconv('utf-8', 'gb2312', $input);
 
-        $expectOutput = <<<EOF
+        $expected = <<<EOF
 <!DOCTYPE html>
 <html>
 <head>
@@ -92,7 +92,7 @@ EOF;
         $command = new SiteUpdateContentCommand();
         $output = $command->convertToUtf8Encoding($input, 'gb2312');
 
-        $this->assertEquals($expectOutput, $output);
+        $this->assertEquals($expected, $output);
     }
 
     /**
@@ -106,7 +106,7 @@ EOF;
 <!DOCTYPE html>
 <html>
 <head>
-<title>χρηστών</title>
+<title>δοκιμή</title>
 </head>
 <body>
 </body>
@@ -114,11 +114,11 @@ EOF;
 EOF;
         $input = iconv('utf-8', 'windows-1253', $input);
 
-        $expectOutput = <<<EOF
+        $expected = <<<EOF
 <!DOCTYPE html>
 <html>
 <head>
-<title>χρηστών</title>
+<title>δοκιμή</title>
 </head>
 <body>
 </body>
@@ -128,6 +128,8 @@ EOF;
         $command = new SiteUpdateContentCommand();
         $output = $command->convertToUtf8Encoding($input, 'windows-1253');
 
-        $this->assertEquals($expectOutput, $output);
+        dump($output);
+
+        $this->assertEquals($expected, $output);
     }
 }

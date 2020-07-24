@@ -52,6 +52,7 @@ class SiteUpdatePreviewCommand extends Command
 
                 $content = $browsershot
                     ->url((string)$this->site->getUrl())
+                    ->timeout(60)
                     ->windowSize(1000, 1000)
                     ->setScreenshotType('jpeg', 100)
                     ->setDelay(5000)
