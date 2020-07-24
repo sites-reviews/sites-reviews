@@ -6,6 +6,7 @@ use App\Image;
 use App\Site;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Litlife\Url\Url;
 use Spatie\Browsershot\Browsershot;
 
@@ -54,6 +55,11 @@ class SiteCreateCommand extends Command
 
         $site = Site::whereDomain($this->url->getHost())
             ->first();
+
+        Log::info('site:create', [
+            'site' => $site,
+            $this->url->getHost()
+        ]);
 
         if (!empty($site)) {
             $this->error(__('The site is already in the database'));
