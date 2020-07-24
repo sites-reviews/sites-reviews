@@ -76,6 +76,8 @@ class SitePage extends Model
             }
         }
 
+        $value = mb_convert_encoding($value, 'utf-8', 'auto');
+
         $this->attributes['content'] = $value;
     }
 
