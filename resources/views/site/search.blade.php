@@ -9,7 +9,7 @@
         @endforeach
 
         @if ($sites->hasPages())
-            {{ $sites->links() }}
+            {{ $sites->appends(['term' => $term])->links() }}
         @endif
 
     @else
