@@ -161,6 +161,22 @@ class SiteUpdateContentCommand extends Command
         if (!empty($result))
             $encoding = pos($result);
 
+        if (empty($encoding))
+        {
+            $result = $crawler
+                ->filter('head > meta[http-equiv]')
+                ->first()
+                ->extract(['content']);
+
+            if (!empty($result))
+            {
+                if (preg_match('/charset=([A-z0-9\-]*)/iu', pos($result), $matches))
+                {
+                    $encoding = $matches[1];
+                }
+            }
+        }
+
         if (!empty($encoding))
         {
             $encoding = trim($encoding);

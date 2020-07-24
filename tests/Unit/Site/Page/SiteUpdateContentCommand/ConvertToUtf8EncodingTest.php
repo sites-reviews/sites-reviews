@@ -51,4 +51,47 @@ EOF;
 
         $this->assertEquals($expectOutput, $output);
     }
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testConvertGb2312Encoding()
+    {
+        $input = <<<EOF
+<!DOCTYPE html>
+<html>
+<head>
+<title>название</title>
+<meta charset="gb2312" />
+<meta name="test" content="description" />
+</head>
+<body>
+содержание
+</body>
+</html>
+EOF;
+
+        $input = iconv('utf-8', 'gb2312', $input);
+
+        $expectOutput = <<<EOF
+<!DOCTYPE html>
+<html>
+<head>
+<title>название</title>
+
+<meta name="test" content="description" />
+</head>
+<body>
+содержание
+</body>
+</html>
+EOF;
+
+        $command = new SiteUpdateContentCommand();
+        $output = $command->convertToUtf8Encoding($input, 'gb2312');
+
+        $this->assertEquals($expectOutput, $output);
+    }
 }

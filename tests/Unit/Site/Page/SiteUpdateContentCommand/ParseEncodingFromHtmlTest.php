@@ -59,4 +59,50 @@ EOF;
 
         $this->assertEquals(false, $command->parseEncodingFromHtml($input));
     }
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testParseFromContentType()
+    {
+        $input = <<<EOF
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GB2312" />
+<title>название</title>
+</head>
+</html>
+EOF;
+
+        $command = new SiteUpdateContentCommand();
+
+        $this->assertEquals('gb2312', $command->parseEncodingFromHtml($input));
+    }
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testReturnFalseIfNoCharset()
+    {
+        $input = <<<EOF
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;" />
+<title>название</title>
+</head>
+</html>
+EOF;
+
+        $input = iconv('utf-8', 'gb2312', $input);
+
+        $command = new SiteUpdateContentCommand();
+
+        $this->assertEquals(false, $command->parseEncodingFromHtml($input));
+    }
 }
