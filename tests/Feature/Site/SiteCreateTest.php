@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Site;
 
+use App\Enums\SiteHowAddedEnum;
 use App\Review;
 use App\Site;
 use GuzzleHttp\Client;
@@ -52,6 +53,7 @@ class SiteCreateTest extends TestCase
         $this->assertEquals(mb_ucfirst($domain), $site->title);
         $this->assertTrue($site->update_the_preview);
         $this->assertTrue($site->update_the_page);
+        $this->assertEquals(SiteHowAddedEnum::Manually, $site->how_added);
 
         $response->assertRedirect(route('sites.show', $site));
     }

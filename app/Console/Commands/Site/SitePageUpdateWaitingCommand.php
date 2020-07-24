@@ -46,6 +46,7 @@ class SitePageUpdateWaitingCommand extends Command
         $this->count = $this->argument('count');
 
         Site::where('update_the_page', true)
+            ->orderManuallyAddedFirst()
             ->chunkById($this->count, function ($sites) {
                 foreach ($sites as $site) {
                     $this->site($site);

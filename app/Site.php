@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Enums\SiteHowAddedEnum;
 use App\Library\StarFullness;
 use App\Traits\UserCreate;
 use Eloquent;
@@ -470,5 +471,17 @@ class Site extends Model
             return true;
         else
             return false;
+    }
+
+    public function scopeOrderManuallyAddedFirst($query)
+    {
+        $qs = 'CASE ';
+        $qs .= 'WHEN "how_added" = '.SiteHowAddedEnum::Manually.' THEN 1 ';
+        $qs .= 'WHEN "how_added" = '.SiteHowAddedEnum::WebExtension.' THEN 2 ';
+        $qs .= 'WHEN "how_added" = '.SiteHowAddedEnum::PagesScan.' THEN 3 ';
+        $qs .= 'ELSE 10 ';
+        $qs .= 'END';
+
+        return $query->orderByRaw($qs);
     }
 }

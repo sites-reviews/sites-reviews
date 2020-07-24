@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\SiteHowAddedEnum;
 use App\Site;
 use Artesaos\SEOTools\Facades\SEOMeta;
 use Artesaos\SEOTools\Facades\SEOTools;
@@ -194,7 +195,8 @@ class SiteController extends Controller
             $query->orWhereDomain($domain);
         }
 
-        $sites = $query->simplePaginate();
+        $sites = $query->orderBy('number_of_reviews', 'asc')
+            ->simplePaginate();
 
         if ($isDomain)
         {
@@ -281,6 +283,7 @@ class SiteController extends Controller
             $site->title = $url->getHost();
             $site->update_the_preview = true;
             $site->update_the_page = true;
+            $site->how_added = SiteHowAddedEnum::Manually;
             $site->save();
 
             return redirect()
