@@ -188,7 +188,7 @@ EOF;
     public function test()
     {
         $site = factory(Site::class)
-            ->create(['domain' => 'szsoufun.cn']);
+            ->create(['domain' => 'dlxqjx.com']);
 
         $this->artisan('site:update_content', ['site_id' => $site->id])
             ->expectsOutput(__('Site content was updated successfully'))
