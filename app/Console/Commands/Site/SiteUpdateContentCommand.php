@@ -137,10 +137,11 @@ class SiteUpdateContentCommand extends Command
             $encoding = $matches[1];
         }
 
-        $encoding = mb_strtolower($encoding);
-
         if (!empty($encoding))
+        {
+            $encoding = mb_strtolower($encoding);
             return $encoding;
+        }
         else
             return false;
     }

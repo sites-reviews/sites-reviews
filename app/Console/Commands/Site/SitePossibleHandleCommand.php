@@ -8,6 +8,7 @@ use App\Site;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Litlife\Url\Url;
 use Spatie\Browsershot\Browsershot;
 
@@ -73,7 +74,7 @@ class SitePossibleHandleCommand extends Command
         }
         catch (\Exception $exception)
         {
-            report($exception);
+            Log::warning($exception->getMessage());
         }
 
         if (!empty($available))

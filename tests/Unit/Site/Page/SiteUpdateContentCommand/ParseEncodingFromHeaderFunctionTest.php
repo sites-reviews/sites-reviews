@@ -34,4 +34,11 @@ class ParseEncodingFromHeaderFunctionTest extends TestCase
 
         $this->assertEquals('windows-1251', $command->parseEncodingFromHeader('text/html; charset=WINdows-1251'));
     }
+
+    public function testParseWithNoEncoding()
+    {
+        $command = new SiteUpdateContentCommand();
+
+        $this->assertEquals(false, $command->parseEncodingFromHeader('text/html;'));
+    }
 }
