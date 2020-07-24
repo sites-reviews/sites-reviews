@@ -56,10 +56,10 @@ class SitePossibleHandleCommand extends Command
         PossibleDomain::query()
             ->unhandeled()
             ->where('id', '>=', $this->latest_id)
-            ->chunkById($this->count, function ($domains) {
-                foreach ($domains as $domain) {
-                    $this->item($domain);
-                }
+            ->limit($this->count)
+            ->get()
+            ->each(function ($domain) {
+                $this->item($domain);
             });
     }
 
@@ -68,17 +68,13 @@ class SitePossibleHandleCommand extends Command
         $site = new Site();
         $site->domain = $possibleDomain->domain;
 
-        try
-        {
+        try {
             $available = $site->isAvailableThroughInternet($this->client);
-        }
-        catch (\Exception $exception)
-        {
+        } catch (\Exception $exception) {
             Log::warning($exception->getMessage());
         }
 
-        if (!empty($available))
-        {
+        if (!empty($available)) {
             $this->call('site:create', ['url' => $site->getUrl()]);
         }
 

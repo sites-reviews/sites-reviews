@@ -50,8 +50,9 @@ class SitePageSearchForNewDomainsCommand extends Command
         SitePage::query()
             ->where('id', '>=', $latestId)
             ->whereNull('search_for_new_domains_is_completed_at')
-            ->chunkById(10, function ($pages) {
-            foreach ($pages as $page) {
+            ->limit($count)
+            ->get()
+            ->each(function ($page) {
                 try {
                     $this->item($page);
                 } catch (\Exception $exception) {
@@ -61,8 +62,7 @@ class SitePageSearchForNewDomainsCommand extends Command
 
                 $page->search_for_new_domains_is_completed_at = now();
                 $page->save();
-            }
-        });
+            });
 
         return true;
     }
@@ -71,14 +71,11 @@ class SitePageSearchForNewDomainsCommand extends Command
     {
         $hosts = [];
 
-        foreach ($page->xpath()->query('//a') as $node)
-        {
-            if ($node->hasAttribute('href'))
-            {
+        foreach ($page->xpath()->query('//a') as $node) {
+            if ($node->hasAttribute('href')) {
                 $href = $node->getAttribute('href');
 
-                if ($host = $this->getHost($href))
-                {
+                if ($host = $this->getHost($href)) {
                     $hosts[] = $host;
                 }
             }
@@ -86,8 +83,7 @@ class SitePageSearchForNewDomainsCommand extends Command
 
         $hosts = array_unique($hosts);
 
-        foreach ($hosts as $host)
-        {
+        foreach ($hosts as $host) {
             $this->host($host);
         }
     }
@@ -115,10 +111,8 @@ class SitePageSearchForNewDomainsCommand extends Command
 
         $host = trim($url->getHost());
 
-        if (preg_match('/\./iu', $host))
-        {
-            if (preg_match('/^(?:www\.)(.*)$/iu', $host, $matches))
-            {
+        if (preg_match('/\./iu', $host)) {
+            if (preg_match('/^(?:www\.)(.*)$/iu', $host, $matches)) {
                 $host = $matches[1];
             }
 

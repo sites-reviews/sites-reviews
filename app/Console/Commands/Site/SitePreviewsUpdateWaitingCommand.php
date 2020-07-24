@@ -47,10 +47,10 @@ class SitePreviewsUpdateWaitingCommand extends Command
 
         Site::where('update_the_preview', true)
             ->orderManuallyAddedFirst()
-            ->chunkById($this->count, function ($sites) {
-                foreach ($sites as $site) {
-                    $this->site($site);
-                }
+            ->limit($this->count)
+            ->get()
+            ->each(function ($site) {
+                $this->site($site);
             });
     }
 
