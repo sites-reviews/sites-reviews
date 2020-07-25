@@ -7,6 +7,7 @@ use App\PossibleDomain;
 use App\Site;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -73,6 +74,9 @@ class SitePossibleHandleCommand extends Command
             $available = $site->isAvailableThroughInternet($this->client);
         } catch (ConnectException $exception) {
 
+        } catch (RequestException $exception) {
+            Log::warning('Request exception '.$site->domain.'');
+            report($exception);
         }
 
         if (!empty($available)) {
