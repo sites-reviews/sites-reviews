@@ -41,6 +41,8 @@
         @endif
     @endforeach
 
+    <script data-ad-client="ca-pub-8879521378582869" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
 </head>
 <body itemscope itemtype="http://schema.org/WebPage">
 <div id="app">
