@@ -120,6 +120,7 @@ Route::prefix('{locale}')
         Route::post('/sites/{site}/review', 'ReviewController@store')->name('reviews.store');
 
         Route::get('/personal_data_processing_agreement', 'OtherController@personalDataProcessingAgreement')->name('personal_data_processing_agreement');
+        Route::get('/privacy/policy', 'OtherController@privacyPolcy')->name('privacy.policy');
 
         Route::get('/auth/{provider}', 'UserSocialAccountController@redirectToProvider')
             ->name('social_accounts.redirect')
@@ -146,4 +147,5 @@ Route::fallback('OtherController@error404')
     ->withoutMiddleware(\App\Http\Middleware\SetLocale::class);
 
 Route::get('/extension/redirect/', 'BrowserExtensionController@redirect')->name('browser.extension.redirect');
+
 

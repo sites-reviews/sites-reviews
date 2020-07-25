@@ -78,6 +78,16 @@ Breadcrumbs::for('users.notifications', function ($trail, $user) {
     $trail->push(__('Notifications'), route('users.show', ['user' => $user]));
 });
 
+Breadcrumbs::for('privacy.policy', function ($trail) {
+    $trail->parent('home');
+    $trail->push(__('Privacy policy'), route('privacy.policy'));
+});
+
+Breadcrumbs::for('personal_data_processing_agreement', function ($trail) {
+    $trail->parent('home');
+    $trail->push(__('Personal data processing agreement'), route('personal_data_processing_agreement'));
+});
+
 Breadcrumbs::macro('pageTitle', function () {
     $title = ($breadcrumb = Breadcrumbs::current()) ? "{$breadcrumb->title} – " : '';
 

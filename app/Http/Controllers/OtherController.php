@@ -108,6 +108,11 @@ class OtherController extends Controller
 
     public function personalDataProcessingAgreement()
     {
-        return view('personal_data_processing_agreement');
+        return view('other.personal_data_processing_agreement');
+    }
+
+    public function privacyPolcy()
+    {
+        return view('other.privacy_policy');
     }
 }

@@ -16,4 +16,10 @@ class OtherTest extends TestCase
         $this->get(route('personal_data_processing_agreement'))
             ->assertOk();
     }
+
+    public function testPrivacyPolicy()
+    {
+        $this->get(route('privacy.policy'))
+            ->assertOk();
+    }
 }

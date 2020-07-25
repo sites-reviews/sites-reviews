@@ -201,56 +201,62 @@
         </main>
 
         <footer class="mt-3 mb-5" style="height:50px;">
+            <div class="container ">
+                @if (\Browser::isFirefox())
+                    <div class="  mb-3 text-center">
+                        <a href="https://addons.mozilla.org/firefox/addon/sites-reviews-com/" class="h4 d-block" rel="nofollow">
+                            <i class="fab fa-firefox-browser"></i> {{ __('Install extension for Firefox') }}
+                        </a>
+                    </div>
+                @endif
 
-            @if (\Browser::isFirefox())
-                <div class="container  mb-3 text-center">
-                    <a href="https://addons.mozilla.org/firefox/addon/sites-reviews-com/" class="h4 d-block" rel="nofollow">
-                        <i class="fab fa-firefox-browser"></i> {{ __('Install extension for Firefox') }}
-                    </a>
-                </div>
-            @endif
+                <div class=" d-flex flex-sm-row flex-column align-items-center">
 
-            <div class="container d-flex flex-sm-row flex-column align-items-center">
+                    <button type="button" class="btn btn-light mr-3" data-toggle="modal" data-target="#selectLanguageModal">
+                        {{ __('Language') }}:
 
-                <button type="button" class="btn btn-light mr-3" data-toggle="modal" data-target="#selectLanguageModal">
-                    {{ __('Language') }}:
+                        <span class="flag-icon flag-icon-{{ config('app.local_flag_map.'.App::getLocale()) }}"></span>
 
-                    <span class="flag-icon flag-icon-{{ config('app.local_flag_map.'.App::getLocale()) }}"></span>
+                        {{ __('app.on_english') }} - {{ __('app.on_origin') }}
+                    </button>
 
-                    {{ __('app.on_english') }} - {{ __('app.on_origin') }}
-                </button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="selectLanguageModal" tabindex="-1" role="dialog" aria-labelledby="selectLanguageModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="selectLanguageModalLabel">{{ __('Select language') }}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
 
-                <!-- Modal -->
-                <div class="modal fade" id="selectLanguageModal" tabindex="-1" role="dialog" aria-labelledby="selectLanguageModalLabel"
-                     aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="selectLanguageModalLabel">{{ __('Select language') }}</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
+                                    <ul class="list-group">
+                                        @foreach (config('app.local_flag_map') as $lang => $flag)
+                                            <a href="{{ currentRouteUrlWithParameters(['locale' => $lang]) }}"
+                                               class="list-group-item list-group-item-action @if ($lang == App::getLocale()) active @endif">
+                                                <span class="flag-icon flag-icon-{{ $flag }}"></span>
+                                                {{ __('app.on_english', [], $lang) }} - {{ __('app.on_origin', [], $lang) }}
+                                            </a>
+                                        @endforeach
+                                    </ul>
 
-                                <ul class="list-group">
-                                    @foreach (config('app.local_flag_map') as $lang => $flag)
-                                        <a href="{{ currentRouteUrlWithParameters(['locale' => $lang]) }}"
-                                           class="list-group-item list-group-item-action @if ($lang == App::getLocale()) active @endif">
-                                            <span class="flag-icon flag-icon-{{ $flag }}"></span>
-                                            {{ __('app.on_english', [], $lang) }} - {{ __('app.on_origin', [], $lang) }}
-                                        </a>
-                                    @endforeach
-                                </ul>
-
+                                </div>
                             </div>
                         </div>
                     </div>
+
+                    <div class="mt-3 mt-sm-0">{{ __('Contacts') }}: sites.reviews.com@gmail.com</div>
                 </div>
 
-                <div class="mt-3 mt-sm-0">{{ __('Contacts') }}: sites.reviews.com@gmail.com</div>
-            </div>
+                <div class="mt-3">
+                    <a href="{{ route('privacy.policy') }}" class="small mr-3">{{ __('Privacy policy') }}</a>
 
+                    <a href="{{ route('personal_data_processing_agreement') }}" class="small">{{ __('Personal data processing agreement') }}</a>
+                </div>
+            </div>
         </footer>
 
     </div>
