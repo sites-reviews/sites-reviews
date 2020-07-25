@@ -7,6 +7,7 @@ use App\Service\UrlContent;
 use App\Site;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\App;
@@ -94,6 +95,8 @@ class SiteUpdateContentCommand extends Command
 
         } catch (ConnectException $exception) {
             return $this->failedAttempt($exception);
+        } catch (RequestException $exception) {
+            return $this->failedAttempt($exception);
         }
     }
 
@@ -127,7 +130,8 @@ class SiteUpdateContentCommand extends Command
             'connect_timeout' => 15,
             'read_timeout' => 15,
             'headers' => $headers,
-            'timeout' => 15
+            'timeout' => 15,
+            'verify' => false
         ]);
 
         return $response;
