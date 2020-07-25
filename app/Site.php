@@ -188,6 +188,13 @@ class Site extends Model
 
     public function scopeFulltextSearch($query, $searchText)
     {
+        $searchText = preg_replace("/[\"\']+/", '', $searchText);
+
+        return $query->where('title', 'ilike', '%'.$searchText.'%');
+    }
+
+    public function scopeTitleILike($query, $searchText)
+    {
         $Ar = preg_split("/[\s,[:punct:]]+/", $searchText, 0, PREG_SPLIT_NO_EMPTY);
 
         $s = '';
