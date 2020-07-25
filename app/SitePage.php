@@ -53,26 +53,17 @@ class SitePage extends Model
 
         $value = trim($value);
 
-        if (preg_match('/^(?:[0-9]+)\,(?:[0-9]+)\ (?:[A-z]{1})B\ \((?:[0-9]+)\,(?:[0-9]+)\ (?:[A-z]{1})B\ loaded\)(.*)/iu', $value, $matches))
-        {
+        if (preg_match('/^(?:[0-9]+)\,(?:[0-9]+)\ (?:[A-z]{1})B\ \((?:[0-9]+)\,(?:[0-9]+)\ (?:[A-z]{1})B\ loaded\)(.*)/iu', $value, $matches)) {
             $value = $matches[1];
         }
 
-        $result  = mb_check_encoding($value, "UTF-8");
+        $result = mb_check_encoding($value, "UTF-8");
 
-        if (!$result)
-        {
+        if (!$result) {
             try {
                 $value = mb_convert_encoding($value, 'utf-8', 'auto');
-            } catch (\Exception $exception) {
-                if ($exception->getCode() == 2)
-                {
-                    $value = utf8_encode($value);
-                }
-                else
-                {
-                    throw $exception;
-                }
+            } catch (\ErrorException $exception) {
+                $value = utf8_encode($value);
             }
         }
 
@@ -81,22 +72,20 @@ class SitePage extends Model
         $this->attributes['content'] = $value;
     }
 
-    public function dom() :\DOMDocument
+    public function dom(): \DOMDocument
     {
-        if (!isset($this->dom))
-        {
+        if (!isset($this->dom)) {
             $this->dom = new \DOMDocument();
-            @$this->dom->loadHTML('<?xml encoding="utf-8" ?>'.$this->content);
+            @$this->dom->loadHTML('<?xml encoding="utf-8" ?>' . $this->content);
             $this->dom->encoding = 'utf-8';
         }
 
         return $this->dom;
     }
 
-    public function xpath() :\DOMXPath
+    public function xpath(): \DOMXPath
     {
-        if (!isset($this->xpath))
-        {
+        if (!isset($this->xpath)) {
             $this->xpath = new \DOMXPath($this->dom());
         }
 
@@ -113,30 +102,25 @@ class SitePage extends Model
         return $this->xpath()->query("//body")->item(0);
     }
 
-    public function getMetaData() :array
+    public function getMetaData(): array
     {
         $metaData = [];
 
-        foreach ($this->head()->getElementsByTagName('meta') as $metaNode)
-        {
-            if ($metaNode->hasAttribute('property'))
-            {
+        foreach ($this->head()->getElementsByTagName('meta') as $metaNode) {
+            if ($metaNode->hasAttribute('property')) {
                 $content = '';
 
-                if ($metaNode->hasAttribute('content'))
-                {
+                if ($metaNode->hasAttribute('content')) {
                     $content = trim($metaNode->getAttribute('content'));
                 }
 
                 $metaData[$metaNode->getAttribute('property')] = $content;
             }
 
-            if ($metaNode->hasAttribute('name'))
-            {
+            if ($metaNode->hasAttribute('name')) {
                 $content = '';
 
-                if ($metaNode->hasAttribute('content'))
-                {
+                if ($metaNode->hasAttribute('content')) {
                     $content = trim($metaNode->getAttribute('content'));
                 }
 
@@ -147,7 +131,7 @@ class SitePage extends Model
         return $metaData;
     }
 
-    public function getTitleValue() :string
+    public function getTitleValue(): string
     {
         $title = '';
 
@@ -155,8 +139,7 @@ class SitePage extends Model
             ->getElementsByTagName('title')
             ->item(0);
 
-        if (!empty($titleNode))
-        {
+        if (!empty($titleNode)) {
             $title = $titleNode->nodeValue;
         }
 

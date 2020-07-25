@@ -59,17 +59,14 @@ class SiteUpdateContentCommand extends Command
             $content = $response->getBody()
                 ->getContents();
 
-            if (empty($encoding))
-            {
+            if (empty($encoding)) {
                 $encoding = $this->parseEncodingFromHtml($content);
             }
 
-            if (empty($encoding))
-            {
+            if (empty($encoding)) {
                 $headers = $response->getHeaders();
 
-                if (!empty($headers['Content-Type']))
-                {
+                if (!empty($headers['Content-Type'])) {
                     if (is_array($headers['Content-Type']))
                         $header = pos($headers['Content-Type']);
                     else
@@ -79,10 +76,8 @@ class SiteUpdateContentCommand extends Command
                 }
             }
 
-            if ($encoding != 'utf-8')
-            {
-                if (!empty($encoding))
-                {
+            if ($encoding != 'utf-8') {
+                if (!empty($encoding)) {
                     $content = $this->convertToUtf8Encoding($content, $encoding);
                 }
             }
@@ -98,16 +93,9 @@ class SiteUpdateContentCommand extends Command
 
         } catch (\Exception $exception) {
 
-            if (App::isLocal())
-            {
-                throw $exception;
-            }
-            else
-            {
-                Log::warning('Error when update content of site ID: '.$this->site->id.' '.$this->site->domain);
+            Log::warning('Error when update content of site ID: ' . $this->site->id . ' ' . $this->site->domain);
 
-                report($exception);
-            }
+            report($exception);
 
             $this->site->number_of_attempts_update_the_page++;
 
@@ -122,7 +110,7 @@ class SiteUpdateContentCommand extends Command
         }
     }
 
-    public function getResponse(Client $client, $url) : \Psr\Http\Message\ResponseInterface
+    public function getResponse(Client $client, $url): \Psr\Http\Message\ResponseInterface
     {
         $headers = [
             'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.170 Safari/537.36',
@@ -146,17 +134,14 @@ class SiteUpdateContentCommand extends Command
 
     public function parseEncodingFromHeader(string $headerStr)
     {
-        if (preg_match('/charset=([A-z0-9\-]*)/iu', $headerStr, $matches))
-        {
+        if (preg_match('/charset=([A-z0-9\-]*)/iu', $headerStr, $matches)) {
             $encoding = $matches[1];
         }
 
-        if (!empty($encoding))
-        {
+        if (!empty($encoding)) {
             $encoding = mb_strtolower($encoding);
             return $encoding;
-        }
-        else
+        } else
             return false;
     }
 
@@ -172,19 +157,14 @@ class SiteUpdateContentCommand extends Command
         if (!empty($result))
             $encoding = pos($result);
 
-        if (empty($encoding))
-        {
+        if (empty($encoding)) {
             $results = $crawler
                 ->filter('head > meta[http-equiv]');
 
-            foreach ($results as $node)
-            {
-                if (mb_strtolower($node->getAttribute('http-equiv')) == 'content-type')
-                {
-                    if ($node->hasAttribute('content'))
-                    {
-                        if (preg_match('/charset=([A-z0-9\-]*)/iu', $node->getAttribute('content'), $matches))
-                        {
+            foreach ($results as $node) {
+                if (mb_strtolower($node->getAttribute('http-equiv')) == 'content-type') {
+                    if ($node->hasAttribute('content')) {
+                        if (preg_match('/charset=([A-z0-9\-]*)/iu', $node->getAttribute('content'), $matches)) {
                             $encoding = $matches[1];
                         }
                     }
@@ -192,25 +172,21 @@ class SiteUpdateContentCommand extends Command
             }
         }
 
-        if (!empty($encoding))
-        {
+        if (!empty($encoding)) {
             $encoding = trim($encoding);
             $encoding = mb_strtolower($encoding);
             return $encoding;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
 
-    public function convertToUtf8Encoding($content, $encoding) :string
+    public function convertToUtf8Encoding($content, $encoding): string
     {
         try {
             $content = mb_convert_encoding($content, 'utf-8', $encoding);
         } catch (\Exception $exception) {
-            if ($exception->getCode() == 2)
-            {
+            if ($exception->getCode() == 2) {
                 $content = iconv($encoding, 'utf-8', $content);
             }
         }

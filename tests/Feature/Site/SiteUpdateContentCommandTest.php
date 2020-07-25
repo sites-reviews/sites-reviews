@@ -236,16 +236,15 @@ EOF;
 
         $this->assertEquals($output, $site->page->content);
     }
-
 /*
     public function test()
     {
         $site = factory(Site::class)
-            ->create(['domain' => ' cherrykiss.org']);
+            ->create(['domain' => 'japan-guide.com']);
 
         $this->artisan('site:update_content', ['site_id' => $site->id])
             ->expectsOutput(__('Site content was updated successfully'))
             ->assertExitCode(1);
     }
-*/
+    */
 }
