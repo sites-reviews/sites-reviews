@@ -23,7 +23,7 @@ class SiteCreateTest extends TestCase
      */
     public function testIfSiteNotCreated()
     {
-        $domain = Str::random(8).$this->faker->domainName;
+        $domain = mb_strtolower(Str::random(8)).$this->faker->domainName;
 
         $stream = Psr7\stream_for('');
 

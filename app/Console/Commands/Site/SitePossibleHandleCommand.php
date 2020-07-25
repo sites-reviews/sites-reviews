@@ -8,6 +8,7 @@ use App\Site;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\TooManyRedirectsException;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -70,16 +71,7 @@ class SitePossibleHandleCommand extends Command
         $site = new Site();
         $site->domain = $possibleDomain->domain;
 
-        try {
-            $available = $site->isAvailableThroughInternet($this->client);
-        } catch (ConnectException $exception) {
-
-        } catch (RequestException $exception) {
-            Log::warning('Request exception '.$site->domain.'');
-            report($exception);
-        }
-
-        if (!empty($available)) {
+        if ($site->isAvailableThroughInternet($this->client)) {
             $this->call('site:create', ['url' => $site->getUrl()]);
         }
 

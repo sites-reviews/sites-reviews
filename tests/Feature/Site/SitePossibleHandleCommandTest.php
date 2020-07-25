@@ -100,12 +100,12 @@ class SitePossibleHandleCommandTest extends TestCase
     public function test()
     {
         $possibleDomain = factory(PossibleDomain::class)
-            ->create(['domain' => 'sdfgfdgdgdgdfgfg234234f.com']);
+            ->create(['domain' => 'litlife.club']);
 
         $site = new Site();
         $site->domain = $possibleDomain->domain;
 
-        $site->isAvailableThroughInternet(new Client());
+        dd($site->isAvailableThroughInternet(new Client()));
     }
-    */
+*/
 }

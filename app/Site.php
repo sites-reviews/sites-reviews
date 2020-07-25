@@ -7,6 +7,9 @@ use App\Library\StarFullness;
 use App\Traits\UserCreate;
 use Eloquent;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\TooManyRedirectsException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -152,7 +155,7 @@ class Site extends Model
         $this->number_of_reviews = $this->reviews()->count();
     }
 
-    public function getUrl() :Url
+    public function getUrl(): Url
     {
         return Url::fromString('')
             ->withScheme('http')
@@ -190,7 +193,7 @@ class Site extends Model
     {
         $searchText = preg_replace("/[\"\']+/", '', $searchText);
 
-        return $query->where('title', 'ilike', '%'.$searchText.'%');
+        return $query->where('title', 'ilike', '%' . $searchText . '%');
     }
 
     public function scopeTitleILike($query, $searchText)
@@ -231,8 +234,8 @@ class Site extends Model
     public function buttonHtmlCode()
     {
         return '<a href="' . route('sites.show', $this) . '">' . "\n" .
-            '<img srcset="' . route('sites.rating.image', ['site' => $this, 'size' => '2x']) . ' 2x, ' . route('sites.rating.image', ['site' => $this, 'size' => '3x']) . ' 3x" '.
-            'data-src="'.route('sites.rating.image', ['site' => $this, 'size' => '1x']).'" '.
+            '<img srcset="' . route('sites.rating.image', ['site' => $this, 'size' => '2x']) . ' 2x, ' . route('sites.rating.image', ['site' => $this, 'size' => '3x']) . ' 3x" ' .
+            'data-src="' . route('sites.rating.image', ['site' => $this, 'size' => '1x']) . '" ' .
             'width="88" height="31" border="0" alt="' . $this->buttonImageAltText() . '" />' . "\n" .
             '</a>';
     }
@@ -246,7 +249,7 @@ class Site extends Model
 
     public function buttonImageAltText()
     {
-        return __('Rating and reviews of the site') .' '. $this->domain;
+        return __('Rating and reviews of the site') . ' ' . $this->domain;
     }
 
     public function getNumberOfReviewsHumanReadable()
@@ -430,7 +433,7 @@ class Site extends Model
         return $value;
     }
 
-    public function isDomainLikeTitle() :bool
+    public function isDomainLikeTitle(): bool
     {
         $title = mb_strtolower(trim($this->title));
         $domain = mb_strtolower(trim($this->domain));
@@ -457,35 +460,47 @@ class Site extends Model
             return $starFullness->getColor();
     }
 
-    public function isAvailableThroughInternet(Client $client) :bool
+    public function isAvailableThroughInternet(Client $client): bool
     {
         $url = Url::fromString('')
             ->withHost($this->domain)
             ->withScheme('http');
 
-        $response = $client->request(
-            'GET',
-            (string)$url,
-            [
-                'allow_redirects' => true,
-                'connect_timeout' => 5,
-                'read_timeout' => 5,
-                'timeout' => 5
-            ]
-        );
+        try {
+            $response = $client->request(
+                'GET',
+                (string)$url,
+                [
+                    'allow_redirects' => true,
+                    'connect_timeout' => 5,
+                    'read_timeout' => 5,
+                    'timeout' => 5,
+                    'verify' => false
+                ]
+            );
 
-        if (!empty($response->getStatusCode()))
-            return true;
-        else
-            return false;
+            if (!empty($response->getStatusCode()))
+                return true;
+            else
+                return false;
+
+        } catch (TooManyRedirectsException $exception) {
+
+        } catch (ConnectException $exception) {
+
+        } catch (RequestException $exception) {
+
+        }
+
+        return false;
     }
 
     public function scopeOrderManuallyAddedFirst($query)
     {
         $qs = 'CASE ';
-        $qs .= 'WHEN "how_added" = '.SiteHowAddedEnum::Manually.' THEN 1 ';
-        $qs .= 'WHEN "how_added" = '.SiteHowAddedEnum::WebExtension.' THEN 2 ';
-        $qs .= 'WHEN "how_added" = '.SiteHowAddedEnum::PagesScan.' THEN 3 ';
+        $qs .= 'WHEN "how_added" = ' . SiteHowAddedEnum::Manually . ' THEN 1 ';
+        $qs .= 'WHEN "how_added" = ' . SiteHowAddedEnum::WebExtension . ' THEN 2 ';
+        $qs .= 'WHEN "how_added" = ' . SiteHowAddedEnum::PagesScan . ' THEN 3 ';
         $qs .= 'ELSE 10 ';
         $qs .= 'END';
 

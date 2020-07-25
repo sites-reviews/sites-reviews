@@ -250,7 +250,21 @@ class SiteController extends Controller
 
             try
             {
-                $site->isAvailableThroughInternet($client);
+                $url = Url::fromString('')
+                    ->withHost($site->domain)
+                    ->withScheme('http');
+
+                $response = $client->request(
+                    'GET',
+                    (string)$url,
+                    [
+                        'allow_redirects' => true,
+                        'connect_timeout' => 5,
+                        'read_timeout' => 5,
+                        'timeout' => 5,
+                        'verify' => false
+                    ]
+                );
 
             } catch (ClientException $exception) {
 
