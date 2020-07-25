@@ -6,6 +6,7 @@ use App\Image;
 use App\Service\UrlContent;
 use App\Site;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\App;
@@ -91,23 +92,23 @@ class SiteUpdateContentCommand extends Command
 
             return true;
 
-        } catch (\Exception $exception) {
-
-            Log::warning('Error when update content of site ID: ' . $this->site->id . ' ' . $this->site->domain);
-
-            report($exception);
-
-            $this->site->number_of_attempts_update_the_page++;
-
-            if ($this->site->number_of_attempts_update_the_page >= 3)
-                $this->site->update_the_page = false;
-
-            $this->site->save();
-
-            $this->info(__('Error updating site content'));
-
-            return false;
+        } catch (ConnectException $exception) {
+            return $this->failedAttempt($exception);
         }
+    }
+
+    public function failedAttempt($exception)
+    {
+        $this->site->number_of_attempts_update_the_page++;
+
+        if ($this->site->number_of_attempts_update_the_page >= 3)
+            $this->site->update_the_page = false;
+
+        $this->site->save();
+
+        $this->info(__('Error updating site content'));
+
+        return false;
     }
 
     public function getResponse(Client $client, $url): \Psr\Http\Message\ResponseInterface

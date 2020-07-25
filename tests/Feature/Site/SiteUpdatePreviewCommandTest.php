@@ -8,6 +8,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use Spatie\Browsershot\Browsershot;
+use Symfony\Component\Process\Exception\ProcessTimedOutException;
+use Symfony\Component\Process\Process;
 use Tests\TestCase;
 
 class SiteUpdatePreviewCommandTest extends TestCase
@@ -83,7 +85,7 @@ class SiteUpdatePreviewCommandTest extends TestCase
         $this->mock(Browsershot::class, function ($mock) use ($site) {
             $mock->shouldReceive('url')
                 ->with((string)$site->getUrl())
-                ->andThrow(\Exception::class);
+                ->andThrow(new ProcessTimedOutException(new Process(['test']), ProcessTimedOutException::TYPE_GENERAL));
         });
 
         $this->artisan('site:screenshot_update', ['site_id' => $site->id])
@@ -111,7 +113,7 @@ class SiteUpdatePreviewCommandTest extends TestCase
         $this->mock(Browsershot::class, function ($mock) use ($site) {
             $mock->shouldReceive('url')
                 ->with((string)$site->getUrl())
-                ->andThrow(\Exception::class);
+                ->andThrow(new ProcessTimedOutException(new Process(['test']), ProcessTimedOutException::TYPE_GENERAL));
         });
 
         $this->artisan('site:screenshot_update', ['site_id' => $site->id])

@@ -7,6 +7,8 @@ use App\Site;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Spatie\Browsershot\Browsershot;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Exception\ProcessTimedOutException;
 
 class SiteUpdatePreviewCommand extends Command
 {
@@ -73,19 +75,29 @@ class SiteUpdatePreviewCommand extends Command
 
             return true;
 
-        } catch (\Exception $exception) {
+        } catch (ProcessTimedOutException $exception) {
+
+            return $this->failedAttempt();
+
+        } catch (ProcessFailedException $exception) {
+
             report($exception);
 
-            $this->site->number_of_attempts_update_the_preview++;
-
-            if ($this->site->number_of_attempts_update_the_preview >= 3)
-                $this->site->update_the_preview = false;
-
-            $this->site->save();
-
-            $this->error(__('Error updating the site preview'));
-
-            return false;
+            return $this->failedAttempt();
         }
+    }
+
+    public function failedAttempt()
+    {
+        $this->site->number_of_attempts_update_the_preview++;
+
+        if ($this->site->number_of_attempts_update_the_preview >= 3)
+            $this->site->update_the_preview = false;
+
+        $this->site->save();
+
+        $this->error(__('Error updating the site preview'));
+
+        return false;
     }
 }

@@ -56,13 +56,8 @@ class SiteCreateCommand extends Command
         $site = Site::whereDomain($this->url->getHost())
             ->first();
 
-        Log::info('site:create', [
-            'site' => $site,
-            $this->url->getHost()
-        ]);
-
         if (!empty($site)) {
-            $this->error(__('The site is already in the database'));
+            $this->error(__('The site :host is already in the database', ['host' => $this->url->getHost()]));
             return false;
         } else {
 
@@ -74,7 +69,7 @@ class SiteCreateCommand extends Command
             $site->update_the_page = true;
             $site->save();
 
-            $this->info(__('The site was added successfully'));
+            $this->info(__('The site :host was added successfully', ['host' => $this->url->getHost()]));
             return true;
         }
     }

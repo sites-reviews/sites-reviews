@@ -27,7 +27,7 @@ class SiteCreateCommandTest extends TestCase
             ->make();
 
         $this->artisan('site:create', ['url' => $siteNew->getUrl()])
-            ->expectsOutput(__('The site was added successfully'))
+            ->expectsOutput(__('The site :host was added successfully', ['host' => $siteNew->getUrl()->getHost()]))
             ->assertExitCode(1);
 
         $site = Site::whereDomain($siteNew->domain)->first();
@@ -61,7 +61,7 @@ class SiteCreateCommandTest extends TestCase
             ->create();
 
         $this->artisan('site:create', ['url' => $site->getUrl()])
-            ->expectsOutput(__('The site is already in the database'))
+            ->expectsOutput(__('The site :host is already in the database', ['host' => $site->getUrl()->getHost()]))
             ->assertExitCode(0);
     }
 }
