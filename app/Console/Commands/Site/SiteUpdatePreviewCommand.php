@@ -81,7 +81,10 @@ class SiteUpdatePreviewCommand extends Command
 
         } catch (ProcessFailedException $exception) {
 
-            report($exception);
+            if (!$this->isPuppeterNetworkError($exception))
+            {
+                report($exception);
+            }
 
             return $this->failedAttempt();
         }
@@ -97,6 +100,28 @@ class SiteUpdatePreviewCommand extends Command
         $this->site->save();
 
         $this->error(__('Error updating the site preview'));
+
+        return false;
+    }
+
+    public function isPuppeterNetworkError(ProcessFailedException $exception)
+    {
+        $proccess = $exception->getProcess();
+
+        if ($proccess->getExitCode() == 1 and $proccess->getExitCodeText() == 'General error') {
+
+            if (preg_match('/Error\:\ net\:\:([A-Z\_]+)\ at/iu', $proccess->getErrorOutput(), $matches)) {
+
+                if (in_array($matches[1], ['ERR_CONNECTION_RESET',
+                    'ERR_INVALID_RESPONSE',
+                    'ERR_CONNECTION_REFUSED',
+                    'ERR_NAME_NOT_RESOLVED',
+                    'ERR_EMPTY_RESPONSE'],
+                    )) {
+                    return true;
+                }
+            }
+        }
 
         return false;
     }

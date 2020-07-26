@@ -2,12 +2,15 @@
 
 namespace Tests\Feature\Site;
 
+use App\Console\Commands\Site\SiteUpdateContentCommand;
+use App\Console\Commands\Site\SiteUpdatePreviewCommand;
 use App\Review;
 use App\Site;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use Spatie\Browsershot\Browsershot;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
 use Symfony\Component\Process\Process;
 use Tests\TestCase;
@@ -125,5 +128,45 @@ class SiteUpdatePreviewCommandTest extends TestCase
         $this->assertNull($site->preview);
         $this->assertEquals(3, $site->number_of_attempts_update_the_preview);
         $this->assertFalse($site->update_the_preview);
+    }
+
+    public function testIsPuppeterNetworkErrorIsTrue()
+    {
+        $process = \Mockery::mock(Process::class);
+
+        $process->shouldReceive('isSuccessful')->andReturn(false);
+        $process->shouldReceive('getExitCode')->twice()->andReturn(1);
+        $process->shouldReceive('getExitCodeText')->andReturn('General error');
+        $process->shouldReceive('getCommandLine')->andReturn('test');
+        $process->shouldReceive('getWorkingDirectory')->andReturn('');
+        $process->shouldReceive('isOutputDisabled')->andReturn(false);
+        $process->shouldReceive('getOutput')->andReturn('');
+        $process->shouldReceive('getErrorOutput')->andReturn('Error: net::ERR_NAME_NOT_RESOLVED at http://www.example.com at navigate');
+
+        $exception = new ProcessFailedException($process);
+
+        $command = new SiteUpdatePreviewCommand();
+
+        $this->assertTrue($command->isPuppeterNetworkError($exception));
+    }
+
+    public function testIsPuppeterNetworkErrorIsFalse()
+    {
+        $process = \Mockery::mock(Process::class);
+
+        $process->shouldReceive('isSuccessful')->andReturn(false);
+        $process->shouldReceive('getExitCode')->twice()->andReturn(1);
+        $process->shouldReceive('getExitCodeText')->andReturn('General error');
+        $process->shouldReceive('getCommandLine')->andReturn('test');
+        $process->shouldReceive('getWorkingDirectory')->andReturn('');
+        $process->shouldReceive('isOutputDisabled')->andReturn(false);
+        $process->shouldReceive('getOutput')->andReturn('');
+        $process->shouldReceive('getErrorOutput')->andReturn('Error: net::SOME_ERROR at http://www.example.com at navigate');
+
+        $exception = new ProcessFailedException($process);
+
+        $command = new SiteUpdatePreviewCommand();
+
+        $this->assertFalse($command->isPuppeterNetworkError($exception));
     }
 }

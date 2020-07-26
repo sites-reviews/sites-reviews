@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+use Spatie\Browsershot\Browsershot;
 
 class OtherController extends Controller
 {
@@ -85,9 +86,17 @@ class OtherController extends Controller
         }
     }
 
-    public function test()
+    public function test(Browsershot $browsershot)
     {
-
+        $content = $browsershot
+            ->url('http://www.sdfsrwesvdfsdfsdf.com')
+            ->timeout(60)
+            ->windowSize(1000, 1000)
+            ->setScreenshotType('jpeg', 100)
+            ->setDelay(5000)
+            ->dismissDialogs()
+            ->ignoreHttpsErrors()
+            ->screenshot();
     }
 
     public function phpinfo()

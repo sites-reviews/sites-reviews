@@ -490,6 +490,8 @@ class Site extends Model
 
         } catch (RequestException $exception) {
 
+        } catch (\InvalidArgumentException $exception) {
+
         }
 
         return false;
