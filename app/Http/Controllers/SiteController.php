@@ -84,17 +84,16 @@ class SiteController extends Controller
                 ->first();
         }
 
-        if (!empty($site->preview))
-        {
+        if (!empty($site->preview)) {
             SEOTools::addImages($site->preview->fullUrlMaxSize(200, 200));
         }
 
         if ($site->isDomainLikeTitle())
             $title = $site->title;
         else
-            $title = $site->title.' - '.$site->domain;
+            $title = $site->title . ' - ' . $site->domain;
 
-        SEOTools::setTitle(__('site.browser_title', ['title' => $title]).' - '.config('app.name'))
+        SEOTools::setTitle(__('site.browser_title', ['title' => $title]) . ' - ' . config('app.name'))
             ->setDescription(__('Reviews and rating of a site or company :title', [
                 'title' => $title
             ]));
@@ -144,7 +143,7 @@ class SiteController extends Controller
     public function ratingImage($size, Site $site)
     {
         if (App::isLocal())
-            \Debugbar::startMeasure('render_image','Render image');
+            \Debugbar::startMeasure('render_image', 'Render image');
 
         $blob = $site->getRatingImageBlob($size, true);
 
@@ -155,7 +154,7 @@ class SiteController extends Controller
 
         return response($blob, 200)
             //->setLastModified(new \DateTime($site->latest_rating_changes_at))
-            ->header('Cache-control', 'max-age='.$seconds.', public')
+            ->header('Cache-control', 'max-age=' . $seconds . ', public')
             ->header('Pragma', 'cache')
             ->setTtl($seconds)
             ->setExpires(new \DateTime(now()->addSeconds($seconds)))
@@ -172,7 +171,7 @@ class SiteController extends Controller
     {
         $query = Site::fulltextSearch($request->term);
 
-        $url = trim(filter_var($request->term,FILTER_SANITIZE_STRING));
+        $url = trim(filter_var($request->term, FILTER_SANITIZE_STRING));
 
         preg_match('/(?:https|http)?(?:\:\/\/)?([[:graph:]\-\.]+)/iu', $url, $matches);
 
@@ -184,9 +183,8 @@ class SiteController extends Controller
         else
             $isDomain = false;
 
-        if ($isDomain)
-        {
-            $domain = trim(mb_strtolower(Url::fromString('http://'.$domain)->getHost()));
+        if ($isDomain) {
+            $domain = trim(mb_strtolower(Url::fromString('http://' . $domain)->getHost()));
 
             if (preg_match('/^(?:www\.?)(.*)$/iu', $domain, $matches)) {
                 $domain = $matches[1];
@@ -199,22 +197,18 @@ class SiteController extends Controller
             ->orderBy('number_of_reviews', 'asc')
             ->simplePaginate();
 
-        if ($isDomain)
-        {
+        if ($isDomain) {
             $count = $sites->where('domain', $domain)->count();
 
-            if ($count < 1)
-            {
+            if ($count < 1) {
                 $addSite = true;
-            }
-            elseif ($count == 1 and $sites->count() == 1)
-            {
+            } elseif ($count == 1 and $sites->count() == 1) {
                 return redirect()
                     ->route('sites.show', ['site' => $sites->first()]);
+            } else {
+                $addSite = false;
             }
-        }
-        else
-        {
+        } else {
             $addSite = false;
         }
 
@@ -233,14 +227,11 @@ class SiteController extends Controller
 
         $site = Site::whereDomain($domain)->first();
 
-        if (!empty($site))
-        {
+        if (!empty($site)) {
             return redirect()
                 ->route('sites.show', $site)
                 ->with('site_exists', true);
-        }
-        else
-        {
+        } else {
             $url = Url::fromString('')
                 ->withHost($domain)
                 ->withScheme('http');
@@ -248,8 +239,7 @@ class SiteController extends Controller
             $site = new Site();
             $site->domain = $url->getHost();
 
-            try
-            {
+            try {
                 $url = Url::fromString('')
                     ->withHost($site->domain)
                     ->withScheme('http');

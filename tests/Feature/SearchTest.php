@@ -161,4 +161,26 @@ class SearchTest extends TestCase
         $response = $this->get(route('sites.search', ['term' => (string)$site->domain]))
             ->assertRedirect(route('sites.show', ['site' => $site]));
     }
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testSearchIfFoundDomainAndOtherSites()
+    {
+        $site = factory(Site::class)
+            ->create(['domain' => mb_strtolower(Str::random(4)).'.com']);
+
+        $host = (string)$site->getUrl()->getHost();
+
+        $site2 = factory(Site::class)
+            ->create(['title' => $host]);
+
+        $response = $this->get(route('sites.search', ['term' => $host]))
+            ->assertOk()
+            ->assertViewHas('isDomain', true)
+            ->assertViewHas('addSite', false)
+            ->assertViewHas('domain', $host);
+    }
 }
