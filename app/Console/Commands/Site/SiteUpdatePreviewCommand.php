@@ -116,7 +116,8 @@ class SiteUpdatePreviewCommand extends Command
                     'ERR_INVALID_RESPONSE',
                     'ERR_CONNECTION_REFUSED',
                     'ERR_NAME_NOT_RESOLVED',
-                    'ERR_EMPTY_RESPONSE'],
+                    'ERR_EMPTY_RESPONSE',
+                    'ERR_HTTP2_PROTOCOL_ERROR'],
                     )) {
                     return true;
                 }
