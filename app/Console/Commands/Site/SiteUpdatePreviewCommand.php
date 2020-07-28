@@ -82,8 +82,7 @@ class SiteUpdatePreviewCommand extends Command
 
         } catch (ProcessFailedException $exception) {
 
-            if (!$this->isPuppeterNetworkError($exception))
-            {
+            if (!$this->isPuppeterNetworkError($exception)) {
                 report($exception);
             }
 
@@ -95,8 +94,7 @@ class SiteUpdatePreviewCommand extends Command
     {
         if (intval($site))
             return Site::findOrFail($site);
-        else
-        {
+        else {
             $url = Url::fromString($site);
 
             return Site::whereDomain($url->getHost())->firstOrFail();
@@ -125,13 +123,17 @@ class SiteUpdatePreviewCommand extends Command
 
             if (preg_match('/Error\:\ net\:\:([A-Z\_]+)\ at/iu', $proccess->getErrorOutput(), $matches)) {
 
-                if (in_array($matches[1], ['ERR_CONNECTION_RESET',
+                if (in_array($matches[1], [
+                    'ERR_CONNECTION_RESET',
                     'ERR_INVALID_RESPONSE',
                     'ERR_CONNECTION_REFUSED',
                     'ERR_NAME_NOT_RESOLVED',
                     'ERR_EMPTY_RESPONSE',
-                    'ERR_HTTP2_PROTOCOL_ERROR'],
-                    )) {
+                    'ERR_HTTP2_PROTOCOL_ERROR',
+                    'ERR_CONNECTION_CLOSED',
+                    'ERR_TIMED_OUT'
+                ],
+                )) {
                     return true;
                 }
             }
