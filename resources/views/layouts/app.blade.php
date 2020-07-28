@@ -205,9 +205,15 @@
         <footer class="mt-3 mb-5" style="height:50px;">
             <div class="container ">
                 @if (\Browser::isFirefox())
-                    <div class="  mb-3 text-center">
+                    <div class="mb-3 text-center">
                         <a href="https://addons.mozilla.org/firefox/addon/sites-reviews-com/" class="h4 d-block" rel="nofollow">
                             <i class="fab fa-firefox-browser"></i> {{ __('Install extension for Firefox') }}
+                        </a>
+                    </div>
+                @elseif (\Browser::isEdge())
+                    <div class="mb-3 text-center">
+                        <a href="https://microsoftedge.microsoft.com/addons/detail/sitesreviewscom-revie/lddfbdnnfdijagkaglcfhdoojpmonbne" class="h4 d-block" rel="nofollow">
+                            <i class="fab fa-edge"></i> {{ __('Install extension for Edge') }}
                         </a>
                     </div>
                 @endif
