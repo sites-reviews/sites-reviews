@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Site;
 
+use App\Console\Commands\Site\SiteUpdateContentCommand;
 use App\Review;
 use App\Service\DNS;
 use App\Service\UrlContent;
@@ -52,7 +53,7 @@ EOF;
                 ->andReturn($response);
         });
 
-        $this->artisan('site:update_content', ['site_id' => $site->id])
+        $this->artisan('site:update_content', ['site' => $site->id])
             ->expectsOutput(__('Site content was updated successfully'))
             ->assertExitCode(1);
 
@@ -103,7 +104,7 @@ EOF;
                 ->andReturn($response);
         });
 
-        $this->artisan('site:update_content', ['site_id' => $site->id])
+        $this->artisan('site:update_content', ['site' => $site->id])
             ->expectsOutput(__('Site content was updated successfully'))
             ->assertExitCode(1);
 
@@ -142,7 +143,7 @@ EOF;
                 ->andThrow(new ConnectException('123', new Request('get', '')));
         });
 
-        $this->artisan('site:update_content', ['site_id' => $site->id])
+        $this->artisan('site:update_content', ['site' => $site->id])
             ->expectsOutput(__('Error updating site content'))
             ->assertExitCode(0);
 
@@ -173,7 +174,7 @@ EOF;
                 ->andThrow(new ConnectException('123', new Request('get', '')));
         });
 
-        $this->artisan('site:update_content', ['site_id' => $site->id])
+        $this->artisan('site:update_content', ['site' => $site->id])
             ->assertExitCode(0);
 
         $site->refresh();
@@ -217,7 +218,7 @@ EOF;
                 ->andReturn($response);
         });
 
-        $this->artisan('site:update_content', ['site_id' => $site->id])
+        $this->artisan('site:update_content', ['site' => $site->id])
             ->expectsOutput(__('Site content was updated successfully'))
             ->assertExitCode(1);
 
@@ -247,4 +248,34 @@ EOF;
             ->assertExitCode(1);
     }
     */
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testGetSiteIfArgumentUrl()
+    {
+        $site = factory(Site::class)
+            ->create();
+
+        $command = new SiteUpdateContentCommand();
+
+        $this->assertTrue($site->is($command->getSite((string)$site->getUrl())));
+    }
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testGetSiteIfArgumentNumber()
+    {
+        $site = factory(Site::class)
+            ->create();
+
+        $command = new SiteUpdateContentCommand();
+
+        $this->assertTrue($site->is($command->getSite($site->id)));
+    }
 }

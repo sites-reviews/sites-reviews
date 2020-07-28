@@ -59,7 +59,7 @@ class SiteUpdatePreviewCommandTest extends TestCase
                 ->andReturn(file_get_contents($fakeImage));
         });
 
-        $this->artisan('site:screenshot_update', ['site_id' => $site->id])
+        $this->artisan('site:screenshot_update', ['site' => $site->id])
             ->expectsOutput(__('The site preview was updated successfully'))
             ->assertExitCode(1);
 
@@ -68,6 +68,36 @@ class SiteUpdatePreviewCommandTest extends TestCase
         $this->assertNotNull($site->preview);
         $this->assertTrue($site->update_the_preview);
         $this->assertEquals(0, $site->number_of_attempts_update_the_preview);
+    }
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testGetSiteIfArgumentUrl()
+    {
+        $site = factory(Site::class)
+            ->create();
+
+        $command = new SiteUpdatePreviewCommand();
+
+        $this->assertTrue($site->is($command->getSite((string)$site->getUrl())));
+    }
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testGetSiteIfArgumentNumber()
+    {
+        $site = factory(Site::class)
+            ->create();
+
+        $command = new SiteUpdatePreviewCommand();
+
+        $this->assertTrue($site->is($command->getSite($site->id)));
     }
 
     /**
@@ -91,7 +121,7 @@ class SiteUpdatePreviewCommandTest extends TestCase
                 ->andThrow(new ProcessTimedOutException(new Process(['test']), ProcessTimedOutException::TYPE_GENERAL));
         });
 
-        $this->artisan('site:screenshot_update', ['site_id' => $site->id])
+        $this->artisan('site:screenshot_update', ['site' => $site->id])
             ->assertExitCode(0)
             ->expectsOutput(__('Error updating the site preview'));
 
@@ -119,7 +149,7 @@ class SiteUpdatePreviewCommandTest extends TestCase
                 ->andThrow(new ProcessTimedOutException(new Process(['test']), ProcessTimedOutException::TYPE_GENERAL));
         });
 
-        $this->artisan('site:screenshot_update', ['site_id' => $site->id])
+        $this->artisan('site:screenshot_update', ['site' => $site->id])
             ->assertExitCode(0)
             ->expectsOutput(__('Error updating the site preview'));
 

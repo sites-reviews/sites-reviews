@@ -1,0 +1,28 @@
+dist: bionic
+language: php
+php:
+  - 7.2
+  - 7.3
+services:
+  - pgsql
+cache:
+  directories:
+    - node_modules
+    - vendor
+before_script:
+  - cp .env.travis .env
+  - sudo -s
+  - su postgres
+  - psql -c "CREATE USER homestead_user;"
+  - psql -c "CREATE DATABASE homestead OWNER homestead_user ENCODING 'utf-8';"
+  - psql -c "ALTER ROLE homestead_user WITH PASSWORD 'homestead';"
+  - psql -d homestead -c "CREATE EXTENSION pg_trgm;"
+  - exit
+  - exit
+  - composer self-update
+  - composer install --prefer-source --no-interaction --dev
+  - php artisan key:generate
+  - php artisan migrate
+  - php artisan storage:link
+script:
+  - vendor/bin/phpunit

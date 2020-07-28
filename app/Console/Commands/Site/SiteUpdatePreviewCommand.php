@@ -6,6 +6,7 @@ use App\Image;
 use App\Site;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Litlife\Url\Url;
 use Spatie\Browsershot\Browsershot;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
@@ -17,7 +18,7 @@ class SiteUpdatePreviewCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'site:screenshot_update {site_id}';
+    protected $signature = 'site:screenshot_update {site}';
 
     /**
      * The console command description.
@@ -47,7 +48,7 @@ class SiteUpdatePreviewCommand extends Command
      */
     public function handle(Browsershot $browsershot)
     {
-        $this->site = Site::findOrFail($this->argument('site_id'));
+        $this->site = $this->getSite($this->argument('site'));
 
         try {
             DB::transaction(function () use ($browsershot) {
@@ -87,6 +88,18 @@ class SiteUpdatePreviewCommand extends Command
             }
 
             return $this->failedAttempt();
+        }
+    }
+
+    public function getSite($site)
+    {
+        if (intval($site))
+            return Site::findOrFail($site);
+        else
+        {
+            $url = Url::fromString($site);
+
+            return Site::whereDomain($url->getHost())->firstOrFail();
         }
     }
 

@@ -24,7 +24,7 @@ class SiteUpdateContentCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'site:update_content {site_id}';
+    protected $signature = 'site:update_content {site}';
 
     /**
      * The console command description.
@@ -53,7 +53,7 @@ class SiteUpdateContentCommand extends Command
      */
     public function handle(Client $client)
     {
-        $this->site = Site::findOrFail($this->argument('site_id'));
+        $this->site = $this->getSite($this->argument('site'));
 
         try {
             $response = $this->getResponse($client, $this->site->getUrl());
@@ -199,5 +199,17 @@ class SiteUpdateContentCommand extends Command
         $content = preg_replace('/\<meta.*?charset.*?\>/iu', '', $content);
 
         return (string)$content;
+    }
+
+    public function getSite($site)
+    {
+        if (intval($site))
+            return Site::findOrFail($site);
+        else
+        {
+            $url = Url::fromString($site);
+
+            return Site::whereDomain($url->getHost())->firstOrFail();
+        }
     }
 }
