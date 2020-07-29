@@ -31,31 +31,31 @@
                         </a>
                     </div>
 --}}
-                    <div class="d-flex flex-row flex-column flex-md-row"
-                         itemprop="aggregateRating"
-                         itemscope itemtype="http://schema.org/AggregateRating">
+
+                    @if ($site->rating > 0 and $site->number_of_reviews > 0)
+                        <div itemprop="aggregateRating"
+                             itemscope itemtype="http://schema.org/AggregateRating">
+                            <meta itemprop="reviewCount" content="{{ $site->number_of_reviews }}">
+                            <meta itemprop="worstRating" content="1">
+                            <meta itemprop="bestRating" content="5">
+                            <meta itemprop="ratingValue" content="{{ $site->rating }}">
+                        </div>
+                    @endif
+
+                    <div class="d-flex flex-row flex-column flex-md-row">
 
                         <div class="d-flex align-items-center flex-wrap">
                             <div class="h3 mr-3">
                                 <x-site-rating :rating="$site->rating"/>
                             </div>
 
-                            <div class="mr-3  text-nowrap">
-                                <meta itemprop="worstRating" content="1">
-                                @if ($site->rating > 0)
-                                    <meta itemprop="ratingValue" content="{{ $site->rating }}">
-                                @endif
-
-                                <span class="h3">{{ $site->rating }}</span>/<span class="small" itemprop="bestRating">5</span>
+                            <div class="mr-3 text-nowrap">
+                                <span class="h3">{{ $site->rating }}</span>/<span class="small">5</span>
                             </div>
 
                             <div class="text-nowrap">
                                 {{ mb_ucfirst(trans_choice('site.reviews', $site->number_of_reviews)) }}:
-                                @if ($site->number_of_reviews > 0)
-                                    <span itemprop="reviewCount">{{ $site->number_of_reviews }}</span>
-                                @else
-                                    <span>{{ $site->number_of_reviews }}</span>
-                                @endif
+                                {{ $site->number_of_reviews }}
                             </div>
 
                         </div>
