@@ -194,7 +194,7 @@ class SiteController extends Controller
         }
 
         $sites = $query->orWhere->titleILike($request->term)
-            ->orderBy('number_of_reviews', 'asc')
+            ->orderBy('number_of_reviews', 'desc')
             ->simplePaginate();
 
         if ($isDomain) {
