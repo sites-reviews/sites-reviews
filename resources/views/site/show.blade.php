@@ -42,12 +42,20 @@
 
                             <div class="mr-3  text-nowrap">
                                 <meta itemprop="worstRating" content="1">
-                                <span class="h3" itemprop="ratingValue">{{ $site->rating }}</span>/<span class="small" itemprop="bestRating">5</span>
+                                @if ($site->rating > 0)
+                                    <meta itemprop="ratingValue" content="{{ $site->rating }}">
+                                @endif
+
+                                <span class="h3">{{ $site->rating }}</span>/<span class="small" itemprop="bestRating">5</span>
                             </div>
 
-                            <div class="text-nowrap ">
+                            <div class="text-nowrap">
                                 {{ mb_ucfirst(trans_choice('site.reviews', $site->number_of_reviews)) }}:
-                                <span itemprop="reviewCount">{{ $site->number_of_reviews }}</span>
+                                @if ($site->number_of_reviews > 0)
+                                    <span itemprop="reviewCount">{{ $site->number_of_reviews }}</span>
+                                @else
+                                    <span>{{ $site->number_of_reviews }}</span>
+                                @endif
                             </div>
 
                         </div>
