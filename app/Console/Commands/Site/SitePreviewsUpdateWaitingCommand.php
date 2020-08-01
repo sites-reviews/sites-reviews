@@ -56,7 +56,7 @@ class SitePreviewsUpdateWaitingCommand extends Command
 
     public function site(Site $site)
     {
-        if ($this->call('site:screenshot_update', ['site_id' => $site->id]))
+        if ($this->call('site:screenshot_update', ['site' => $site->id]))
         {
             $site->update_the_preview = false;
             $site->save();

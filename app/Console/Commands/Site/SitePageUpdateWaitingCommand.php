@@ -56,7 +56,7 @@ class SitePageUpdateWaitingCommand extends Command
 
     public function site(Site $site)
     {
-        if ($this->call('site:update_content', ['site_id' => $site->id]))
+        if ($this->call('site:update_content', ['site' => $site->id]))
         {
             $site->update_the_page = false;
             $site->save();
