@@ -39,10 +39,11 @@ class Kernel extends ConsoleKernel
             $schedule->command('site:possible_handle')
                 ->everyMinute()
                 ->withoutOverlapping();
-
+/*
             $schedule->command('site_page:search_for_new_domains')
                 ->everyMinute()
                 ->withoutOverlapping();
+            */
         }
 
         $schedule->command('sitemap:create')
