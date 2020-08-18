@@ -44,10 +44,10 @@ class Kernel extends ConsoleKernel
                 ->everyMinute()
                 ->withoutOverlapping();
             */
-        }
 
-        $schedule->command('sitemap:create')
-            ->daily();
+            $schedule->command('sitemap:create')
+                ->daily();
+        }
     }
 
     /**
