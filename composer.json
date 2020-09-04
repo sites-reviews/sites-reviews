@@ -47,6 +47,7 @@
         "litlife/laravel-dkim": "dev-master",
         "litlife/sitemap": "dev-master",
         "litlife/url": "dev-master",
+        "microweber/screen": "^1.0",
         "shweshi/opengraph": "^1.0",
         "socialiteproviders/facebook": "^1.0",
         "socialiteproviders/google": "^3.0",

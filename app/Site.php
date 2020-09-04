@@ -80,6 +80,10 @@ use phpDocumentor\Reflection\Types\Boolean;
  * @property int|null $number_of_attempts_update_the_page Количество попыток обновить страницу
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Site whereNumberOfAttemptsUpdateThePage($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Site whereNumberOfAttemptsUpdateThePreview($value)
+ * @property int|null $how_added Как был добавлен сайт (вручную, через расширение и т.д.)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Site orderManuallyAddedFirst()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Site titleILike($searchText)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Site whereHowAdded($value)
  */
 class Site extends Model
 {

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Spatie\Browsershot\Browsershot;
+use Screen\Capture;
 
 class OtherController extends Controller
 {
@@ -88,15 +89,24 @@ class OtherController extends Controller
 
     public function test(Browsershot $browsershot)
     {
-        $content = $browsershot
-            ->url('http://www.sdfsrwesvdfsdfsdf.com')
-            ->timeout(60)
-            ->windowSize(1000, 1000)
-            ->setScreenshotType('jpeg', 100)
-            ->setDelay(5000)
-            ->dismissDialogs()
-            ->ignoreHttpsErrors()
-            ->screenshot();
+        $screenCapture = new Capture();
+        $screenCapture->binPath = base_path('node_modules/phantomjs-prebuilt/bin/');
+        $screenCapture->setUrl('https://litlife.club');
+        $screenCapture->setWidth(1200);
+        $screenCapture->setHeight(800);
+        $screenCapture->output->setLocation(sys_get_temp_dir());
+        $fileLocation = 'test';
+        if (!$screenCapture->save($fileLocation))
+        {
+            throw new \Exception('File not found');
+        }
+
+        header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1.
+        header("Pragma: no-cache"); // HTTP 1.0.
+        header("Expires: 0"); // Proxies.
+        header('Content-Type:' . $screenCapture->getImageType()->getMimeType());
+        header('Content-Length: ' . filesize($screenCapture->getImageLocation()));
+        readfile($screenCapture->getImageLocation());
     }
 
     public function phpinfo()
