@@ -183,4 +183,17 @@ class SearchTest extends TestCase
             ->assertViewHas('addSite', false)
             ->assertViewHas('domain', $host);
     }
+
+    public function testCyryllicDomain()
+    {
+        $site = factory(Site::class)
+            ->states('with_cyrillic_domain')
+            ->make();
+
+        $response = $this->get(route('sites.search', ['term' => $site->domain]))
+            ->assertOk()
+            ->assertViewHas('isDomain', true)
+            ->assertViewHas('addSite', true)
+            ->assertViewHas('domain', null);
+    }
 }

@@ -178,7 +178,7 @@ class SiteController extends Controller
         if (!empty($matches[1]))
             $domain = $matches[1];
 
-        if (preg_match('/([[:graph:]\-\.]+)\.([A-z]+)/iu', $url))
+        if (preg_match('/([[:alpha:]0-9\-\.]+)\.([[:alpha:]]+)/iu', $url))
             $isDomain = true;
         else
             $isDomain = false;

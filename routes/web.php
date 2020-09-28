@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/sitemap.xml', 'OtherController@sitemapRedirect')->name('sitemap');
 
-$sitePregPattern = '([A-Za-z0-9\-\.]+)\.([A-z]+)';
+$sitePregPattern = '([[:alpha:]0-9\-\.]+)\.([[:alpha:]0-9\-]+)';
 
 Route::prefix('{locale}')
     ->where(['locale' => '[a-zA-Z]{2}'])

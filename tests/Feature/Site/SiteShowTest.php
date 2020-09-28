@@ -105,4 +105,15 @@ class SiteShowTest extends TestCase
             ->assertOk()
             ->assertViewHas('site', $site);
     }
+
+    public function testShowRuDomain()
+    {
+        $site = factory(Site::class)
+            ->states('with_cyrillic_domain')
+            ->create();
+
+        $this->get(route('sites.show', $site->domain))
+            ->assertOk()
+            ->assertViewHas('site', $site);
+    }
 }

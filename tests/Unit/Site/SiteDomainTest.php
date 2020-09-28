@@ -51,4 +51,12 @@ class SiteDomainTest extends TestCase
 
         $this->assertEquals('webtest.com', $site->domain);
     }
+
+    public function testCyrylic()
+    {
+        $site = new Site();
+        $site->domain = 'адрес.рф';
+
+        $this->assertEquals('адрес.рф', $site->domain);
+    }
 }

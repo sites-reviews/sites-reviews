@@ -232,6 +232,7 @@ class Site extends Model
 
     public function getDomainAttribute($value)
     {
+        $value = idn_to_utf8($value, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
         return mb_strtolower($value);
     }
 
@@ -424,6 +425,8 @@ class Site extends Model
 
     public function domainVal($value)
     {
+        $value = trim($value, '.');
+        $value = idn_to_ascii($value, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
         $value = filter_var($value, FILTER_SANITIZE_URL);
         $value = trim($value);
         $value = mb_strtolower($value);
@@ -431,8 +434,6 @@ class Site extends Model
         if (preg_match('/^(?:www\.?)(.*)$/iu', $value, $matches)) {
             $value = $matches[1];
         }
-
-        $value = trim($value, '.');
 
         return $value;
     }

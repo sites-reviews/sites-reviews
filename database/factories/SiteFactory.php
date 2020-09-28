@@ -27,3 +27,13 @@ $factory->afterCreatingState(Site::class, 'with_preview', function (Site $site, 
     $site->preview_image_id = $image->id;
     $site->save();
 });
+
+$factory->afterMakingState(Site::class, 'with_cyrillic_domain', function (Site $site, $faker) {
+
+    $array = ['a', 'б', 'в', 'г', 'д', 'е', 'ж'];
+
+    $site->domain = $array[array_rand($array)].
+        $array[array_rand($array)].
+        $array[array_rand($array)].
+        $array[array_rand($array)].'.рф';
+});
