@@ -85,6 +85,7 @@ class SiteUpdateContentCommand extends Command
             }
 
             $this->site->page->content = $content;
+            $this->site->updateTitleIfEmpty();
             $this->site->updateDescriptionFromPage();
             $this->site->number_of_attempts_update_the_page = 0;
             $this->site->push();

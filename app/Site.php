@@ -378,6 +378,13 @@ class Site extends Model
         return true;
     }
 
+    public function updateTitleIfEmpty()
+    {
+        if (empty($this->title)) {
+            $this->title = $this->domain;
+        }
+    }
+
     public function updateDescriptionFromPage()
     {
         $page = $this->page;
@@ -422,7 +429,6 @@ class Site extends Model
                 }
             }
         }
-
     }
 
     public function domainVal($value)
