@@ -222,6 +222,8 @@ class Site extends Model
             $value = $matches[1];
         }
 
+        $value = idn_to_utf8($value, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
+
         $this->attributes['title'] = mb_ucfirst($value);
     }
 

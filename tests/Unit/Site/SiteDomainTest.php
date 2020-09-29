@@ -59,4 +59,12 @@ class SiteDomainTest extends TestCase
 
         $this->assertEquals('адрес.рф', $site->domain);
     }
+
+    public function testJapan()
+    {
+        $site = new Site();
+        $site->domain = 'ルプルプ.コム';
+
+        $this->assertEquals('ルプルプ.コム', $site->domain);
+    }
 }

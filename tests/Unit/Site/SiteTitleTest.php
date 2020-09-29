@@ -27,4 +27,21 @@ class SiteTitleTest extends TestCase
 
         $this->assertEquals('Test.com', $site->title);
     }
+
+    public function testCyrDomain()
+    {
+        $site = new Site();
+        $site->title = 'xn--2020-94damyi5albn6b6i.xn--p1ai';
+
+        $this->assertEquals('Конституция2020.рф', $site->title);
+    }
+
+    public function testText()
+    {
+        $site = new Site();
+        $site->title = 'Название сайта';
+
+        $this->assertEquals('Название сайта', $site->title);
+    }
+
 }
