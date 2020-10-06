@@ -96,23 +96,6 @@ EOF;
         $this->assertEquals($array['keywords'], '');
     }
 
-    public function testGetTitleValue()
-    {
-        $content = <<<EOF
-<html>
-<head>
-<title> Title</title>
-</head>
-<body><p>text</p></body>
-</html>
-EOF;
-
-        $page = factory(SitePage::class)
-            ->create(['content' => $content]);
-
-        $this->assertEquals('Title', $page->getTitleValue());
-    }
-
     public function testHeaderTag()
     {
         $content = <<<EOF

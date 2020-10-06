@@ -223,8 +223,17 @@ class Site extends Model
         }
 
         $value = idn_to_utf8($value, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
+        $value = html_entity_decode($value);
 
         $this->attributes['title'] = mb_ucfirst($value);
+    }
+
+    public function setDescriptionAttribute($value)
+    {
+        $value = trim($value);
+        $value = html_entity_decode($value);
+
+        $this->attributes['description'] = $value;
     }
 
     public function setDomainAttribute($value)
