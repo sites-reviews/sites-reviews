@@ -1,16 +1,16 @@
 <div class="card d-flex flex-row px-3 py-2 mb-2">
     <div class="mr-3 text-center flex-shrink-1" style="width:50px;">
-        <x-user-avatar :user="auth()->user()" width="50" height="50" quality="90"/>
+        <x-user-avatar :user="$create_user" width="50" height="50" quality="90"/>
     </div>
     <div class="w-100">
         <div class="d-flex flex-row align-items-center">
             <div class="mr-2">
-                <x-user-name :user="auth()->user()"/>
+                <x-user-name :user="$create_user"/>
             </div>
 
             <div class="small text-lowercase">
-                {{ auth()->user()->number_of_reviews }}
-                {{ mb_ucfirst(trans_choice('user.reviews', auth()->user()->number_of_reviews)) }}
+                {{ $create_user->number_of_reviews }}
+                {{ mb_ucfirst(trans_choice('user.reviews', $create_user->number_of_reviews)) }}
             </div>
 
         </div>

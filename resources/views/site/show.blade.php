@@ -7,7 +7,7 @@
 @section('content')
 
     <div itemprop="mainEntity" itemscope itemtype="http://schema.org/Organization">
-        <div class="card mb-2">
+        <div class="card mb-3">
             <div class="card-body d-flex flex-column flex-sm-row ">
 
                 <div class="flex-shrink-1 text-center mr-3 mb-3" style="width:220px;">
@@ -165,8 +165,6 @@
             </div>
         </div>
 
-        <h5>{{ __('Reviews') }} <span class="badge badge-info">{{ $site->number_of_reviews }}</span></h5>
-
         @if ($errors->store_review->any())
             <div class="alert alert-danger mt-3">
                 <ul>
@@ -183,23 +181,37 @@
                     <x-review :review="$authReview"/>
                 </div>
             @else
-                @include('site.review.create')
+                <h5>{{ __('Your review') }}:</h5>
+
+                @include('site.review.create', ['create_user' => auth()->user()])
+
+                <div class="mb-3"></div>
             @endif
         @endauth
 
-        @if ($reviews->count() > 0)
+        @guest
+            <div class="alert alert-info">
+                {{ __('Please register or login to your account to write review about the site') }}
+            </div>
+        @endguest
 
-            <div class="py-2 d-flex flex-row">
+        <div class="d-flex flex-row align-items-center pb-2 overflow-auto">
+            <h5 class="w-100 text-nowrap">{{ __('Reviews') }} <span class="badge badge-info">{{ $site->number_of_reviews }}</span></h5>
+
+            <div class="ml-4 d-flex flex-sm-shrink-1 small">
                 <div class="text-body mr-3">{{ __('Sort') }}:</div>
                 <a href="{{ route('sites.show', ['site' => $site, 'reviews_order_by' => 'latest']) }}"
-                   class="mr-3 @if ($reviews_order_by == 'latest') text-primary @else text-secondary @endif">
+                   class="mr-3 text-nowrap @if ($reviews_order_by == 'latest') text-primary @else text-secondary @endif">
                     {{ __('by date') }}
                 </a>
                 <a href="{{ route('sites.show', ['site' => $site, 'reviews_order_by' => 'rating_desc']) }}"
-                   class="mr-3 @if ($reviews_order_by == 'rating_desc') text-primary @else text-secondary @endif">
+                   class="mr-3 text-nowrap @if ($reviews_order_by == 'rating_desc') text-primary @else text-secondary @endif">
                     {{ __('by rating') }}
                 </a>
             </div>
+        </div>
+
+        @if ($reviews->count() > 0)
 
             <div class="reviews">
                 @foreach ($reviews as $review)
