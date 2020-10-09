@@ -2,13 +2,42 @@
 
 namespace App\Http\Controllers;
 
+use App\Notifications\UserHasRegisteredNotification;
+use App\User;
+use App\UserEmail;
+use App\UserPhoto;
+use App\UserSocialAccount;
+use ErrorException;
+use Exception;
 use GuzzleHttp\Exception\ClientException;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\View\View;
+use ImagickException;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
+use RuntimeException;
 
 class UserSocialAccountController extends Controller
 {
+    /**
+     *
+     * Display a listing of the resource.
+     *
+     * @param User $user
+     * @return View
+     * @throws
+     */
+    public function index(User $user)
+    {
+        $this->authorize('watch_settings', $user);
+
+        return view('user.social_account.index', compact('user'));
+    }
+
     public function redirectToProvider($provider)
     {
         return Socialite::driver($provider)->redirect();
@@ -29,9 +58,9 @@ class UserSocialAccountController extends Controller
                 return redirect()
                     ->route('home')
                     ->withErrors([__('user_social_account.enter_error')], 'login');
-            } catch (\RuntimeException $exception) {
+            } catch (RuntimeException $exception) {
 
-            } catch (\ErrorException | \Exception $exception) {
+            } catch (ErrorException | Exception $exception) {
 
             }
 
@@ -47,7 +76,7 @@ class UserSocialAccountController extends Controller
                     $email_array[] = $providerUser->accessTokenResponseBody['email'];
                 }
             }
-/*
+
             // если пользователь вошел на сайт, то привязываем учетную запись
             if (auth()->check()) {
 
@@ -140,6 +169,7 @@ class UserSocialAccountController extends Controller
 
                         if ($user->isSuspended()) {
                             $user->unsuspend();
+                            $user->save();
                             $user->refresh();
                         }
 
@@ -154,7 +184,6 @@ class UserSocialAccountController extends Controller
                     return $this->createSocialAccount($provider, $providerUser, $user, $is_new_user);
                 }
             }
-*/
         });
     }
 
@@ -184,5 +213,79 @@ class UserSocialAccountController extends Controller
         return redirect()
             ->route('home')
             ->withErrors([__('user_social_account.enter_error')], 'login');
+    }
+
+    public function downloadUserPhotoIfNotExists($user, $url = null)
+    {
+        if (empty($user->avatar)) {
+            if (!empty($url)) {
+                try {
+                    $photo = new UserPhoto;
+                    $photo->storage = config('filesystems.default');
+                    $photo->openImage($url);
+                    $user->photos()->save($photo);
+                    $user->avatar()->associate($photo);
+                    $user->save();
+
+                } catch (ImagickException $exception) {
+
+                }
+            }
+        }
+    }
+
+    public function createSocialAccount($provider, $providerUser, $user, $is_new_user = false)
+    {
+        // если нет, то извлекаем почтовый ящик
+
+        $userSocialAccount = new UserSocialAccount([
+            'provider_user_id' => $providerUser->getId(),
+            'provider' => $provider,
+            'access_token' => $providerUser->token,
+            'parameters' => $providerUser
+        ]);
+
+        try {
+            $user->social_accounts()
+                ->save($userSocialAccount);
+        } catch (QueryException $exception) {
+            if ($exception->getCode() == 23505) {
+                if (DB::transactionLevel() > 1)
+                    DB::rollback();
+
+                report($exception);
+
+                return redirect()
+                    ->route('home')
+                    ->withErrors([__('user_social_account.a_login_error_occurred_try_again')], 'login');
+            } else {
+                throw $exception;
+            }
+        }
+
+        $this->downloadUserPhotoIfNotExists($user, $providerUser->getAvatar());
+
+        auth()->login($user, true);
+
+        if ($is_new_user) {
+            event(new Registered($user));
+        }
+
+        if ($is_new_user)
+            return redirect()->route('welcome');
+        else
+            return redirect()->route('profile', compact('user'));
+    }
+
+    public function detach(User $user, $id)
+    {
+        $account = $user->social_accounts()->findOrFail($id);
+
+        $this->authorize('detach', $account);
+
+        $account->delete();
+
+        return back()
+            ->with(['success' => __('user_social_account.detached', ['provider' => $account->provider])]);
     }
 }

@@ -2,8 +2,6 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-
 /**
  * App\SitePage
  *
@@ -26,6 +24,9 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @property string|null $search_for_new_domains_is_completed_at
  * @method static \Illuminate\Database\Eloquent\Builder|\App\SitePage whereSearchForNewDomainsIsCompletedAt($value)
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model void()
  */
 class SitePage extends Model
 {

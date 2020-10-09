@@ -2,8 +2,6 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-
 /**
  * App\PasswordReset
  *
@@ -24,6 +22,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\PasswordReset whereUsedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\PasswordReset whereUserId($value)
  * @mixin \Eloquent
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model void()
  */
 class PasswordReset extends Model
 {

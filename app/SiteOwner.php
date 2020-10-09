@@ -4,7 +4,6 @@ namespace App;
 
 use App\Traits\CheckedItems;
 use App\Traits\UserCreate;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -68,6 +67,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\SiteOwner withoutCheckedScope()
  * @method static \Illuminate\Database\Query\Builder|\App\SiteOwner withoutTrashed()
  * @mixin \Eloquent
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model void()
  */
 class SiteOwner extends Model
 {

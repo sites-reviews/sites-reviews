@@ -12,7 +12,6 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\TooManyRedirectsException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -84,6 +83,9 @@ use phpDocumentor\Reflection\Types\Boolean;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Site orderManuallyAddedFirst()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Site titleILike($searchText)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Site whereHowAdded($value)
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model void()
  */
 class Site extends Model
 {

@@ -3,7 +3,7 @@
 
 /**
  * A helper file for Laravel, to provide autocomplete information to your IDE
- * Generated for Laravel 7.27.0.
+ * Generated for Laravel 7.28.4.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -2523,7 +2523,7 @@
          * Begin broadcasting an event.
          *
          * @param mixed|null $event
-         * @return \Illuminate\Broadcasting\PendingBroadcast|void 
+         * @return \Illuminate\Broadcasting\PendingBroadcast 
          * @static 
          */ 
         public static function event($event = null)
@@ -10037,6 +10037,8 @@
                     /**
          * 
          *
+         * @param array $rules
+         * @param mixed $params
          * @static 
          */ 
         public static function validate($rules, ...$params)
@@ -10046,6 +10048,9 @@
                     /**
          * 
          *
+         * @param string $errorBag
+         * @param array $rules
+         * @param mixed $params
          * @static 
          */ 
         public static function validateWithBag($errorBag, $rules, ...$params)
@@ -10055,6 +10060,7 @@
                     /**
          * 
          *
+         * @param mixed $absolute
          * @static 
          */ 
         public static function hasValidSignature($absolute = true)
@@ -11152,6 +11158,7 @@
                     /**
          * 
          *
+         * @param mixed $options
          * @static 
          */ 
         public static function auth($options = [])
@@ -12787,7 +12794,7 @@
          * Create a signed route URL for a named route.
          *
          * @param string $name
-         * @param array $parameters
+         * @param mixed $parameters
          * @param \DateTimeInterface|\DateInterval|int|null $expiration
          * @param bool $absolute
          * @return string 
@@ -14150,15 +14157,15 @@
             /**
      * 
      *
-     * @method static void alert(string $message)
-     * @method static void critical(string $message)
-     * @method static void debug(string $message)
-     * @method static void emergency(string $message)
-     * @method static void error(string $message)
-     * @method static void info(string $message)
-     * @method static void log(string $message)
-     * @method static void notice(string $message)
-     * @method static void warning(string $message)
+     * @method static void alert(mixed $message)
+     * @method static void critical(mixed $message)
+     * @method static void debug(mixed $message)
+     * @method static void emergency(mixed $message)
+     * @method static void error(mixed $message)
+     * @method static void info(mixed $message)
+     * @method static void log(mixed $message)
+     * @method static void notice(mixed $message)
+     * @method static void warning(mixed $message)
      * @see \Barryvdh\Debugbar\LaravelDebugbar
      */ 
         class Facade {
@@ -15649,10 +15656,10 @@
          *
          * @static 
          */ 
-        public static function fetch($url, $allMeta = null, $lang = null, $options = 96)
+        public static function fetch($url, $allMeta = null, $lang = null, $options = 96, $userAgent = 'Curl')
         {
                         /** @var \shweshi\OpenGraph\OpenGraph $instance */
-                        return $instance->fetch($url, $allMeta, $lang, $options);
+                        return $instance->fetch($url, $allMeta, $lang, $options, $userAgent);
         }
          
     }
@@ -16329,6 +16336,150 @@
         {            //Method inherited from \Illuminate\Support\Manager         
                         /** @var \Laravel\Socialite\SocialiteManager $instance */
                         return $instance->getDrivers();
+        }
+         
+    }
+     
+}
+
+    namespace Illuminate\Http { 
+            /**
+     * 
+     *
+     */ 
+        class Request {
+                    /**
+         * 
+         *
+         * @param array $rules
+         * @param mixed $params
+         * @static 
+         */ 
+        public static function validate($rules, ...$params)
+        {
+                        return \Illuminate\Http\Request::validate($rules, ...$params);
+        }
+                    /**
+         * 
+         *
+         * @param string $errorBag
+         * @param array $rules
+         * @param mixed $params
+         * @static 
+         */ 
+        public static function validateWithBag($errorBag, $rules, ...$params)
+        {
+                        return \Illuminate\Http\Request::validateWithBag($errorBag, $rules, ...$params);
+        }
+                    /**
+         * 
+         *
+         * @param mixed $absolute
+         * @static 
+         */ 
+        public static function hasValidSignature($absolute = true)
+        {
+                        return \Illuminate\Http\Request::hasValidSignature($absolute);
+        }
+         
+    }
+     
+}
+
+    namespace Illuminate\Routing { 
+            /**
+     * 
+     *
+     * @mixin \Illuminate\Routing\RouteRegistrar
+     */ 
+        class Router {
+                    /**
+         * 
+         *
+         * @param mixed $options
+         * @static 
+         */ 
+        public static function auth($options = [])
+        {
+                        return \Illuminate\Routing\Router::auth($options);
+        }
+                    /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function resetPassword()
+        {
+                        return \Illuminate\Routing\Router::resetPassword();
+        }
+                    /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function confirmPassword()
+        {
+                        return \Illuminate\Routing\Router::confirmPassword();
+        }
+                    /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function emailVerification()
+        {
+                        return \Illuminate\Routing\Router::emailVerification();
+        }
+         
+    }
+     
+}
+
+    namespace Laravel\Dusk { 
+            /**
+     * 
+     *
+     */ 
+        class Browser {
+                    /**
+         * 
+         *
+         * @param mixed $frame
+         * @static 
+         */ 
+        public static function switchFrame($frame = null)
+        {
+                        return \Laravel\Dusk\Browser::switchFrame($frame);
+        }
+                    /**
+         * 
+         *
+         * @param mixed $element
+         * @static 
+         */ 
+        public static function scrollToElement($element = null)
+        {
+                        return \Laravel\Dusk\Browser::scrollToElement($element);
+        }
+         
+    }
+     
+}
+
+    namespace DaveJamesMiller\Breadcrumbs { 
+            /**
+     * The main Breadcrumbs singleton class, responsible for registering, generating and rendering breadcrumbs.
+     *
+     */ 
+        class BreadcrumbsManager {
+                    /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function pageTitle()
+        {
+                        return \DaveJamesMiller\Breadcrumbs\BreadcrumbsManager::pageTitle();
         }
          
     }

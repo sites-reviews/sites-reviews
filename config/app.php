@@ -175,8 +175,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        App\Providers\DNSServiceProvider::class,
-        \SocialiteProviders\Manager\ServiceProvider::class,
+        App\Providers\DNSServiceProvider::class
     ],
 
     /*

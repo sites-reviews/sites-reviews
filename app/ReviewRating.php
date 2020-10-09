@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Traits\UserCreate;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -36,6 +35,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\ReviewRating withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\ReviewRating withoutTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\ReviewRating whereRating($value)
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model void()
  */
 class ReviewRating extends Model
 {

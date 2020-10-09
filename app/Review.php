@@ -5,7 +5,6 @@ namespace App;
 use App\Traits\NestedItems;
 use App\Traits\UpAndDownRateableTrait;
 use App\Traits\UserCreate;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -60,6 +59,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read int|null $auth_user_ratings_count
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Review whereRateDown($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Review whereRateUp($value)
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model void()
  */
 class Review extends Model
 {

@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Litlife\Url\Url;
@@ -35,6 +34,9 @@ use Litlife\Url\Url;
  * @method static \Illuminate\Database\Query\Builder|\App\ProofOwnership withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\ProofOwnership withoutTrashed()
  * @mixin \Eloquent
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model void()
  */
 class ProofOwnership extends Model
 {

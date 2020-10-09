@@ -2,8 +2,6 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-
 /**
  * App\UserNotificationSetting
  *
@@ -32,6 +30,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\UserNotificationSetting whereEmailResponseToMyComment($value)
  * @property bool $db_when_comment_was_liked Когда мой комментарий понравился
  * @method static \Illuminate\Database\Eloquent\Builder|\App\UserNotificationSetting whereDbWhenCommentWasLiked($value)
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model void()
  */
 class UserNotificationSetting extends Model
 {

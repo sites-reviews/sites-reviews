@@ -2,8 +2,6 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-
 /**
  * App\PossibleDomain
  *
@@ -22,6 +20,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\PossibleDomain whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\PossibleDomain whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model void()
  */
 class PossibleDomain extends Model
 {
