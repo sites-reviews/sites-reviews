@@ -167,4 +167,16 @@ class UserController extends Controller
             'notifications' => $notifications
         ]);
     }
+
+    /**
+     *
+     *
+     * @param  User $user
+     * @return \Illuminate\Http\Response
+     */
+    public function welcome(User $user)
+    {
+        return redirect()
+            ->route('users.show', $user);
+    }
 }

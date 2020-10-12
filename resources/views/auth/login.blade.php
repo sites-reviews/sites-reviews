@@ -17,6 +17,9 @@
         <div class="card-header">{{ __('Login') }}</div>
 
         <div class="card-body">
+
+            @include('auth.login_via_social_network_button')
+
             <form method="POST" action="{{ route('login') }}">
                 @csrf
 

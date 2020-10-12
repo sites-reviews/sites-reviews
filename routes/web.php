@@ -111,6 +111,10 @@ Route::prefix('{locale}')
             Route::delete('/comments/{comment}', 'CommentController@destroy')->name('comments.destroy');
 
             Route::get('/users/{user}/notifications', 'UserController@notifications')->name('users.notifications');
+
+            Route::get('/users/{user}/social_accounts', 'UserSocialAccountController@index')->name('users.social_accounts.index');
+
+            Route::get('/users/{user}/social_accounts/{id}/unbind', 'UserSocialAccountController@unbind')->name('users.social_accounts.unbind');
         });
 
         Route::get('/ratings_colors', 'SiteController@ratingsColors')->name('ratings.colors');
@@ -129,6 +133,11 @@ Route::prefix('{locale}')
         Route::get('/auth/{provider}/callback', 'UserSocialAccountController@handleProviderCallback')
             ->name('social_accounts.callback')
             ->where('provider', '(google|facebook|vkontakte)');
+
+        Route::get('/welcome', 'UserController@welcome')->name('welcome');
+
+        Route::get('/preview/notification', 'OtherController@previewNotification')->name('preview.notification');
+
     });
 
 Route::get('/sites_rating/{size}/{site}.png', 'SiteController@ratingImage')->name('sites.rating.image')
@@ -147,5 +156,4 @@ Route::fallback('OtherController@error404')
     ->withoutMiddleware(\App\Http\Middleware\SetLocale::class);
 
 Route::get('/extension/redirect/', 'BrowserExtensionController@redirect')->name('browser.extension.redirect');
-
 

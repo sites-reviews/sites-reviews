@@ -15,6 +15,13 @@
                 {{ __('Notifications') }}
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link {{ active('users.social_accounts.index') }}"
+               href="{{ route('users.social_accounts.index', $user) }}">
+                {{ __('Social network accounts') }}
+            </a>
+        </li>
+
     </ul>
 
     @yield('user_setting_content')

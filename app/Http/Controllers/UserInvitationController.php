@@ -78,6 +78,7 @@ class UserInvitationController extends Controller
 
         $user = new User();
         $user->email = $invitation->email;
+        $user->email_verified_at = now();
         $user->fill($request->all());
         $user->save();
 
