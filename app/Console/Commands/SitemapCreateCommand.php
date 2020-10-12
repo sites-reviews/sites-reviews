@@ -223,6 +223,8 @@ class SitemapCreateCommand extends Command
 
     public function site(Site $site)
     {
+        $this->info($site->id);
+
         foreach ($this->locales as $locale) {
             $this->addUrl(
                 route('sites.show', ['site' => $site, 'locale' => $locale]),
