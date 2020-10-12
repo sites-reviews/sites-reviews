@@ -240,7 +240,12 @@ class Site extends Model
 
     public function setDomainAttribute($value)
     {
-        $this->attributes['domain'] = $this->domainVal($value);
+        $value = $this->domainVal($value);
+
+        if (empty($value))
+            throw new \LogicException('The domain cannot be empty');
+
+        $this->attributes['domain'] = $value;
     }
 
     public function getDomainAttribute($value)

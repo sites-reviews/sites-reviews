@@ -7,20 +7,6 @@ use PHPUnit\Framework\TestCase;
 
 class SiteIsDomainLikeTitleTest extends TestCase
 {
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
-    public function testEmpty()
-    {
-        $site = new Site();
-        $site->title = '';
-        $site->domain = '';
-
-        $this->assertTrue($site->isDomainLikeTitle());
-    }
-
     public function test2()
     {
         $site = new Site();
