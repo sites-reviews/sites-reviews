@@ -40,7 +40,7 @@ class UserSocialAccountController extends Controller
 
         $providers = [
             'google',
-            'facebook',
+            //'facebook',
             'vkontakte'
         ];
 
@@ -64,7 +64,7 @@ class UserSocialAccountController extends Controller
             } catch (ClientException $clientException) {
                 //dd(json_decode($clientException->getResponse()->getBody()->getContents()));
                 return redirect()
-                    ->route('home')
+                    ->route('login')
                     ->with('login_error', true)
                     ->withErrors(['error' => __('Login error occurred')]);
 
@@ -123,7 +123,7 @@ class UserSocialAccountController extends Controller
 
                     if (empty($user))
                         return redirect()
-                            ->route('home')
+                            ->route('login')
                             ->with('user_not_found', true)
                             ->withErrors(['error' => __('The user is not found')]);
 
@@ -135,20 +135,20 @@ class UserSocialAccountController extends Controller
 
                     if (empty($emails))
                         return redirect()
-                            ->route('home')
+                            ->route('login')
                             ->with('email_not_found', true)
                             ->withErrors(['error' => __('The mailbox was not found or access to it was denied').
                             __('Please link your mailbox to the selected social network or allow access, or use a different login method')]);
 
-                    $email = User::whereEmailsIn($emails)
+                    $user = User::whereEmailsIn($emails)
                         ->first();
 
-                    if (empty($email)) {
-                        $email = User::whereEmailsIn($emails)
+                    if (empty($user)) {
+                        $user = User::whereEmailsIn($emails)
                             ->first();
                     }
 
-                    if (empty($email)) {
+                    if (empty($user)) {
                         $password = Str::random(8);
 
                         $user = new User;
@@ -160,13 +160,6 @@ class UserSocialAccountController extends Controller
 
                         $is_new_user = true;
                     } else {
-                        $user = $email->user;
-
-                        if (empty($user))
-                            return redirect()
-                                ->route('home')
-                                ->withErrors(['error' => __('The user is not found')]);
-
                         $is_new_user = false;
                     }
 
@@ -183,18 +176,18 @@ class UserSocialAccountController extends Controller
 
             if (isset($json->error)) {
                 return redirect()
-                    ->route('home')
+                    ->route('login')
                     ->withErrors(['error' => __($json->error->error_msg)]);
             }
 
         } elseif ($exception->getMessage() == 'Undefined index: displayName') {
             return redirect()
-                ->route('home')
+                ->route('login')
                 ->with('google_did_not_send_username', true)
                 ->withErrors(['error' => __("Google didn't send the username")]);
         } elseif ($exception->getMessage() == 'Undefined index: emails') {
             return redirect()
-                ->route('home')
+                ->route('login')
                 ->with('email_not_found', true)
                 ->withErrors(['error' => __('Mailbox not found. Please allow us to use or link your mailbox to a social network')]);
         }
@@ -202,7 +195,7 @@ class UserSocialAccountController extends Controller
         report($exception);
 
         return redirect()
-            ->route('home')
+            ->route('login')
             ->with('login_error', true)
             ->withErrors(['error' => __('Login error occurred')]);
     }
@@ -242,7 +235,7 @@ class UserSocialAccountController extends Controller
                 report($exception);
 
                 return redirect()
-                    ->route('home')
+                    ->route('login')
                     ->withErrors(['error' => __('An error occurred when creating an account. Please try again')]);
             } else {
                 throw $exception;

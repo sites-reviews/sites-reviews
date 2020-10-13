@@ -507,4 +507,27 @@ EOT;
 		$this->get(route('social_accounts.callback', ['provider' => 'vkontakte', 'locale' => 'en']))
 			->assertRedirect();
 	}
+
+    public function testIfSameEmailExists()
+    {
+        Event::fake(Registered::class);
+
+        $user = factory(User::class)
+            ->create();
+
+        $social_account = factory(UserSocialAccount::class)
+            ->make(['user_id' => $user->id]);
+
+        $this->mockSocialiteFacade($user->email,
+            $social_account->access_token,
+            $social_account->provider,
+            $social_account->provider_user_id);
+
+        $response = $this->get(route('social_accounts.callback', ['provider' => $social_account->provider]))
+            ->assertRedirect(route('users.show', $user->id));
+
+        $this->assertAuthenticatedAs($user);
+
+        Event::assertDispatched(Registered::class, 0);
+    }
 }
