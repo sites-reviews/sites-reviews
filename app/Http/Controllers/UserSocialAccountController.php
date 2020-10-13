@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Notifications\UserHasRegisteredNotification;
+use App\Notifications\WelcomeNotification;
 use App\User;
 use App\UserEmail;
 use App\UserPhoto;
@@ -33,9 +34,17 @@ class UserSocialAccountController extends Controller
      */
     public function index(User $user)
     {
-        $this->authorize('watch_settings', $user);
+        $this->authorize('edit', $user);
 
-        return view('user.social_account.index', compact('user'));
+        $social_accounts = $user->social_accounts;
+
+        $providers = [
+            'google',
+            //'facebook',
+            'vkontakte'
+        ];
+
+        return view('user.setting.social_account', compact('user', 'social_accounts', 'providers'));
     }
 
     public function redirectToProvider($provider)
@@ -46,7 +55,6 @@ class UserSocialAccountController extends Controller
     public function handleProviderCallback($provider)
     {
         return DB::transaction(function () use ($provider) {
-
             try {
                 try {
                     $providerUser = Socialite::driver($provider)->user();
@@ -56,8 +64,10 @@ class UserSocialAccountController extends Controller
             } catch (ClientException $clientException) {
                 //dd(json_decode($clientException->getResponse()->getBody()->getContents()));
                 return redirect()
-                    ->route('home')
-                    ->withErrors([__('user_social_account.enter_error')], 'login');
+                    ->route('login')
+                    ->with('login_error', true)
+                    ->withErrors(['error' => __('Login error occurred')]);
+
             } catch (RuntimeException $exception) {
 
             } catch (ErrorException | Exception $exception) {
@@ -67,13 +77,13 @@ class UserSocialAccountController extends Controller
             if (isset($exception))
                 return $this->exception($exception);
 
-            $email_array = [];
+            $emails = [];
 
             if (!empty($providerUser->getEmail())) {
-                $email_array[] = $providerUser->getEmail();
+                $emails[] = $providerUser->getEmail();
             } else {
                 if (!empty($providerUser->accessTokenResponseBody['email'])) {
-                    $email_array[] = $providerUser->accessTokenResponseBody['email'];
+                    $emails[] = $providerUser->accessTokenResponseBody['email'];
                 }
             }
 
@@ -98,7 +108,7 @@ class UserSocialAccountController extends Controller
 
                 return redirect()
                     ->route('users.social_accounts.index', auth()->user())
-                    ->with(['success' => __('user_social_account.attached', ['provider' => $userSocialAccount->provider])]);
+                    ->with(['success' => __('Social network account :provider linked successfully', ['provider' => $userSocialAccount->provider])]);
             } else {
                 // если нет, то проверяем, существует ли у какого нибудь аккаунта привязка
 
@@ -113,71 +123,43 @@ class UserSocialAccountController extends Controller
 
                     if (empty($user))
                         return redirect()
-                            ->route('home')
-                            ->withErrors([__('user.not_found')], 'login');
+                            ->route('login')
+                            ->with('user_not_found', true)
+                            ->withErrors(['error' => __('The user is not found')]);
 
                     auth()->login($userSocialAccount->user);
 
                     return redirect()
-                        ->route('profile', ['user' => $userSocialAccount->user]);
+                        ->route('users.show', ['user' => $userSocialAccount->user]);
                 } else {
 
-                    if (empty($email_array))
+                    if (empty($emails))
                         return redirect()
-                            ->route('home')
-                            ->withErrors([__('user_social_account.email_not_found')], 'login');
+                            ->route('login')
+                            ->with('email_not_found', true)
+                            ->withErrors(['error' => __('The mailbox was not found or access to it was denied').
+                            __('Please link your mailbox to the selected social network or allow access, or use a different login method')]);
 
-                    $email = UserEmail::whereInEmails($email_array)
-                        ->confirmed()
+                    $user = User::whereEmailsIn($emails)
                         ->first();
 
-                    if (empty($email)) {
-                        $email = UserEmail::whereInEmails($email_array)
-                            ->createdBeforeMoveToNewEngine()
+                    if (empty($user)) {
+                        $user = User::whereEmailsIn($emails)
                             ->first();
                     }
 
-                    if (empty($email)) {
+                    if (empty($user)) {
                         $password = Str::random(8);
 
                         $user = new User;
-                        preg_match('/([[:graph:]]+)(?:[[:space:]]*)([[:graph:]]*)/iu', $providerUser->getName(), $array);
-                        list(, $user->first_name, $user->last_name) = $array;
-                        $user->email = $email_array[0];
+                        $user->name = $providerUser->getName();
+                        $user->email = $emails[0];
+                        $user->email_verified_at = now();
                         $user->password = $password;
                         $user->save();
 
-                        $user->setReferredByUserId(Cookie::get(config('litlife.name_user_refrence_get_param')));
-
-                        $email = new UserEmail;
-                        $email->email = $email_array[0];
-                        $email->confirm = true;
-                        $email->notice = true;
-                        $email->rescue = true;
-                        $user->emails()->save($email);
-
-                        $user->notify(new UserHasRegisteredNotification($user, $password));
-
                         $is_new_user = true;
                     } else {
-                        $user = $email->user;
-
-                        if (empty($user))
-                            return redirect()
-                                ->route('home')
-                                ->withErrors([__('user.nothing_found')], 'login');
-
-                        if ($user->isSuspended()) {
-                            $user->unsuspend();
-                            $user->save();
-                            $user->refresh();
-                        }
-
-                        if ($email->isCreatedBeforeMoveToNewEngine()) {
-                            $email->confirm = true;
-                            $email->save();
-                        }
-
                         $is_new_user = false;
                     }
 
@@ -194,39 +176,36 @@ class UserSocialAccountController extends Controller
 
             if (isset($json->error)) {
                 return redirect()
-                    ->route('home')
-                    ->withErrors([__('user_social_account.an_error_occurred', ['error_msg' => $json->error->error_msg])], 'login');
+                    ->route('login')
+                    ->withErrors(['error' => __($json->error->error_msg)]);
             }
 
         } elseif ($exception->getMessage() == 'Undefined index: displayName') {
             return redirect()
-                ->route('home')
-                ->withErrors([__('user_social_account.google_did_not_report_the_display_name_of_the_user')], 'login');
+                ->route('login')
+                ->with('google_did_not_send_username', true)
+                ->withErrors(['error' => __("Google didn't send the username")]);
         } elseif ($exception->getMessage() == 'Undefined index: emails') {
             return redirect()
-                ->route('home')
-                ->withErrors([__('user_social_account.email_not_found_allow_use_or_attach_the_mailbox_to_the_social_network')], 'login');
+                ->route('login')
+                ->with('email_not_found', true)
+                ->withErrors(['error' => __('Mailbox not found. Please allow us to use or link your mailbox to a social network')]);
         }
 
         report($exception);
 
         return redirect()
-            ->route('home')
-            ->withErrors([__('user_social_account.enter_error')], 'login');
+            ->route('login')
+            ->with('login_error', true)
+            ->withErrors(['error' => __('Login error occurred')]);
     }
 
-    public function downloadUserPhotoIfNotExists($user, $url = null)
+    public function downloadUserPhotoIfNotExists(User $user, $url = null)
     {
         if (empty($user->avatar)) {
             if (!empty($url)) {
                 try {
-                    $photo = new UserPhoto;
-                    $photo->storage = config('filesystems.default');
-                    $photo->openImage($url);
-                    $user->photos()->save($photo);
-                    $user->avatar()->associate($photo);
-                    $user->save();
-
+                    $user->replaceAvatar($url);
                 } catch (ImagickException $exception) {
 
                 }
@@ -256,8 +235,8 @@ class UserSocialAccountController extends Controller
                 report($exception);
 
                 return redirect()
-                    ->route('home')
-                    ->withErrors([__('user_social_account.a_login_error_occurred_try_again')], 'login');
+                    ->route('login')
+                    ->withErrors(['error' => __('An error occurred when creating an account. Please try again')]);
             } else {
                 throw $exception;
             }
@@ -267,25 +246,24 @@ class UserSocialAccountController extends Controller
 
         auth()->login($user, true);
 
-        if ($is_new_user) {
+        if ($is_new_user)
             event(new Registered($user));
-        }
 
         if ($is_new_user)
-            return redirect()->route('welcome');
+            return redirect()->route('users.show', compact('user'));
         else
-            return redirect()->route('profile', compact('user'));
+            return redirect()->route('users.show', compact('user'));
     }
 
-    public function detach(User $user, $id)
+    public function unbind(User $user, $id)
     {
         $account = $user->social_accounts()->findOrFail($id);
 
-        $this->authorize('detach', $account);
+        $this->authorize('unbind', $account);
 
         $account->delete();
 
         return back()
-            ->with(['success' => __('user_social_account.detached', ['provider' => $account->provider])]);
+            ->with(['success' => __('Social network account :provider successfully unlinked', ['provider' => $account->provider])]);
     }
 }

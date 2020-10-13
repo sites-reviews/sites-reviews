@@ -60,6 +60,7 @@ class UserInvitationCreateUserTest extends TestCase
         $this->assertNotNull($user);
         $this->assertEquals($userNew->name, $user->name);
         $this->assertEquals($invitation->email, $user->email);
+        $this->assertNotNull($user->email_verified_at);
 
         $this->assertAuthenticatedAs($user);
 

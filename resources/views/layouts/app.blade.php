@@ -274,8 +274,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
         crossorigin="anonymous"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"
-        integrity="sha256-OFRAJNoaD8L3Br5lglV7VyLRf0itmoBzWUoM+Sji4/8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.bundle.min.js"
+        integrity="sha512-Oy5BruJdE3gP9+LMJ11kC5nErkh3p4Y0GawT1Jrcez4RTDxODf3M/KP3pEsgeOYxWejqy2SPnj+QMpgtvhDciQ=="
+        crossorigin="anonymous"></script>
 
 <script src="{{ mix('js/app.js', 'assets') }}"></script>
 

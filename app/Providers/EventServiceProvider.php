@@ -29,6 +29,11 @@ class EventServiceProvider extends ServiceProvider
         Login::class => [
             TryRestoreSavedLocale::class
         ],
+        \SocialiteProviders\Manager\SocialiteWasCalled::class => [
+            'SocialiteProviders\Google\GoogleExtendSocialite@handle',
+            'SocialiteProviders\VKontakte\VKontakteExtendSocialite@handle',
+            'SocialiteProviders\Facebook\FacebookExtendSocialite@handle',
+        ],
     ];
 
     /**

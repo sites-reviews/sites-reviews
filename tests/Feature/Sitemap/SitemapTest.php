@@ -92,4 +92,33 @@ class SitemapTest extends TestCase
         $this->get(route('sitemap'))
             ->assertRedirect(Storage::disk('public')->url('sitemap/sitemap.xml'));
     }
+
+    public function testDeletedSite()
+    {
+        $site = factory(Site::class)
+            ->create();
+
+        $site2 = factory(Site::class)
+            ->create([
+                'domain' => 'xn--168-7d8ea4780a2u7e.club',
+                'created_at' => $site->created_at->addMinute()
+            ]);
+
+        $site2->delete();
+
+        Artisan::call('sitemap:create', [
+            'create_new' => true,
+            'sendToSearchEngine' => false,
+            'later_than_date' => $site->created_at,
+            '--handle' => 'sites',
+            '--storage' => $this->storage,
+            '--dirname' => $this->dirname
+        ]);
+
+        $files = Storage::disk($this->storage)->files($this->dirname);
+
+        $content = Storage::disk($this->storage)->get($files[1]);
+
+        $this->assertStringContainsString('<loc>'.route('sites.show', $site).'</loc>', $content);
+    }
 }

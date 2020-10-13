@@ -134,4 +134,6 @@ class OtherController extends Controller
     {
         return view('other.privacy_policy');
     }
+
+
 }

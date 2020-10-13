@@ -42,31 +42,7 @@ class UserSettingController extends Controller
     {
         $this->authorize('edit', $user);
 
-        DB::transaction(function () use ($request, $user) {
-
-            if ($user->avatar)
-                $user->avatar->delete();
-
-            if ($user->avatarPreview)
-                $user->avatarPreview->delete();
-
-            $avatar = new Image();
-            $avatar->open($request->file('avatar')->getRealPath());
-            $avatar->save();
-
-            $previewImagick = new \Imagick();
-            $previewImagick->readImage($request->file('avatar')->getRealPath());
-            $previewImagick->cropThumbnailImage(300,300);
-
-            $avatarPreview = new Image();
-            $avatarPreview->open($previewImagick);
-            $avatarPreview->save();
-
-            $user->avatar()->associate($avatar);
-            $user->avatarPreview()->associate($avatarPreview);
-            $user->save();
-
-        });
+        $user->replaceAvatar($request->file('avatar')->getRealPath());
 
         return redirect()
             ->route('users.settings', $user)

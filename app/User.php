@@ -3,9 +3,11 @@
 namespace App;
 
 use App\Enums\Gender;
+use App\Traits\HasEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 /**
@@ -62,6 +64,7 @@ class User extends Authenticatable
 {
     use Notifiable;
     use SoftDeletes;
+    use HasEmail;
 
     /**
      * The attributes that are mass assignable.
@@ -165,5 +168,39 @@ class User extends Authenticatable
             $value = null;
 
         $this->attributes['selected_locale'] = $value;
+    }
+
+    public function social_accounts()
+    {
+        return $this->hasMany('App\UserSocialAccount');
+    }
+
+    public function replaceAvatar($source)
+    {
+        return DB::transaction(function () use ($source) {
+            if ($this->avatar)
+                $this->avatar->delete();
+
+            if ($this->avatarPreview)
+                $this->avatarPreview->delete();
+
+            $avatar = new Image();
+            $avatar->open($source);
+            $avatar->save();
+
+            $previewImagick = new \Imagick();
+            $previewImagick->readImage($source);
+            $previewImagick->cropThumbnailImage(300,300);
+
+            $avatarPreview = new Image();
+            $avatarPreview->open($previewImagick);
+            $avatarPreview->save();
+
+            $this->avatar()->associate($avatar);
+            $this->avatarPreview()->associate($avatarPreview);
+            $this->save();
+
+            return true;
+        });
     }
 }

@@ -17,7 +17,14 @@
     @endif
 
     <div class="card">
+
+        <div class="card-header">
+            {{ __('Registration') }}
+        </div>
+
         <div class="card-body">
+
+            @include('auth.login_via_social_network_button')
 
             <div class="mb-2">
                 {{ __('Please enter your email address where the account will be registered:') }}

@@ -30,21 +30,23 @@
 @component('mail::button', ['url' => $actionUrl, 'color' => $color])
 {{ $actionText }}
 @endcomponent
+
 @endisset
 
 {{-- Outro Lines --}}
 @foreach ($outroLines as $line)
 {{ $line }}
-
 @endforeach
 
 {{-- Salutation --}}
 @if (! empty($salutation))
 {{ $salutation }}
 @else
-@lang('Regards'),<br>
+@lang('Regards'),
 {{ config('app.name') }}
 @endif
+
+[@lang('Please rate our site!')]({{ route('sites.show', ['site' => \Litlife\Url\Url::fromString(config('app.url'))->getHost()]) }})
 
 {{-- Subcopy --}}
 @isset($actionText)
