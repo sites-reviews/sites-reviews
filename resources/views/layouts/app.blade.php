@@ -206,14 +206,20 @@
             <div class="container ">
                 @if (\Browser::isFirefox())
                     <div class="mb-3 text-center">
-                        <a href="https://addons.mozilla.org/firefox/addon/sites-reviews-com/" class="h4 d-block" rel="nofollow">
+                        <a href="https://addons.mozilla.org/firefox/addon/sites-reviews-com/" class="h4 d-block" rel="nofollow" target="_blank">
                             <i class="fab fa-firefox-browser"></i> {{ __('Install extension for Firefox') }}
                         </a>
                     </div>
                 @elseif (\Browser::isEdge())
                     <div class="mb-3 text-center">
-                        <a href="https://microsoftedge.microsoft.com/addons/detail/sitesreviewscom-revie/lddfbdnnfdijagkaglcfhdoojpmonbne" class="h4 d-block" rel="nofollow">
+                        <a href="https://microsoftedge.microsoft.com/addons/detail/sitesreviewscom-revie/lddfbdnnfdijagkaglcfhdoojpmonbne" class="h4 d-block" rel="nofollow" target="_blank">
                             <i class="fab fa-edge"></i> {{ __('Install extension for Edge') }}
+                        </a>
+                    </div>
+                @elseif (\Browser::isChrome())
+                    <div class="mb-3 text-center">
+                        <a href="https://chrome.google.com/webstore/detail/sites-reviewscom-reviews/ellmdjpbdlololefgdbbmjlgjmlopkoa" class="h4 d-block" rel="nofollow" target="_blank">
+                            <i class="fab fa-chrome"></i> {{ __('Install extension for Chrome') }}
                         </a>
                     </div>
                 @endif
