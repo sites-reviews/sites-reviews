@@ -19,6 +19,6 @@ class HomeController extends Controller
             ->with('create_user', 'site', 'authUserRatings')
             ->simplePaginate();
 
-        return view('home', ['reviews' => $reviews]);
+        return view('home', ['reviews' => $reviews, 'dont_show_header_search' => true]);
     }
 }

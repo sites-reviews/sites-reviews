@@ -169,7 +169,8 @@ class SiteController extends Controller
 
     public function search(Request $request)
     {
-        $query = Site::fulltextSearch($request->term);
+        $query = Site::fulltextSearch($request->term)
+            ->with('preview');
 
         $url = trim(filter_var($request->term, FILTER_SANITIZE_STRING));
 

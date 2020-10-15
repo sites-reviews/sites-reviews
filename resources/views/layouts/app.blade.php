@@ -59,22 +59,26 @@
                     <h1 class="d-none d-md-inline h5">{{ config('app.name') }}</h1>
                 </a>
 
-                <button id="close_header_search" class="btn btn-secondary mr-3" style="display:none;">
-                    <i class="fas fa-times"></i>
-                </button>
+                @empty($dont_show_header_search)
 
-                <form id="header-search" class="form-inline my-lg-0 d-flex flex-nowrap mr-2" action="{{ route('sites.search') }}"
-                      enctype="multipart/form-data">
-
-                    <input name="term" class="form-control mr-2 d-none d-sm-block" type="search"
-                           @if (\Illuminate\Support\Facades\Route::currentRouteName() == 'sites.search') value="{{ request()->term }}" @endif
-                           placeholder="{{ __('Search') }}" aria-label="Search" required>
-
-                    <button class="btn btn-outline-success my-2 my-sm-0 text-nowrap" type="submit">
-                        <i class="fas fa-search"></i>
+                    <button id="close_header_search" class="btn btn-secondary mr-3" style="display:none;">
+                        <i class="fas fa-times"></i>
                     </button>
 
-                </form>
+                    <form id="header-search" class="form-inline my-lg-0 d-flex flex-nowrap mr-2" action="{{ route('sites.search') }}"
+                          enctype="multipart/form-data">
+
+                        <input name="term" class="form-control mr-2 d-none d-sm-block" type="search"
+                               @if (\Illuminate\Support\Facades\Route::currentRouteName() == 'sites.search') value="{{ request()->term }}" @endif
+                               placeholder="{{ __('Search') }}" aria-label="Search" required>
+
+                        <button class="btn btn-outline-success my-2 my-sm-0 text-nowrap" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+
+                    </form>
+
+                @endempty
 
             </div>
 
@@ -212,13 +216,15 @@
                     </div>
                 @elseif (\Browser::isEdge())
                     <div class="mb-3 text-center">
-                        <a href="https://microsoftedge.microsoft.com/addons/detail/sitesreviewscom-revie/lddfbdnnfdijagkaglcfhdoojpmonbne" class="h4 d-block" rel="nofollow" target="_blank">
+                        <a href="https://microsoftedge.microsoft.com/addons/detail/sitesreviewscom-revie/lddfbdnnfdijagkaglcfhdoojpmonbne"
+                           class="h4 d-block" rel="nofollow" target="_blank">
                             <i class="fab fa-edge"></i> {{ __('Install extension for Edge') }}
                         </a>
                     </div>
                 @elseif (\Browser::isChrome())
                     <div class="mb-3 text-center">
-                        <a href="https://chrome.google.com/webstore/detail/sites-reviewscom-reviews/ellmdjpbdlololefgdbbmjlgjmlopkoa" class="h4 d-block" rel="nofollow" target="_blank">
+                        <a href="https://chrome.google.com/webstore/detail/sites-reviewscom-reviews/ellmdjpbdlololefgdbbmjlgjmlopkoa"
+                           class="h4 d-block" rel="nofollow" target="_blank">
                             <i class="fab fa-chrome"></i> {{ __('Install extension for Chrome') }}
                         </a>
                     </div>
@@ -289,19 +295,26 @@
 @stack('after_scripts')
 
 <!-- Yandex.Metrika counter -->
-<script type="text/javascript" >
-    (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-        m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+<script type="text/javascript">
+    (function (m, e, t, r, i, k, a) {
+        m[i] = m[i] || function () {
+            (m[i].a = m[i].a || []).push(arguments)
+        };
+        m[i].l = 1 * new Date();
+        k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
+    })
     (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
 
     ym(68301934, "init", {
-        clickmap:true,
-        trackLinks:true,
-        accurateTrackBounce:true,
-        webvisor:true
+        clickmap: true,
+        trackLinks: true,
+        accurateTrackBounce: true,
+        webvisor: true
     });
 </script>
-<noscript><div><img src="https://mc.yandex.ru/watch/68301934" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<noscript>
+    <div><img src="https://mc.yandex.ru/watch/68301934" style="position:absolute; left:-9999px;" alt=""/></div>
+</noscript>
 <!-- /Yandex.Metrika counter -->
 
 </body>

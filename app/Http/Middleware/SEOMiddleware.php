@@ -23,9 +23,20 @@ class SEOMiddleware
      */
     public function handle($request, Closure $next)
     {
-        //SEOTools::setTitle(__('app.title'));
-        SEOTools::setDescription(__('app.description'));
-        SEOMeta::addKeyword(__('app.keywords'));
+        SEOTools::setDescription(__('Read and write reviews about websites and companies.').' '.
+            __('Expert reviews, user opinions, and comments from site clients'));
+
+        SEOMeta::addKeyword(implode(', ', [
+            __('site rating'),
+            __('feedback about the website'),
+            __('website'),
+            __('review'),
+            __('discussion'),
+            __('comment'),
+            __('opinion'),
+            __('communication'),
+            __('rating'),
+        ]));
 
         $url = Url::fromString($request->fullUrl());
 
