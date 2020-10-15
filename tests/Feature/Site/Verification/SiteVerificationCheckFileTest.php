@@ -242,7 +242,7 @@ class SiteVerificationCheckFileTest extends TestCase
             ->get(route('sites.verification.check.file', $site))
             ->assertRedirect(route('sites.verification.request', $site));
 
-        $response->assertSessionHas(['success' => __('The file with the required content is found on the site.')." ".__("Verification completed")]);
+        $response->assertSessionHas(['success' => __('The file with the required content is found on the site.')]);
 
         $siteOwner->refresh();
         $site->refresh();

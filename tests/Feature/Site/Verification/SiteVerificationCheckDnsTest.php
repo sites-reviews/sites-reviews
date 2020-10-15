@@ -186,7 +186,7 @@ class SiteVerificationCheckDnsTest extends TestCase
         $response = $this->actingAs($user)
             ->get(route('sites.verification.check.dns', $site))
             ->assertRedirect()
-            ->assertSessionHas(['success' => __("TXT record found.")." ".__("Verification completed")]);
+            ->assertSessionHas(['success' => __("TXT record found.")]);
 
         $siteOwner->refresh();
         $site->refresh();

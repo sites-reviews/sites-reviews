@@ -126,7 +126,7 @@ class SiteOwnerController extends Controller
 
             return redirect()
                 ->route('sites.verification.request', $site)
-                ->with(['success' => __("TXT record found.")." ".__("Verification completed")]);
+                ->with(['success' => __("TXT record found.")]);
         }
     }
 
@@ -218,7 +218,7 @@ class SiteOwnerController extends Controller
 
             return redirect()
                 ->route('sites.verification.request', $site)
-                ->with(['success' => __('The file with the required content is found on the site.')." ".__("Verification completed")]);
+                ->with(['success' => __('The file with the required content is found on the site.')]);
         }
         else
             return redirect()
