@@ -14,6 +14,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UriInterface;
 
 class SiteOwnerController extends Controller
 {
@@ -149,10 +152,24 @@ class SiteOwnerController extends Controller
                 'GET',
                 $proof->getFileUrl(),
                 [
-                    'allow_redirects' => false,
                     'connect_timeout' => 5,
                     'read_timeout' => 5,
-                    'timeout' => 5
+                    'timeout' => 5,
+                    'allow_redirects' => [
+                        'max'             => 5,
+                        'protocols'       => ['https'],
+                        'on_redirect'     => function(
+                            RequestInterface $request,
+                            ResponseInterface $response,
+                            UriInterface $uri
+                        ) {
+                            if ($request->getUri()->getHost() != $uri->getHost())
+                            {
+                                dd($request->getUri()->getHost(), $uri->getHost());
+                                throw new \Exception('Redirect to another host');
+                            }
+                        }
+                    ]
                 ]
             );
         } catch (ClientException $exception) {
@@ -204,6 +221,11 @@ class SiteOwnerController extends Controller
             return redirect()
                 ->route('sites.verification.request', $site)
                 ->withErrors(['error' => __('A redirect occurred instead of the file')], 'check_file');
+
+        if ($response->getStatusCode() != 200)
+            return redirect()
+                ->route('sites.verification.request', $site)
+                ->withErrors(['error' => __('Response code is :code (the code must be 200)', ['code' => $response->getStatusCode()])], 'check_file');
 
         $contents = $response->getBody()
             ->getContents();

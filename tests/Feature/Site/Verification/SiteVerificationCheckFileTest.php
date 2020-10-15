@@ -291,4 +291,46 @@ class SiteVerificationCheckFileTest extends TestCase
 
         $response->assertSessionHasErrors(['error' => __('A redirect occurred instead of the file')], null,'check_file');
     }
+
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testReturnCodeIs500()
+    {
+        $siteOwner = factory(SiteOwner::class)
+            ->states('not_confirmed')
+            ->create();
+
+        $proof = factory(ProofOwnership::class)
+            ->create(['site_owner_id' => $siteOwner->id]);
+
+        $site = $siteOwner->site;
+        $user = $siteOwner->create_user;
+
+        $stream = Psr7\stream_for($proof->file_code);
+
+        $response = new Response(500, [
+            'Content-Type' => [
+                'text/html; charset=UTF-8'
+            ],
+            'Transfer-Encoding' => [
+                'chunked'
+            ]
+        ], $stream);
+
+        $this->mock(Client::class, function ($mock) use ($response) {
+            $mock->shouldReceive('request')
+                ->once()
+                ->andReturn($response);
+        });
+
+        $response = $this->actingAs($user)
+            ->get(route('sites.verification.check.file', $site))
+            ->assertRedirect(route('sites.verification.request', $site));
+
+        $response->assertSessionHasErrors(['error' => __('Response code is :code (the code must be 200)', ['code' => 500])], null,'check_file');
+    }
 }

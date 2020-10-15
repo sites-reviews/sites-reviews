@@ -239,5 +239,6 @@
     "Verification completed": "Верификация пройдена",
     "A temporary server error occurred.": "Произошла временная ошибка сервера.",
     "Could not resolve host :domain": "Не удалось найти хост :domain",
-    "Owner": "Владелец"
+    "Owner": "Владелец",
+    "Response code is :code (the code must be 200)": "Код ответа :code (Код должен быть 200)"
 }
