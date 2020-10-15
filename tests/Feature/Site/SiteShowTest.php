@@ -116,4 +116,19 @@ class SiteShowTest extends TestCase
             ->assertOk()
             ->assertViewHas('site', $site);
     }
+
+    public function testOwnerVar()
+    {
+        $site = factory(Site::class)
+            ->states('with_owner')
+            ->create();
+
+        $owner = $site->userOwner;
+
+        $this->assertNotNull($owner);
+
+        $this->get(route('sites.show', $site->domain))
+            ->assertOk()
+            ->assertViewHas('owner', $owner);
+    }
 }

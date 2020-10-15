@@ -39,7 +39,7 @@ class SiteVerificationCheckDnsTest extends TestCase
         $response = $this->actingAs($user)
             ->get(route('sites.verification.check.dns', $site))
             ->assertRedirect(route('sites.verification.request', $site))
-            ->assertSessionHasErrors(['error' => __('verification.no_txt_records_were_found')], null, 'check_dns');
+            ->assertSessionHasErrors(['error' => __('No TXT records found')], null, 'check_dns');
     }
 
     public function testRequiredTxtRecordWasNotFoundError()
@@ -82,7 +82,9 @@ class SiteVerificationCheckDnsTest extends TestCase
         $response = $this->actingAs($user)
             ->get(route('sites.verification.check.dns', $site))
             ->assertRedirect(route('sites.verification.request', $site))
-            ->assertSessionHasErrors(['error' => __('verification.required_txt_record_was_not_found')], null,'check_dns');
+            ->assertSessionHasErrors([
+                'error' => __('No :dns_key_name TXT record found', ['dns_key_name' => config('verification.dns_key_name')])
+            ], null, 'check_dns');
     }
 
     public function testTxtDoesNotMatchTheDesiredValueError()
@@ -113,9 +115,9 @@ class SiteVerificationCheckDnsTest extends TestCase
                 'class' => 'IN',
                 "ttl" => 200,
                 "type" => "TXT",
-                "txt" => config('verification.dns_key_name').": 34234234234",
+                "txt" => config('verification.dns_key_name') . ": 34234234234",
                 "entries" => [
-                    0 => config('verification.dns_key_name').": 34234234234"
+                    0 => config('verification.dns_key_name') . ": 34234234234"
                 ]
             ],
         ]);
@@ -129,7 +131,9 @@ class SiteVerificationCheckDnsTest extends TestCase
         $response = $this->actingAs($user)
             ->get(route('sites.verification.check.dns', $site))
             ->assertRedirect()
-            ->assertSessionHasErrors(['error' => __('verification.txt_does_not_match_the_desired_value')], null,'check_dns');
+            ->assertSessionHasErrors([
+                'error' => __('TXT :dns_key_name does not match the desired value', ['dns_key_name' => config('verification.dns_key_name')])
+            ], null, 'check_dns');
 
         $siteOwner->refresh();
 
@@ -166,9 +170,9 @@ class SiteVerificationCheckDnsTest extends TestCase
                 'class' => 'IN',
                 "ttl" => 200,
                 "type" => "TXT",
-                "txt" => config('verification.dns_key_name').": ".$proof->dns_code,
+                "txt" => config('verification.dns_key_name') . ": " . $proof->dns_code,
                 "entries" => [
-                    0 => config('verification.dns_key_name').": ".$proof->dns_code
+                    0 => config('verification.dns_key_name') . ": " . $proof->dns_code
                 ]
             ],
         ]);
@@ -182,10 +186,34 @@ class SiteVerificationCheckDnsTest extends TestCase
         $response = $this->actingAs($user)
             ->get(route('sites.verification.check.dns', $site))
             ->assertRedirect()
-            ->assertSessionHas(['success' => __('verification.record_found_and_rights_verified')]);
+            ->assertSessionHas(['success' => __("TXT record found.")." ".__("Verification completed")]);
 
         $siteOwner->refresh();
+        $site->refresh();
 
         $this->assertTrue($siteOwner->isAccepted());
+        $this->assertTrue($site->userOwner->is($user));
+    }
+
+    public function testDnsGetRecordATemporaryServerErrorOccurred()
+    {
+        $site = factory(Site::class)
+            ->create();
+
+        $user = factory(User::class)
+            ->create();
+
+        $getRecordArray = collect([]);
+
+        $this->mock(DNS::class, function ($mock) use ($getRecordArray) {
+            $mock->shouldReceive('getRecord')
+                ->once()
+                ->andThrow(new \ErrorException('dns_get_record(): A temporary server error occurred.'));
+        });
+
+        $response = $this->actingAs($user)
+            ->get(route('sites.verification.check.dns', $site))
+            ->assertRedirect(route('sites.verification.request', $site))
+            ->assertSessionHasErrors(['error' => __('A temporary server error occurred.')], null, 'check_dns');
     }
 }

@@ -37,3 +37,11 @@ $factory->afterMakingState(Site::class, 'with_cyrillic_domain', function (Site $
         $array[array_rand($array)].
         $array[array_rand($array)].'.рф';
 });
+
+$factory->afterMakingState(Site::class, 'with_owner', function (Site $site, $faker) {
+
+    $user = factory(\App\User::class)
+        ->create();
+
+    $site->userOwner()->associate($user);
+});

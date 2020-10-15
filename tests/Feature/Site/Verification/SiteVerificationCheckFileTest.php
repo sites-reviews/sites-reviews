@@ -44,7 +44,7 @@ class SiteVerificationCheckFileTest extends TestCase
             ->get(route('sites.verification.check.file', $site))
             ->assertRedirect(route('sites.verification.request', $site))
             ->assertSessionHasErrors([
-                'error' => __('verification.error_when_checking_verification_using_a_file')
+                'error' => __('Error checking verification using a file')
             ], null,'check_file');
     }
 
@@ -81,9 +81,8 @@ class SiteVerificationCheckFileTest extends TestCase
         $response = $this->actingAs($user)
             ->get(route('sites.verification.check.file', $site))
             ->assertRedirect(route('sites.verification.request', $site))
-            ->assertSessionHasErrors(['error' => __('verification.error_connecting_to_the_site', [
-                'errno' => 6,
-                'error_text' => 'Could not resolve host'
+            ->assertSessionHasErrors(['error' => __('Could not resolve host :domain', [
+                'domain' => $site->domain
             ])], null,'check_file');
     }
 
@@ -119,7 +118,7 @@ class SiteVerificationCheckFileTest extends TestCase
         $response = $this->actingAs($user)
             ->get(route('sites.verification.check.file', $site))
             ->assertRedirect(route('sites.verification.request', $site))
-            ->assertSessionHasErrors(['error' => __('verification.error_connecting_to_the_site_server', [
+            ->assertSessionHasErrors(['error' => __('File access error :status_code :reason_phrase', [
                 'status_code' => 501,
                 'reason_phrase' => 'Some Error'
             ])], null,'check_file');
@@ -157,7 +156,9 @@ class SiteVerificationCheckFileTest extends TestCase
         $response = $this->actingAs($user)
             ->get(route('sites.verification.check.file', $site))
             ->assertRedirect(route('sites.verification.request', $site))
-            ->assertSessionHasErrors(['error' => __('verification.the_file_with_the_required_name_was_not_found')], null,'check_file');
+            ->assertSessionHasErrors([
+                'error' => __('The file with the required name was not found')
+            ], null,'check_file');
     }
 
     /**
@@ -198,7 +199,9 @@ class SiteVerificationCheckFileTest extends TestCase
             ->get(route('sites.verification.check.file', $site))
             ->assertRedirect(route('sites.verification.request', $site));
 //var_dump(session('errors'));
-        $response->assertSessionHasErrors(['error' => __('verification.the_file_content_does_not_match_the_desired_content')], null,'check_file');
+        $response->assertSessionHasErrors([
+            'error' => __('The file content does not match the desired content')
+        ], null,'check_file');
     }
 
     /**
@@ -239,7 +242,13 @@ class SiteVerificationCheckFileTest extends TestCase
             ->get(route('sites.verification.check.file', $site))
             ->assertRedirect(route('sites.verification.request', $site));
 
-        $response->assertSessionHas(['success' => __('verification.the_file_with_the_desired_content_is_found_on_the_site_verification_completed')]);
+        $response->assertSessionHas(['success' => __('The file with the required content is found on the site.')." ".__("Verification completed")]);
+
+        $siteOwner->refresh();
+        $site->refresh();
+
+        $this->assertTrue($siteOwner->isAccepted());
+        $this->assertTrue($site->userOwner->is($user));
     }
 
     /**
@@ -280,6 +289,6 @@ class SiteVerificationCheckFileTest extends TestCase
             ->get(route('sites.verification.check.file', $site))
             ->assertRedirect(route('sites.verification.request', $site));
 
-        $response->assertSessionHasErrors(['error' => __('verification.a_redirect_occurred_instead_of_the_file')], null,'check_file');
+        $response->assertSessionHasErrors(['error' => __('A redirect occurred instead of the file')], null,'check_file');
     }
 }

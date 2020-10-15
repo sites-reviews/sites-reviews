@@ -5,18 +5,19 @@
                 <x-user-avatar :user="$comment->create_user" width="50" height="50" quality="90"/>
             </div>
             <div class="w-100">
-                <div class="mb-2 d-flex">
-                    <div class="">
-                        <div class="d-flex flex-row align-items-center">
-                            <div class="mr-2">
-                                <x-user-name :user="$comment->create_user"/>
-                            </div>
+                <div class="mb-2 d-flex flex-row align-items-center">
+                    <div class="d-flex flex-wrap align-items-center">
+                        <div class="mr-2">
+                            <x-user-name :user="$comment->create_user"/>
                         </div>
+
+                        @if ($comment->isCreatorIsSiteOwner())
+                            <span class="mr-2 badge badge-pill badge-secondary">{{ __('Owner') }}</span>
+                        @endif
                     </div>
-                    <div class="ml-auto small">
+                    <div class="ml-auto small  text-right">
                         <x-time :time="$comment->created_at"/>
                     </div>
-
                 </div>
 
                 <div class="mb-1 mr-1">
@@ -77,7 +78,7 @@
         @if (!empty($descendants))
             @foreach ($descendants as $descendant)
                 @if (preg_match('/\/'.$comment->id.'\/$/i', $descendant->tree))
-                    <x-comment :comment="$descendant" :descendants="$descendants" />
+                    <x-comment :comment="$descendant" :descendants="$descendants"/>
                 @endif
             @endforeach
         @endif

@@ -24,14 +24,6 @@
                         <a href="{{ $site->getUrl() }}" target="_blank" itemprop="url">{{ $site->domain }}</a>
                     </div>
 
-                    {{--
-                    <div>
-                        <a href="{{ route('sites.verification.request', ['site' => $site]) }}">
-                            {{ __('This is my site') }}
-                        </a>
-                    </div>
---}}
-
                     @if ($site->rating > 0 and $site->number_of_reviews > 0)
                         <div itemprop="aggregateRating"
                              itemscope itemtype="http://schema.org/AggregateRating">
@@ -64,6 +56,12 @@
                             <button class="btn btn-primary" data-toggle="modal" data-target="#shareRatingModal">
                                 <i class="fas fa-share-alt"></i> &nbsp; {{ __('Share a rating') }}
                             </button>
+
+                            @empty ($owner)
+                                <a class="btn btn-primary" href="{{ route('sites.verification.request', ['site' => $site]) }}">
+                                    {{ __('This is my site') }}
+                                </a>
+                            @endempty
 
                         </div>
 

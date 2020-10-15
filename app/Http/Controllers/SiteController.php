@@ -60,7 +60,7 @@ class SiteController extends Controller
     {
         $this->authorize('show', $site);
 
-        $reviews = $site->reviews()
+        $query = $site->reviews()
             ->when(auth()->check(), function ($query) {
                 $query->where('create_user_id', '!=', Auth::id());
             })
@@ -71,10 +71,10 @@ class SiteController extends Controller
 
         switch ($request->reviews_order_by) {
             case 'latest':
-                $reviews->latest();
+                $query->latest();
                 break;
             case 'rating_desc':
-                $reviews->orderBy('rating', 'desc');
+                $query->orderBy('rating', 'desc');
                 break;
         }
 
@@ -98,11 +98,19 @@ class SiteController extends Controller
                 'title' => $title
             ]));
 
+        $owner = $site->userOwner;
+
+        $reviews = $query->simplePaginate();
+
+        foreach ($reviews as $review)
+            $review->setRelation('site', $site);
+
         return view('site.show', [
             'site' => $site,
-            'reviews' => $reviews->simplePaginate(),
+            'reviews' => $reviews,
             'authReview' => $authReview ?? null,
-            'reviews_order_by' => $request->reviews_order_by
+            'reviews_order_by' => $request->reviews_order_by,
+            'owner' => $owner ?? null
         ]);
     }
 

@@ -16,7 +16,7 @@ class HomeController extends Controller
     public function index()
     {
         $reviews = Review::latest()
-            ->with('create_user', 'site', 'authUserRatings')
+            ->with('create_user', 'site.siteOwners', 'authUserRatings')
             ->simplePaginate();
 
         return view('home', ['reviews' => $reviews, 'dont_show_header_search' => true]);

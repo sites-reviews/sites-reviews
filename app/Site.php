@@ -130,6 +130,11 @@ class Site extends Model
         return 'domain';
     }
 
+    public function scopeAny($query)
+    {
+        return $query->withTrashed();
+    }
+
     public function scopeWhereDomain($query, $value)
     {
         return $query->where('domain', $this->domainVal($value));
@@ -536,5 +541,10 @@ class Site extends Model
         $qs .= 'END';
 
         return $query->orderByRaw($qs);
+    }
+
+    public function userOwner()
+    {
+        return $this->belongsTo('App\User', 'user_owner_id', 'id');
     }
 }

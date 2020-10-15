@@ -84,13 +84,24 @@ class Comment extends Model
         'deleted_at'
     ];
 
+    public function scopeAny($query)
+    {
+        return $query->withTrashed();
+    }
+
     public function review()
     {
-        return $this->belongsTo('App\Review');
+        return $this->belongsTo('App\Review')
+            ->any();
     }
 
     public function getRedirectToUrl()
     {
         return route('comments.go_to', $this);
+    }
+
+    public function isCreatorIsSiteOwner() :bool
+    {
+        return $this->create_user->is($this->review->site->userOwner);
     }
 }

@@ -25,3 +25,9 @@ $factory->state(SiteOwner::class, 'not_confirmed', function ($faker) {
         'status' => \App\Enums\StatusEnum::OnReview,
     ];
 });
+
+$factory->state(SiteOwner::class, 'confirmed', function ($faker) {
+    return [
+        'status' => \App\Enums\StatusEnum::Accepted,
+    ];
+});

@@ -21,7 +21,7 @@ class ProofOwnershipObserver
     public function creating(ProofOwnership $proof)
     {
         $proof->dns_code = mb_strtolower(Str::random(32));
-        $proof->file_path = mb_strtolower('sitevote-verification-'.Str::random(32).'.txt');
+        $proof->file_path = mb_strtolower(config('verification.dns_key_name').'-'.Str::random(32).'.txt');
         $proof->file_code = mb_strtolower(Str::random(32));
     }
 }

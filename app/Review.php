@@ -78,9 +78,15 @@ class Review extends Model
         'rate'
     ];
 
+    public function scopeAny($query)
+    {
+        return $query->withTrashed();
+    }
+
     public function site()
     {
-        return $this->belongsTo('App\Site');
+        return $this->belongsTo('App\Site')
+            ->any();
     }
 
     public function setAdvantagesAttribute($value)
@@ -143,5 +149,10 @@ class Review extends Model
     public function replaceNewLinesToBreakLines($value)
     {
         return str_replace("\n", '<br />', $value);
+    }
+
+    public function isCreatorIsSiteOwner() :bool
+    {
+        return $this->create_user->is($this->site->userOwner);
     }
 }

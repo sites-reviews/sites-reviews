@@ -40,5 +40,29 @@ class SiteVerificationRequestTest extends TestCase
         $this->assertNotNull($proof->dns_code);
         $this->assertNotNull($proof->file_path);
         $this->assertNotNull($proof->file_code);
+
+        $userOwner = $site->userOwner;
+
+        $this->actingAs($user)
+            ->get(route('sites.verification.request', $site))
+            ->assertOk()
+            ->assertViewHas('userOwner', $userOwner);
+    }
+
+    public function testIfAuthUserIsAlreadyVerfified()
+    {
+        $site = factory(Site::class)
+            ->states('with_owner')
+            ->create();
+
+        $userOwner = $site->userOwner;
+
+        $this->assertNotNull($userOwner);
+
+        $this->actingAs($userOwner)
+            ->get(route('sites.verification.request', $site))
+            ->assertOk()
+            ->assertViewHas('userOwner', $userOwner)
+            ->assertSeeText(__('Verification completed'));
     }
 }

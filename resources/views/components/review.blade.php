@@ -11,14 +11,19 @@
                         <div class="mr-2" itemprop="author" itemscope itemtype="http://schema.org/Person">
                             <meta itemprop="name" content="{{ $review->create_user->name }}">
                             <meta itemprop="url" content="{{ route('users.show', $review->create_user) }}">
+
                             <x-user-name :user="$review->create_user"/>
 
                         </div>
                         @if ($showUserReviewsCount)
-                            <div class="small text-lowercase text-nowrap">
+                            <div class="mr-2 small text-lowercase text-nowrap">
                                 {{ $review->create_user->number_of_reviews }}
                                 {{ mb_ucfirst(trans_choice('user.reviews', $review->create_user->number_of_reviews)) }}
                             </div>
+                        @endif
+
+                        @if ($review->isCreatorIsSiteOwner())
+                            <div class="mr-2 badge badge-pill badge-secondary">{{ __('Owner') }}</div>
                         @endif
                     </div>
 

@@ -13,7 +13,7 @@ class ProofOwnershipTest extends TestCase
             ->create();
 
         $this->assertRegExp('/([a-z0-9]{32})/iu', $proof->dns_code);
-        $this->assertRegExp('/sitevote\-verification\-([a-z0-9]{32})\.txt/iu', $proof->file_path);
+        $this->assertRegExp('/'.config('verification.dns_key_name').'\-([a-z0-9]{32})\.txt/iu', $proof->file_path);
         $this->assertRegExp('/([a-z0-9]{32})/iu', $proof->file_code);
     }
 

@@ -13,6 +13,7 @@ use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class SiteOwnerController extends Controller
 {
@@ -24,28 +25,34 @@ class SiteOwnerController extends Controller
      */
     public function request(Site $site)
     {
-        $siteOwner = $site->siteOwners()
-            ->where('create_user_id', Auth::id())
-            ->first();
+        $userOwner = $site->userOwner;
 
-        if (empty($siteOwner)) {
-            $siteOwner = new SiteOwner();
-            $siteOwner->create_user_id = Auth::id();
-            $siteOwner->site_id = $site->id;
-            $siteOwner->statusSentForReview();
-            $siteOwner->save();
-
-            $proof = new ProofOwnership();
-            $proof->siteOwner()->associate($siteOwner);
-            $proof->save();
-        } else {
-            $proof = $siteOwner->proof()
+        if (empty($userOwner))
+        {
+            $siteOwner = $site->siteOwners()
+                ->where('create_user_id', Auth::id())
                 ->first();
+
+            if (empty($siteOwner)) {
+                $siteOwner = new SiteOwner();
+                $siteOwner->create_user_id = Auth::id();
+                $siteOwner->site_id = $site->id;
+                $siteOwner->statusSentForReview();
+                $siteOwner->save();
+
+                $proof = new ProofOwnership();
+                $proof->siteOwner()->associate($siteOwner);
+                $proof->save();
+            } else {
+                $proof = $siteOwner->proof()
+                    ->first();
+            }
         }
 
         return view('site.verification.request', [
             'site' => $site,
-            'proof' => $proof
+            'proof' => $proof ?? null,
+            'userOwner' => $userOwner
         ]);
     }
 
@@ -57,12 +64,23 @@ class SiteOwnerController extends Controller
      */
     public function checkDns(Site $site, DNS $dns)
     {
-        $collection = $dns->getRecord($site->domain, DNS_TXT);
+        try {
+            $collection = $dns->getRecord($site->domain, DNS_TXT);
+        } catch (\ErrorException $exception) {
+
+            $message = $exception->getMessage();
+
+            $message = trim(Str::after($message, 'dns_get_record():'));
+
+            return redirect()
+                ->route('sites.verification.request', $site)
+                ->withErrors(['error' => __($message)], 'check_dns');
+        }
 
         if ($collection->isEmpty() or $collection->where('txt')->isEmpty()) {
             return redirect()
                 ->route('sites.verification.request', $site)
-                ->withErrors(['error' => __('verification.no_txt_records_were_found')], 'check_dns');
+                ->withErrors(['error' => __('No TXT records found')], 'check_dns');
         }
 
         $verificationRecordsCollection = $collection->filter(function ($record, $key) {
@@ -85,7 +103,7 @@ class SiteOwnerController extends Controller
         if ($verificationRecordsCollection->isEmpty()) {
             return redirect()
                 ->route('sites.verification.request', $site)
-                ->withErrors(['error' => __('verification.required_txt_record_was_not_found')], 'check_dns');
+                ->withErrors(['error' => __('No :dns_key_name TXT record found', ['dns_key_name' => config('verification.dns_key_name')])], 'check_dns');
         }
 
         $siteOwner = $site->siteOwners()
@@ -98,14 +116,17 @@ class SiteOwnerController extends Controller
         if (empty($siteOwner)) {
             return redirect()
                 ->route('sites.verification.request', $site)
-                ->withErrors(['error' => __('verification.txt_does_not_match_the_desired_value')], 'check_dns');
+                ->withErrors(['error' => __('TXT :dns_key_name does not match the desired value', ['dns_key_name' => config('verification.dns_key_name')])], 'check_dns');
         } else {
             $siteOwner->statusAccepted();
             $siteOwner->save();
 
+            $site->userOwner()->associate($siteOwner->create_user);
+            $site->save();
+
             return redirect()
                 ->route('sites.verification.request', $site)
-                ->with(['success' => __('verification.record_found_and_rights_verified')]);
+                ->with(['success' => __("TXT record found.")." ".__("Verification completed")]);
         }
     }
 
@@ -139,13 +160,13 @@ class SiteOwnerController extends Controller
             {
                 return redirect()
                     ->route('sites.verification.request', $site)
-                    ->withErrors(['error' => __('verification.the_file_with_the_required_name_was_not_found')], 'check_file');
+                    ->withErrors(['error' => __('The file with the required name was not found')], 'check_file');
             }
             else
             {
                 return redirect()
                     ->route('sites.verification.request', $site)
-                    ->withErrors(['error' => __('verification.error_connecting_to_the_site_server', [
+                    ->withErrors(['error' => __('File access error :status_code :reason_phrase', [
                         'status_code' => $exception->getResponse()->getStatusCode(),
                         'reason_phrase' => $exception->getResponse()->getReasonPhrase()
                     ])], 'check_file');
@@ -154,9 +175,18 @@ class SiteOwnerController extends Controller
 
             $context = $exception->getHandlerContext();
 
+            if ($context['errno'] == 6)
+            {
+                return redirect()
+                    ->route('sites.verification.request', $site)
+                    ->withErrors(['error' => __('Could not resolve host :domain', [
+                        'domain' => $site->domain
+                    ])], 'check_file');
+            }
+
             return redirect()
                 ->route('sites.verification.request', $site)
-                ->withErrors(['error' => __('verification.error_connecting_to_the_site', [
+                ->withErrors(['error' => __('Site connection error :errno :error_text', [
                     'errno' => $context['errno'],
                     'error_text' => $context['error']
                 ])], 'check_file');
@@ -166,26 +196,34 @@ class SiteOwnerController extends Controller
             return redirect()
                 ->route('sites.verification.request', $site)
                 ->withErrors([
-                    'error' => __('verification.error_when_checking_verification_using_a_file')
+                    'error' => __('Error checking verification using a file')
                 ], 'check_file');
         }
 
         if ($response->getStatusCode() == 302)
             return redirect()
                 ->route('sites.verification.request', $site)
-                ->withErrors(['error' => __('verification.a_redirect_occurred_instead_of_the_file')], 'check_file');
+                ->withErrors(['error' => __('A redirect occurred instead of the file')], 'check_file');
 
         $contents = $response->getBody()
             ->getContents();
 
         if ($proof->file_code == trim($contents))
+        {
+            $siteOwner->statusAccepted();
+            $siteOwner->save();
+
+            $site->userOwner()->associate($siteOwner->create_user);
+            $site->save();
+
             return redirect()
                 ->route('sites.verification.request', $site)
-                ->with(['success' => __('verification.the_file_with_the_desired_content_is_found_on_the_site_verification_completed')]);
+                ->with(['success' => __('The file with the required content is found on the site.')." ".__("Verification completed")]);
+        }
         else
             return redirect()
                 ->route('sites.verification.request', $site)
-                ->withErrors(['error' => __('verification.the_file_content_does_not_match_the_desired_content')], 'check_file');
+                ->withErrors(['error' => __('The file content does not match the desired content')], 'check_file');
     }
 
     /**

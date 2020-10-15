@@ -214,6 +214,9 @@ class ReviewController extends Controller
             ->with('create_user.avatarPreview', 'authUserRatings')
             ->get();
 
+        foreach ($comments as $comment)
+            $comment->setRelation('review', $review);
+
         $view = view('site.review.comment.index', [
             'review' => $review,
             'comments' => $comments
