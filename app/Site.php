@@ -504,18 +504,10 @@ class Site extends Model
             ->withHost($this->domain)
             ->withScheme('http');
 
+        $options = config('guzzle.request.options');
+
         try {
-            $response = $client->request(
-                'GET',
-                (string)$url,
-                [
-                    'allow_redirects' => true,
-                    'connect_timeout' => 5,
-                    'read_timeout' => 5,
-                    'timeout' => 5,
-                    'verify' => false
-                ]
-            );
+            $response = $client->request('GET', (string)$url, $options);
 
             if (!empty($response->getStatusCode()))
                 return true;

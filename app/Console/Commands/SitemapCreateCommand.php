@@ -289,23 +289,12 @@ class SitemapCreateCommand extends Command
 
     public function ping($url)
     {
-        $headers = [
-            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.170 Safari/537.36'
-        ];
-
         $client = new Client();
 
-        $response = $client->request('GET', $url, [
-            'allow_redirects' => [
-                'max' => 5,        // allow at most 10 redirects.
-                'strict' => false,      // use "strict" RFC compliant redirects.
-                'referer' => true,      // add a Referer header
-            ],
-            'connect_timeout' => 5,
-            'read_timeout' => 10,
-            'headers' => $headers,
-            'timeout' => 20
-        ])->getBody();
+        $options = config('guzzle.request.options');
+
+        $response = $client->request('GET', $url, $options)
+            ->getBody();
     }
 
     public function getSitemapIndex()

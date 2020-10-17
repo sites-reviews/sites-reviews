@@ -146,28 +146,24 @@ class SiteOwnerController extends Controller
         $proof = $siteOwner->proof()->first();
 
         try {
-            $response = $client->request(
-                'GET',
-                $proof->getFileUrl(),
-                array_merge(
-                    config('guzzle.request.options'),
-                    [
-                        'allow_redirects' => [
-                            'max' => 5,
-                            'protocols' => ['http', 'https'],
-                            'on_redirect' => function (
-                                RequestInterface $request,
-                                ResponseInterface $response,
-                                UriInterface $uri
-                            ) {
-                                if ($request->getUri()->getHost() != $uri->getHost()) {
-                                    throw new \Exception('Redirect to another host');
-                                }
-                            }
-                        ]
-                    ]
-                )
-            );
+            $options = config('guzzle.request.options');
+
+            $options['allow_redirects'] = [
+                'max' => 5,
+                'protocols' => ['http', 'https'],
+                'on_redirect' => function (
+                    RequestInterface $request,
+                    ResponseInterface $response,
+                    UriInterface $uri
+                ) {
+                    if ($request->getUri()->getHost() != $uri->getHost()) {
+                        throw new \Exception('Redirect to another host');
+                    }
+                }
+            ];
+
+            $response = $client->request('GET', $proof->getFileUrl(), $options);
+
         } catch (ClientException $exception) {
             if ($exception->getResponse()->getStatusCode() == 404) {
                 return redirect()

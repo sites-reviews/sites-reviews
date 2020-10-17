@@ -117,23 +117,14 @@ class SiteUpdateContentCommand extends Command
 
     public function getResponse(Client $client, $url): \Psr\Http\Message\ResponseInterface
     {
-        $headers = [
-            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.170 Safari/537.36',
-            'Referer' => (string)Url::fromString($url)->withPath('/')
-        ];
+        $options = config('guzzle.request.options');
+        $options['connect_timeout'] = 15;
+        $options['read_timeout'] = 15;
+        $options['timeout'] = 15;
+        $options['verify'] = false;
+        $options['headers']['Referer'] = (string)Url::fromString($url)->withPath('/');
 
-        $response = $client->request('GET', (string)$url, [
-            'allow_redirects' => [
-                'max' => 5,             // allow at most 10 redirects.
-                'strict' => false,      // use "strict" RFC compliant redirects.
-                'referer' => true,      // add a Referer header
-            ],
-            'connect_timeout' => 15,
-            'read_timeout' => 15,
-            'headers' => $headers,
-            'timeout' => 15,
-            'verify' => false
-        ]);
+        $response = $client->request('GET', (string)$url, $options);
 
         return $response;
     }
@@ -206,8 +197,7 @@ class SiteUpdateContentCommand extends Command
     {
         if (intval($site))
             return Site::findOrFail($site);
-        else
-        {
+        else {
             $url = Url::fromString($site);
 
             return Site::whereDomain($url->getHost())->firstOrFail();

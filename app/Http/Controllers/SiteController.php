@@ -256,19 +256,19 @@ class SiteController extends Controller
                     ->withHost($site->domain)
                     ->withScheme('http');
 
+                $options = config('guzzle.request.options');
+
+                $options['allow_redirects'] = [
+                    'max' => $maxRedirects,        // allow at most 10 redirects.
+                    'strict' => true,      // use "strict" RFC compliant redirects.
+                    'referer' => true,      // add a Referer header
+                    'protocols' => ['http', 'https'] // only allow https URLs
+                ];
+
                 $response = $client->request(
                     'GET',
                     (string)$url,
-                    array_merge(
-                        config('guzzle.request.options'),
-                        [
-                            'allow_redirects' => [
-                                'max' => $maxRedirects,        // allow at most 10 redirects.
-                                'strict' => true,      // use "strict" RFC compliant redirects.
-                                'referer' => true,      // add a Referer header
-                                'protocols' => ['http', 'https'] // only allow https URLs
-                            ]
-                        ])
+                    $options
                 );
 
             } catch (TooManyRedirectsException $exception) {
