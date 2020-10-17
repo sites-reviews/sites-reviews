@@ -9,6 +9,7 @@ use Artesaos\SEOTools\Facades\SEOTools;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\TooManyRedirectsException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -248,6 +249,8 @@ class SiteController extends Controller
             $site = new Site();
             $site->domain = $url->getHost();
 
+            $maxRedirects = 5;
+
             try {
                 $url = Url::fromString('')
                     ->withHost($site->domain)
@@ -256,20 +259,29 @@ class SiteController extends Controller
                 $response = $client->request(
                     'GET',
                     (string)$url,
-                    [
-                        'allow_redirects' => true,
-                        'connect_timeout' => 5,
-                        'read_timeout' => 5,
-                        'timeout' => 5,
-                        'verify' => false,
-                        'headers' => [
-                            'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-                            'Accept-Encoding' => 'gzip, deflate, br',
-                            'Accept-Language' => 'en-EN,ru-RU;q=0.9,en-US;q=0.8,en;q=0.7',
-                            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36'
-                        ]
-                    ]
+                    array_merge(
+                        config('guzzle.request.options'),
+                        [
+                            'allow_redirects' => [
+                                'max' => $maxRedirects,        // allow at most 10 redirects.
+                                'strict' => true,      // use "strict" RFC compliant redirects.
+                                'referer' => true,      // add a Referer header
+                                'protocols' => ['http', 'https'] // only allow https URLs
+                            ]
+                        ])
                 );
+
+            } catch (TooManyRedirectsException $exception) {
+
+                report($exception);
+
+                return redirect()
+                    ->route('sites.search', ['term' => $domain])
+                    ->withInput()
+                    ->withErrors(['error' =>
+                        __("Error adding a site") . '. ' .
+                        __("Too many redirects: :count", ['count' => $maxRedirects])
+                    ], 'create_site');
 
             } catch (ClientException $exception) {
 
@@ -281,7 +293,7 @@ class SiteController extends Controller
                     ->route('sites.search', ['term' => $domain])
                     ->withInput()
                     ->withErrors([
-                        'error' => __("Error adding a site").'. '.
+                        'error' => __("Error adding a site") . '. ' .
                             __('The server responded: ":code :phrase"', ['phrase' => $response->getReasonPhrase(), 'code' => $response->getStatusCode()])
                     ], 'create_site');
 
@@ -295,10 +307,9 @@ class SiteController extends Controller
                     ->route('sites.search', ['term' => $domain])
                     ->withInput()
                     ->withErrors(['error' => __("Error connecting to the site \":code :phrase\"", [
-                            'phrase' => $context['error'],
-                            'code' => $context['errno'],
-                        ])], 'create_site');
-
+                        'phrase' => $context['error'],
+                        'code' => $context['errno'],
+                    ])], 'create_site');
             } catch (\Exception $exception) {
 
                 report($exception);

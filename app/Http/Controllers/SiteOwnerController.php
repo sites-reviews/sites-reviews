@@ -30,8 +30,7 @@ class SiteOwnerController extends Controller
     {
         $userOwner = $site->userOwner;
 
-        if (empty($userOwner))
-        {
+        if (empty($userOwner)) {
             $siteOwner = $site->siteOwners()
                 ->where('create_user_id', Auth::id())
                 ->first();
@@ -90,15 +89,14 @@ class SiteOwnerController extends Controller
 
             $txt = trim($record['txt']);
 
-            if (preg_match('/^'.preg_quote(config('verification.dns_key_name')).'(?:[[:space:]]*)\:(.*)/iu', $txt, $matches))
+            if (preg_match('/^' . preg_quote(config('verification.dns_key_name')) . '(?:[[:space:]]*)\:(.*)/iu', $txt, $matches))
                 return true;
 
         })->transform(function ($record, $key) {
 
             $txt = trim($record['txt']);
 
-            if (preg_match('/^'.preg_quote(config('verification.dns_key_name')).'(?:[[:space:]]*)\:(.*)/iu', $txt, $matches))
-            {
+            if (preg_match('/^' . preg_quote(config('verification.dns_key_name')) . '(?:[[:space:]]*)\:(.*)/iu', $txt, $matches)) {
                 return trim($matches[1]);
             }
         });
@@ -151,36 +149,31 @@ class SiteOwnerController extends Controller
             $response = $client->request(
                 'GET',
                 $proof->getFileUrl(),
-                [
-                    'connect_timeout' => 5,
-                    'read_timeout' => 5,
-                    'timeout' => 5,
-                    'allow_redirects' => [
-                        'max'             => 5,
-                        'protocols'       => ['https'],
-                        'on_redirect'     => function(
-                            RequestInterface $request,
-                            ResponseInterface $response,
-                            UriInterface $uri
-                        ) {
-                            if ($request->getUri()->getHost() != $uri->getHost())
-                            {
-                                dd($request->getUri()->getHost(), $uri->getHost());
-                                throw new \Exception('Redirect to another host');
+                array_merge(
+                    config('guzzle.request.options'),
+                    [
+                        'allow_redirects' => [
+                            'max' => 5,
+                            'protocols' => ['http', 'https'],
+                            'on_redirect' => function (
+                                RequestInterface $request,
+                                ResponseInterface $response,
+                                UriInterface $uri
+                            ) {
+                                if ($request->getUri()->getHost() != $uri->getHost()) {
+                                    throw new \Exception('Redirect to another host');
+                                }
                             }
-                        }
+                        ]
                     ]
-                ]
+                )
             );
         } catch (ClientException $exception) {
-            if ($exception->getResponse()->getStatusCode() == 404)
-            {
+            if ($exception->getResponse()->getStatusCode() == 404) {
                 return redirect()
                     ->route('sites.verification.request', $site)
                     ->withErrors(['error' => __('The file with the required name was not found')], 'check_file');
-            }
-            else
-            {
+            } else {
                 return redirect()
                     ->route('sites.verification.request', $site)
                     ->withErrors(['error' => __('File access error :status_code :reason_phrase', [
@@ -192,8 +185,7 @@ class SiteOwnerController extends Controller
 
             $context = $exception->getHandlerContext();
 
-            if ($context['errno'] == 6)
-            {
+            if ($context['errno'] == 6) {
                 return redirect()
                     ->route('sites.verification.request', $site)
                     ->withErrors(['error' => __('Could not resolve host :domain', [
@@ -230,8 +222,7 @@ class SiteOwnerController extends Controller
         $contents = $response->getBody()
             ->getContents();
 
-        if ($proof->file_code == trim($contents))
-        {
+        if ($proof->file_code == trim($contents)) {
             $siteOwner->statusAccepted();
             $siteOwner->save();
 
@@ -241,8 +232,7 @@ class SiteOwnerController extends Controller
             return redirect()
                 ->route('sites.verification.request', $site)
                 ->with(['success' => __('The file with the required content is found on the site.')]);
-        }
-        else
+        } else
             return redirect()
                 ->route('sites.verification.request', $site)
                 ->withErrors(['error' => __('The file content does not match the desired content')], 'check_file');

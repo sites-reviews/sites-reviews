@@ -8,6 +8,7 @@ use App\Site;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\TooManyRedirectsException;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
@@ -129,6 +130,31 @@ class SiteCreateTest extends TestCase
                     'phrase' => $context['error'],
                     'code' => $context['errno'],
                 ])
+            ], '', 'create_site');
+    }
+
+    public function testTooManyRedirectsException()
+    {
+        $domain = Str::random(8) . $this->faker->domainName;
+
+        $request = new Psr7\Request('get', '');
+
+        $exception = new TooManyRedirectsException("Will not follow more than 5 redirects", $request);
+
+        $this->mock(Client::class, function ($mock) use ($exception) {
+            $mock->shouldReceive('request')
+                ->once()
+                ->andThrow($exception);
+        });
+
+        $this->get(route('home'))
+            ->assertOk();
+
+        $response = $this->get(route('sites.create.or_show', ['domain' => $domain]))
+            ->assertRedirect(route('sites.search', ['term' => $domain]))
+            ->assertSessionHasErrors(['error' =>
+                __("Error adding a site") . '. ' .
+                __("Too many redirects: :count", ['count' => 5])
             ], '', 'create_site');
     }
 }
