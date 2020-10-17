@@ -8,10 +8,12 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Dusk\DuskServiceProvider;
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -53,6 +55,10 @@ class AppServiceProvider extends ServiceProvider
         Date::setLocale(config('app.locale'));
 
         setlocale(LC_TIME, config('app.locale') . '_' . mb_strtoupper(config('app.locale')) . '.UTF-8');
+
+        URL::defaults(['locale' => config('app.locale')]);
+
+        Paginator::useBootstrap();
     }
 
     /**
