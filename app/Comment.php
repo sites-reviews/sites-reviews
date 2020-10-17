@@ -64,6 +64,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static Builder|Model orderByField($column, $ids)
  * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Comment any()
  */
 class Comment extends Model
 {
