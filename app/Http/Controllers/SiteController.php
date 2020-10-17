@@ -261,7 +261,13 @@ class SiteController extends Controller
                         'connect_timeout' => 5,
                         'read_timeout' => 5,
                         'timeout' => 5,
-                        'verify' => false
+                        'verify' => false,
+                        'headers' => [
+                            'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+                            'Accept-Encoding' => 'gzip, deflate, br',
+                            'Accept-Language' => 'en-EN,ru-RU;q=0.9,en-US;q=0.8,en;q=0.7',
+                            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36'
+                        ]
                     ]
                 );
 
@@ -269,10 +275,16 @@ class SiteController extends Controller
 
                 report($exception);
 
+                $response = $exception->getResponse();
+
                 return redirect()
                     ->route('sites.search', ['term' => $domain])
                     ->withInput()
-                    ->withErrors(['error' => __("Error adding a site")], 'create_site');
+                    ->withErrors([
+                        'error' => __("Error adding a site").'. '.
+                            __('The server responded: ":code :phrase"', ['phrase' => $response->getReasonPhrase(), 'code' => $response->getStatusCode()])
+                    ], 'create_site');
+
             } catch (ConnectException $exception) {
 
                 report($exception);
@@ -282,7 +294,10 @@ class SiteController extends Controller
                 return redirect()
                     ->route('sites.search', ['term' => $domain])
                     ->withInput()
-                    ->withErrors(['error' => __("Error adding a site")], 'create_site');
+                    ->withErrors(['error' => __("Error connecting to the site \":code :phrase\"", [
+                            'phrase' => $context['error'],
+                            'code' => $context['errno'],
+                        ])], 'create_site');
 
             } catch (\Exception $exception) {
 

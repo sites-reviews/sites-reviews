@@ -240,5 +240,7 @@
     "A temporary server error occurred.": "Произошла временная ошибка сервера.",
     "Could not resolve host :domain": "Не удалось найти хост :domain",
     "Owner": "Владелец",
-    "Response code is :code (the code must be 200)": "Код ответа :code (Код должен быть 200)"
+    "Response code is :code (the code must be 200)": "Код ответа :code (Код должен быть 200)",
+    "The server responded: \":code :phrase\"": "Сервер ответил: \":code :phrase\"",
+    "Error connecting to the site \":code :phrase\"": "Ошибка подключения к сайту \":code :phrase\""
 }
