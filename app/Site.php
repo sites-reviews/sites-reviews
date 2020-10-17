@@ -86,6 +86,10 @@ use phpDocumentor\Reflection\Types\Boolean;
  * @method static Builder|Model orderByField($column, $ids)
  * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|Model void()
+ * @property int|null $user_owner_id Id пользователя который владеет сайтом
+ * @property-read \App\User|null $userOwner
+ * @method static Builder|Site any()
+ * @method static Builder|Site whereUserOwnerId($value)
  */
 class Site extends Model
 {

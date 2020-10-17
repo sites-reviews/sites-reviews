@@ -81,13 +81,13 @@ abstract class Model extends Eloquent
 		return $query->orderByRaw('' . $column . ' ' . $sort . ' nulls ' . $nulls . '');
 	}
 
-	/**
-	 * Set the keys for a save update query.
-	 *
-	 * @param Builder $query
-	 * @return Builder
-	 */
-	protected function setKeysForSaveQuery(Builder $query)
+    /**
+     * Set the keys for a save update query.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+	protected function setKeysForSaveQuery($query)
 	{
 		$keys = $this->getKeyName();
 		if (!is_array($keys)) {

@@ -59,6 +59,9 @@ use Illuminate\Support\Facades\Hash;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereAvatarPreviewImageId($value)
  * @property string|null $selected_locale Выбранный язык
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereSelectedLocale($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserSocialAccount[] $social_accounts
+ * @property-read int|null $social_accounts_count
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereEmailsIn($emails)
  */
 class User extends Authenticatable
 {
