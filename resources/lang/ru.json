@@ -243,8 +243,7 @@
     "Response code is :code (the code must be 200)": "Код ответа :code (Код должен быть 200)",
     "The server responded: \":code :phrase\"": "Сервер ответил: \":code :phrase\"",
     "Error connecting to the site \":code :phrase\"": "Ошибка подключения к сайту \":code :phrase\"",
-    "Too many redirects: :count": "Слишком много перенаправлений: :count"
-    "Error connecting to the site \":code :phrase\"": "Ошибка подключения к сайту \":code :phrase\"",
+    "Too many redirects: :count": "Слишком много перенаправлений: :count",
     "Enter your mailbox address in this field": "Введите в это поле адрес вашего почтового ящика",
     "A review is successfully published": "Отзыв успешно опубликован",
     "An email was sent to your email address :email to confirm the publication of the review": "На ваш электронный адрес :email было отправлено письмо для подтверждения публикации отзыва",
