@@ -18,12 +18,15 @@ mix.options({
 mix.setPublicPath('public/assets')
     .setResourceRoot('/assets')
     .js('resources/js/app.js', 'js')
+    .js('resources/js/vue.js', 'js')
     .js('resources/js/home.js', 'js')
     .js('resources/js/sites.show.js', 'js')
     .js('resources/js/users.show.js', 'js')
     .js('resources/js/reviews.edit.js', 'js')
     .js('resources/js/comments.show.js', 'js')
     .js('resources/js/reviews.show.js', 'js')
+    .js('resources/js/reviews.create.js', 'js')
+    .js('resources/js/users.reviews.draft.js', 'js')
     .sass('resources/sass/app.scss', 'css')
     .sass('resources/sass/bootstrap.scss', 'css')
     .version();
@@ -54,7 +57,8 @@ mix.webpackConfig({
         extensions: ['.js', '.json', '.less'],
         modules: [
             path.resolve('./resources/js/components'),
-            path.resolve('./node_modules')
+            path.resolve('./node_modules'),
+            path.resolve('./node_modules/vue'),
         ]
     },
     // включаем поддержку трансформации arrow functions в старый формат для пакетов импортируемых из node_modules

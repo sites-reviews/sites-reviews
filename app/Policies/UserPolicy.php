@@ -40,4 +40,12 @@ class UserPolicy extends Policy
         else
             return $this->deny(__('You do not have permission to view notifications'));
     }
+
+    public function view_reviews_drafts(User $authUser, User $user)
+    {
+        if ($user->is($authUser))
+            return $this->allow();
+        else
+            return $this->deny(__('You don\'t have access to other users drafts'));
+    }
 }

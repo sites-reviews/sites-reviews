@@ -29,7 +29,6 @@ class UserInvitationObserver
 
     public function created(UserInvitation $invitation)
     {
-        Notification::route('mail', $invitation->email)
-            ->notify(new InvitationNotification($invitation));
+
     }
 }

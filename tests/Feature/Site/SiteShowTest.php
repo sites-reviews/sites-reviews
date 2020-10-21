@@ -4,6 +4,7 @@ namespace Tests\Feature\Site;
 
 use App\Review;
 use App\Site;
+use App\TempReview;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
@@ -130,5 +131,14 @@ class SiteShowTest extends TestCase
         $this->get(route('sites.show', $site->domain))
             ->assertOk()
             ->assertViewHas('owner', $owner);
+    }
+
+    public function testShowTemp()
+    {
+        $review = TempReview::factory()
+            ->create();
+
+        $this->get(route('reviews.show.temp', ['uuid' => $review->uuid]))
+            ->assertOk();
     }
 }

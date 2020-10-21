@@ -19,7 +19,7 @@
             </div>
             <div class="mb-1">
 
-                <form class="mt-2 reviews-edit" action="{{ route('reviews.update', ['review' => $review]) }}"
+                <form class="mt-2 review-edit" action="{{ route('reviews.update', ['review' => $review]) }}"
                       method="post" enctype="multipart/form-data">
 
                     @csrf

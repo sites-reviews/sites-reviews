@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreInvitation;
 use App\Http\Requests\StoreUser;
+use App\Notifications\InvitationNotification;
 use App\User;
 use App\UserInvitation;
 use Illuminate\Auth\Events\Registered;
@@ -11,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 
 class UserInvitationController extends Controller
 {
@@ -38,6 +40,9 @@ class UserInvitationController extends Controller
         $invitation = new UserInvitation();
         $invitation->fill($request->all());
         $invitation->save();
+
+        Notification::route('mail', $invitation->email)
+            ->notify(new InvitationNotification($invitation));
 
         return redirect()
             ->route('users.invitation.create')
@@ -83,6 +88,7 @@ class UserInvitationController extends Controller
         $user->save();
 
         $invitation->used();
+        $invitation->user_id = $user->id;
         $invitation->save();
 
         Auth::login($user, true);

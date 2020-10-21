@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Enums\StatusEnum;
+use App\Traits\CheckedItems;
 use App\Traits\NestedItems;
 use App\Traits\UpAndDownRateableTrait;
 use App\Traits\UserCreate;
@@ -63,14 +65,52 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Review any()
+ * @property int|null $status
+ * @property string|null $status_changed_at
+ * @property int|null $status_changed_user_id
+ * @property-read mixed $is_accepted
+ * @property-read mixed $is_private
+ * @property-read mixed $is_rejected
+ * @property-read mixed $is_review_starts
+ * @property-read mixed $is_sent_for_review
+ * @property-read \App\User|null $status_changed_user
+ * @method static \Illuminate\Database\Eloquent\Builder|Review accepted()
+ * @method static \Illuminate\Database\Eloquent\Builder|Review acceptedAndSentForReview()
+ * @method static \Illuminate\Database\Eloquent\Builder|Review acceptedAndSentForReviewOrBelongsToAuthUser()
+ * @method static \Illuminate\Database\Eloquent\Builder|Review acceptedAndSentForReviewOrBelongsToUser($user)
+ * @method static \Illuminate\Database\Eloquent\Builder|Review acceptedOrBelongsToAuthUser()
+ * @method static \Illuminate\Database\Eloquent\Builder|Review acceptedOrBelongsToUser($user)
+ * @method static \Illuminate\Database\Eloquent\Builder|Review checked()
+ * @method static \Illuminate\Database\Eloquent\Builder|Review checkedAndOnCheck()
+ * @method static \Illuminate\Database\Eloquent\Builder|Review checkedOrBelongsToUser($user)
+ * @method static \Illuminate\Database\Eloquent\Builder|Review onCheck()
+ * @method static \Illuminate\Database\Eloquent\Builder|Review onlyChecked()
+ * @method static \Illuminate\Database\Eloquent\Builder|Review orderStatusChangedAsc()
+ * @method static \Illuminate\Database\Eloquent\Builder|Review orderStatusChangedDesc()
+ * @method static \Illuminate\Database\Eloquent\Builder|Review private()
+ * @method static \Illuminate\Database\Eloquent\Builder|Review sentOnReview()
+ * @method static \Illuminate\Database\Eloquent\Builder|Review unaccepted()
+ * @method static \Illuminate\Database\Eloquent\Builder|Review unchecked()
+ * @method static \Illuminate\Database\Eloquent\Builder|Review whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Review whereStatusChangedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Review whereStatusChangedUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Review whereStatusIn($statuses)
+ * @method static \Illuminate\Database\Eloquent\Builder|Review whereStatusNot($status)
+ * @method static \Illuminate\Database\Eloquent\Builder|Review withUnchecked()
+ * @method static \Illuminate\Database\Eloquent\Builder|Review withoutCheckedScope()
  */
 class Review extends Model
 {
     use SoftDeletes;
     use UserCreate;
     use UpAndDownRateableTrait;
+    use CheckedItems;
 
     public const RATEABLE_MODEL = 'App\ReviewRating';
+
+    public $attributes = [
+        'status' => StatusEnum::Accepted
+    ];
 
     protected $fillable = [
         'advantages',
@@ -155,5 +195,15 @@ class Review extends Model
     public function isCreatorIsSiteOwner() :bool
     {
         return $this->create_user->is($this->site->userOwner);
+    }
+
+    public function getAnchorName()
+    {
+        return strtolower('review'.$this->id);
+    }
+
+    public function getGoToUrl()
+    {
+        return route('reviews.go_to', ['review' => $this]);
     }
 }

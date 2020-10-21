@@ -16,6 +16,7 @@ class HomeController extends Controller
     public function index()
     {
         $reviews = Review::latest()
+            ->accepted()
             ->with('create_user', 'site.siteOwners', 'authUserRatings')
             ->simplePaginate();
 

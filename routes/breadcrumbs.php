@@ -19,8 +19,8 @@ Breadcrumbs::for('sites.edit', function ($trail, $site) {
 Breadcrumbs::for('users.show', function ($trail, $name) {
     $trail->parent('home');
     $trail->push(mb_substr($name->name, 0, 50), route('users.show', $name));
-});*/
-
+});
+*/
 Breadcrumbs::for('sites.verification.request', function ($trail, $site) {
     $trail->parent('sites.show', $site);
     $trail->push(__('Verification'), route('sites.verification.request', $site));
@@ -97,3 +97,8 @@ Breadcrumbs::macro('pageTitle', function () {
 
     return $title . ' '. __('app.title');
 });
+/*
+Breadcrumbs::for('users.reviews.draft', function ($trail, $user) {
+    $trail->push(__('Drafts'), route('users.reviews.draft', ['user' => $user]));
+});
+*/

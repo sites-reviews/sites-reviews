@@ -23,3 +23,11 @@ $factory->define(Review::class, function (Faker $faker) {
         'rate' => rand(1, 5)
     ];
 });
+
+$factory->afterMakingState(Review::class, 'private', function (Review $review, $faker) {
+    $review->statusPrivate();
+});
+
+$factory->afterMakingState(Review::class, 'accepted', function (Review $review, $faker) {
+    $review->statusAccepted();
+});

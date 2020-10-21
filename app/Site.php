@@ -12,6 +12,7 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\TooManyRedirectsException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -90,11 +91,14 @@ use phpDocumentor\Reflection\Types\Boolean;
  * @property-read \App\User|null $userOwner
  * @method static Builder|Site any()
  * @method static Builder|Site whereUserOwnerId($value)
+ * @property-read Collection|\App\TempReview[] $tempReviews
+ * @property-read int|null $temp_reviews_count
  */
 class Site extends Model
 {
     use SoftDeletes;
     use UserCreate;
+    use HasFactory;
 
     protected $casts = [
         'meta_data' => 'array',
@@ -165,9 +169,16 @@ class Site extends Model
         return $this->hasMany('App\Review');
     }
 
+    public function tempReviews()
+    {
+        return $this->hasMany('App\TempReview');
+    }
+
     public function updateNumberOfReviews()
     {
-        $this->number_of_reviews = $this->reviews()->count();
+        $this->number_of_reviews = $this->reviews()
+            ->accepted()
+            ->count();
     }
 
     public function getUrl(): Url

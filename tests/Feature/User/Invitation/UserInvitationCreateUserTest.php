@@ -53,6 +53,8 @@ class UserInvitationCreateUserTest extends TestCase
             ->assertRedirect()
             ->assertSessionHas(['success' => __('You have successfully registered')]);
 
+        $invitation->refresh();
+
         $user = User::where('email', $invitation->email)->first();
 
         $response->assertRedirect(route('users.show', $user));
@@ -61,6 +63,7 @@ class UserInvitationCreateUserTest extends TestCase
         $this->assertEquals($userNew->name, $user->name);
         $this->assertEquals($invitation->email, $user->email);
         $this->assertNotNull($user->email_verified_at);
+        $this->assertEquals($invitation->user_id, $user->id);
 
         $this->assertAuthenticatedAs($user);
 

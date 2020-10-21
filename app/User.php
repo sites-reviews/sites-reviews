@@ -62,6 +62,10 @@ use Illuminate\Support\Facades\Hash;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserSocialAccount[] $social_accounts
  * @property-read int|null $social_accounts_count
  * @method static \Illuminate\Database\Eloquent\Builder|User whereEmailsIn($emails)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserInvitation[] $invitations
+ * @property-read int|null $invitations_count
+ * @method static \Illuminate\Database\Eloquent\Builder|User notVerified()
+ * @method static \Illuminate\Database\Eloquent\Builder|User verified()
  */
 class User extends Authenticatable
 {
@@ -107,7 +111,16 @@ class User extends Authenticatable
 
     public function updateNumberOfReviews()
     {
-        $this->number_of_reviews = $this->reviews()->count();
+        $this->number_of_reviews = $this->reviews()
+            ->accepted()
+            ->count();
+    }
+
+    public function updateNumberOfDraftReviews()
+    {
+        $this->number_of_draft_reviews = $this->reviews()
+            ->private()
+            ->count();
     }
 
     public function updateRating()
@@ -178,6 +191,11 @@ class User extends Authenticatable
         return $this->hasMany('App\UserSocialAccount');
     }
 
+    public function invitations()
+    {
+        return $this->hasMany('App\UserInvitation');
+    }
+
     public function replaceAvatar($source)
     {
         return DB::transaction(function () use ($source) {
@@ -205,5 +223,15 @@ class User extends Authenticatable
 
             return true;
         });
+    }
+
+    public function scopeVerified($query)
+    {
+        return $query->whereNotNull('email_verified_at');
+    }
+
+    public function scopeNotVerified($query)
+    {
+        return $query->whereNull('email_verified_at');
     }
 }

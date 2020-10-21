@@ -77,19 +77,19 @@ export default function Review() {
     };
 
     this.onRateUpOrDown = function (data) {
-
+        self.rating.show();
         self.rating.text(data.rateable.rating);
 
         self.rate_up.removeClass('disabled');
         self.rate_down.removeClass('disabled');
 
-        if (data.vote.vote > 0)
+        if (data.rateable.rating > 0)
         {
             self.rate_up.addClass('active');
             self.rate_down.removeClass('active');
 
         }
-        else if (data.vote.vote < 0)
+        else if (data.rateable.rating < 0)
         {
             self.rate_up.removeClass('active');
             self.rate_down.addClass('active');

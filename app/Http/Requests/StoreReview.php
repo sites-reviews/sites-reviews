@@ -30,6 +30,7 @@ class StoreReview extends FormRequest
             'disadvantages' => 'string|nullable',
             'comment' => 'string|nullable',
             'rate' => 'integer|required',
+            //'g-recaptcha-response' => 'required|captcha'
         ];
     }
 

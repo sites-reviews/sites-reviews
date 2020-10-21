@@ -33,7 +33,7 @@
                     <i class="far fa-thumbs-up"></i>
                 </a>
 
-                <div class="px-1 small rating">{{ $comment->rating }}</div>
+                <div class="px-1 small rating" style="@if ($comment->rating == 0) display:none; @endif">{{ $comment->rating }}</div>
 
                 <a href="{{ route('comments.rate.down', $comment) }}"
                    class="rate_down btn btn-light btn-sm @if ($comment->getAuthUserVote() < 0) active @endif">
