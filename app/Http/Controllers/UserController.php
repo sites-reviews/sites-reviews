@@ -50,12 +50,17 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        $user->load('avatar');
+        $user->load('avatarPreview');
 
         $reviews = $user->reviews()
-            ->with('site', 'create_user.avatarPreview', 'authUserRatings')
+            ->accepted()
+            ->with('site', 'authUserRatings')
             ->latest()
             ->simplePaginate();
+
+        $reviews->each(function ($review) use ($user) {
+            $review->setRelation('create_user', $user);
+        });
 
         return view('user.show', [
             'user' => $user,
@@ -169,7 +174,7 @@ class UserController extends Controller
     }
 
     /**
-     *
+     * Welcome
      *
      * @param  User $user
      * @return \Illuminate\Http\Response
@@ -178,5 +183,33 @@ class UserController extends Controller
     {
         return redirect()
             ->route('users.show', $user);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function reviewsDraft(User $user)
+    {
+        $this->authorize('view_reviews_drafts', $user);
+
+        $user->load('avatarPreview');
+
+        $reviews = $user->reviews()
+            ->private()
+            ->latest()
+            ->with('site', 'create_user.avatarPreview', 'authUserRatings')
+            ->simplePaginate();
+
+        $reviews->each(function ($review) use ($user) {
+            $review->setRelation('create_user', $user);
+        });
+
+        return view('user.review.draft', [
+            'user' => $user,
+            'reviews' => $reviews
+        ]);
     }
 }

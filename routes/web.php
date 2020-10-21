@@ -65,16 +65,17 @@ Route::prefix('{locale}')
 
             Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
-            Route::post('/sites/{site}/review', 'ReviewController@store')->name('reviews.store');
             Route::get('/reviews/{review}/edit', 'ReviewController@edit')->name('reviews.edit');
             Route::patch('/reviews/{review}', 'ReviewController@update')->name('reviews.update');
             Route::delete('/reviews/{review}', 'ReviewController@destroy')->name('reviews.destroy');
 
             Route::get('/users/{user}/reviews', 'UserController@reviews')->name('users.reviews');
+            Route::get('/users/{user}/reviews/draft', 'UserController@reviewsDraft')->name('users.reviews.draft');
             Route::get('/users/{user}/settings', 'UserController@settings')->name('users.settings');
 
             Route::get('/reviews/{review}/rate/up', 'ReviewController@rateUp')->name('reviews.rate.up');
             Route::get('/reviews/{review}/rate/down', 'ReviewController@rateDown')->name('reviews.rate.down');
+            Route::get('/reviews/{review}/publish', 'ReviewController@publish')->name('reviews.publish')->middleware('db.transaction');
 
             Route::get('/sites/{site}/verification', 'SiteOwnerController@request')->name('sites.verification.request');
             Route::get('/sites/{site}/verification/check/dns', 'SiteOwnerController@checkDns')->name('sites.verification.check.dns');
@@ -116,6 +117,11 @@ Route::prefix('{locale}')
 
             Route::get('/users/{user}/social_accounts/{id}/unbind', 'UserSocialAccountController@unbind')->name('users.social_accounts.unbind');
         });
+
+        Route::get('/reviews/{site}/create', 'ReviewController@create')->name('reviews.create');
+        Route::post('/sites/{site}/review', 'ReviewController@store')->name('reviews.store')->middleware('db.transaction');
+        Route::get('/reviews/{review}/confirm/{token}', 'ReviewController@confirm')->name('reviews.confirm')->middleware('db.transaction');
+        Route::get('/reviews/{uuid}/show/temp', 'ReviewController@showTemp')->name('reviews.show.temp');
 
         Route::get('/ratings_colors', 'SiteController@ratingsColors')->name('ratings.colors');
 

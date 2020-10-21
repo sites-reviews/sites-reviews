@@ -26,5 +26,6 @@ return [
     'rating' => 'Review rating',
     'rate_up' => 'Number of likes',
     'rate_down' => 'Number of dislikes',
-    'children_count' => 'Number of responses'
+    'children_count' => 'Number of responses',
+    'email' => 'Your email'
 ];

@@ -27,6 +27,7 @@
         "ext-pgsql": "*",
         "ext-sqlite3": "*",
         "ext-zip": "*",
+        "anhskohbo/no-captcha": "^3.3",
         "arcanedev/log-viewer": "^8.0",
         "artesaos/seotools": "^0.19.1",
         "bensampo/laravel-enum": "^3.0",
@@ -81,7 +82,9 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "app/"
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
         },
         "classmap": [
             "database/seeds",

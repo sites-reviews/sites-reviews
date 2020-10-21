@@ -26,6 +26,9 @@ namespace App;
  * @method static Builder|Model orderByField($column, $ids)
  * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|Model void()
+ * @property int|null $user_id ID пользователя
+ * @property-read \App\User|null $user
+ * @method static \Illuminate\Database\Eloquent\Builder|UserInvitation whereUserId($value)
  */
 class UserInvitation extends Model
 {
@@ -53,5 +56,10 @@ class UserInvitation extends Model
     public function scopeWhereToken($query, $token)
     {
         return $query->where('token', trim($token));
+    }
+
+    public function user()
+    {
+        return $this->belongsTo('App\User');
     }
 }

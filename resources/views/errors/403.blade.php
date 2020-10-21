@@ -2,10 +2,13 @@
 
 @section('content')
 
-    <div class="card">
-        <div class="card-body">
-            403 {{ $exception->getMessage() }}
-        </div>
+    <div class="alert alert-warning">
+        <h5>{{ __('Error') }} 500</h5>
+
+        @isset ($exception)
+            <p>{{ $exception->getMessage() }}</p>
+        @endisset
+
     </div>
 
 @endsection

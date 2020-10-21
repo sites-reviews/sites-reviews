@@ -30,6 +30,14 @@ $factory->define(User::class, function (Faker $faker) {
     ];
 });
 
+$factory->afterCreatingState(User::class, 'verified', function (User $user, $faker) {
+    $user->email_verified_at = now();
+});
+
+$factory->afterCreatingState(User::class, 'not_verified', function (User $user, $faker) {
+    $user->email_verified_at = null;
+});
+
 $factory->afterCreatingState(User::class, 'with_welcome_notification', function (User $user, $faker) {
     $user->notify(new WelcomeNotification($user));
 });

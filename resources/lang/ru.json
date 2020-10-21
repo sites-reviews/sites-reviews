@@ -244,4 +244,19 @@
     "The server responded: \":code :phrase\"": "Сервер ответил: \":code :phrase\"",
     "Error connecting to the site \":code :phrase\"": "Ошибка подключения к сайту \":code :phrase\"",
     "Too many redirects: :count": "Слишком много перенаправлений: :count"
+    "Error connecting to the site \":code :phrase\"": "Ошибка подключения к сайту \":code :phrase\"",
+    "Enter your mailbox address in this field": "Введите в это поле адрес вашего почтового ящика",
+    "A review is successfully published": "Отзыв успешно опубликован",
+    "An email was sent to your email address :email to confirm the publication of the review": "На ваш электронный адрес :email было отправлено письмо для подтверждения публикации отзыва",
+    "Please click on the button to publish a review": "Пожалуйста, нажмите на кнопку, чтобы опубликовать отзыв",
+    "Publish the review": "Опубликовать отзыв",
+    "Confirmation of the review publication": "Подтверждение публикации отзыва",
+    "Please open the email and click \"Publish review\"": "Пожалуйста откройте письмо и нажмите кнопку \"Опубликовать отзыв\"",
+    "Your review is almost published": "Ваш отзыв почти опубликован",
+    "The link is incorrect or outdated": "Ссылка неправильная или устарела",
+    "You can't post this review": "Вы не можете опубликовать этот отзыв",
+    "The review has already been published": "Отзыв уже опубликован",
+    "You already have a review for this site. Your new review is saved as a draft": "Вы уже написали отзыв для этого сайта. Ваш новый отзыв сохранен как черновик",
+    "Drafts": "Черновики",
+    "Access is not allowed": "Доступ не разрешен"
 }

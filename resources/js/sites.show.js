@@ -1,8 +1,8 @@
-(new SitesShow).init();
-
-import StarRating from "./components/star-rating";
+import ReviewCreateForm from "./components/review/create/form";
 import Review from "./components/review/item";
 import Clipboard from "clipboard/src/clipboard";
+
+(new SitesShow).init();
 
 export default function SitesShow() {
 
@@ -10,12 +10,8 @@ export default function SitesShow() {
 
     this.init = function () {
 
-        let form = $('.review-create');
-
-        let $class = new StarRating;
-        $class.stars = form.find('.btn-group');
-        $class.name_container = form.find('.name_container').first();
-        $class.input = form.find('[name="rate"]').first();
+        let $class = new ReviewCreateForm();
+        $class.form = $('.review-create');
         $class.init();
 
         self.reviews();

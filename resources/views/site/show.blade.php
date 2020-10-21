@@ -181,16 +181,18 @@
             @else
                 <h5>{{ __('Your review') }}:</h5>
 
-                @include('site.review.create', ['create_user' => auth()->user()])
+                @include('site.review.create_form', ['create_user' => auth()->user()])
 
                 <div class="mb-3"></div>
             @endif
         @endauth
 
         @guest
-            <div class="alert alert-info">
-                {{ __('Please register or login to your account to write review about the site') }}
-            </div>
+            <h5>{{ __('Your review') }}:</h5>
+
+            @include('site.review.create_form', ['create_user' => null])
+
+            <div class="mb-3"></div>
         @endguest
 
         <div class="d-flex flex-row align-items-center pb-2 overflow-auto">

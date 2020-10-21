@@ -8,7 +8,7 @@ export default function ReviewsEdit() {
 
     this.init = function () {
 
-        let form = $('.reviews-edit');
+        let form = $('.review-edit');
 
         let $class = new StarRating;
         $class.stars = form.find('.btn-group');

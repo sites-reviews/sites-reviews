@@ -21,9 +21,16 @@ class ReviewObserver
 	 */
 	public function created(Review $review)
 	{
-        $this->updateUserNumberOfReviews($review->create_user);
-        $this->updateSiteNumberOfReviews($review->site);
-        $this->updateRating($review->site);
+        if ($review->isAccepted())
+        {
+            $this->updateUserNumberOfReviews($review->create_user);
+            $this->updateSiteNumberOfReviews($review->site);
+            $this->updateRating($review->site);
+        }
+        elseif ($review->isPrivate())
+        {
+            $this->updateNumberOfDraftReviews($review->create_user);
+        }
 	}
 
     public function updated(Review $review)
@@ -36,21 +43,41 @@ class ReviewObserver
 
 	public function deleted(Review $review)
 	{
-        $this->updateUserNumberOfReviews($review->create_user);
-        $this->updateSiteNumberOfReviews($review->site);
-        $this->updateRating($review->site);
+        if ($review->isAccepted())
+        {
+            $this->updateUserNumberOfReviews($review->create_user);
+            $this->updateSiteNumberOfReviews($review->site);
+            $this->updateRating($review->site);
+        }
+        elseif ($review->isPrivate())
+        {
+            $this->updateNumberOfDraftReviews($review->create_user);
+        }
 	}
 
 	public function restored(Review $review)
 	{
-        $this->updateUserNumberOfReviews($review->create_user);
-        $this->updateSiteNumberOfReviews($review->site);
-        $this->updateRating($review->site);
+        if ($review->isAccepted())
+        {
+            $this->updateUserNumberOfReviews($review->create_user);
+            $this->updateSiteNumberOfReviews($review->site);
+            $this->updateRating($review->site);
+        }
+        elseif ($review->isPrivate())
+        {
+            $this->updateNumberOfDraftReviews($review->create_user);
+        }
 	}
 
 	public function updateUserNumberOfReviews(User $user)
     {
         $user->updateNumberOfReviews();
+        $user->save();
+    }
+
+    public function updateNumberOfDraftReviews(User $user)
+    {
+        $user->updateNumberOfDraftReviews();
         $user->save();
     }
 

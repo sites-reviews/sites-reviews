@@ -40,4 +40,14 @@ abstract class TestCase extends BaseTestCase
         // setting routes locale by default so that the use of route doesn't break down
         URL::defaults(['locale' => config('app.locale')]);
     }
+
+    protected function ajax()
+    {
+        return $this->withHeader('HTTP_X-Requested-With', 'XMLHttpRequest');
+    }
+
+    protected function acceptJson()
+    {
+        return $this->withHeader('Accept', 'application/json');
+    }
 }

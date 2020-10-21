@@ -81,6 +81,7 @@ class AppServiceProvider extends ServiceProvider
         \App\UserInvitation::observe(\App\Observers\UserInvitationObserver::class);
         \App\PasswordReset::observe(\App\Observers\PasswordResetObserver::class);
         \App\Site::observe(\App\Observers\SiteObserver::class);
+        \App\TempReview::observe(\App\Observers\TempReviewObserver::class);
 
         Validator::extend('gender', function ($attribute, $value, $parameters, $validator) {
             return in_array($value, Gender::getKeys());

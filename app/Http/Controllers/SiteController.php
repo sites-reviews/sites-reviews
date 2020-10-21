@@ -3,16 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Enums\SiteHowAddedEnum;
+use App\Http\Requests\StoreReview;
+use App\Notifications\ConfirmationOfCreatingReviewNotification;
+use App\Review;
 use App\Site;
+use App\User;
+use App\UserInvitation;
 use Artesaos\SEOTools\Facades\SEOMeta;
 use Artesaos\SEOTools\Facades\SEOTools;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
+use Illuminate\Auth\Events\Registered;
 use GuzzleHttp\Exception\TooManyRedirectsException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Litlife\Url\Url;
 
 class SiteController extends Controller
@@ -62,6 +69,7 @@ class SiteController extends Controller
         $this->authorize('show', $site);
 
         $query = $site->reviews()
+            ->accepted()
             ->when(auth()->check(), function ($query) {
                 $query->where('create_user_id', '!=', Auth::id());
             })
@@ -81,6 +89,7 @@ class SiteController extends Controller
 
         if (auth()->check()) {
             $authReview = $site->reviews()
+                ->accepted()
                 ->where('create_user_id', Auth::id())
                 ->first();
         }

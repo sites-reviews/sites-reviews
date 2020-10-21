@@ -55,4 +55,17 @@ class SiteReviewUpDownPolicyTest extends TestCase
 
         $this->assertFalse($user->can('rateUp', $review));
     }
+
+    public function testCantRateIfDraft()
+    {
+        $review = factory(Review::class)
+            ->states('private')
+            ->create();
+
+        $user = factory(User::class)
+            ->create();
+
+        $this->assertFalse($user->can('rateUp', $review));
+        $this->assertFalse($user->can('rateDown', $review));
+    }
 }

@@ -147,6 +147,16 @@
                                 <span class="badge badge-info">{{ Auth::user()->number_of_reviews }}</span>
                             </a>
 
+
+                            @if (Auth::user()->number_of_draft_reviews > 0)
+
+                                <a class="dropdown-item" href="{{ route('users.reviews.draft', ['user' => Auth::user()]) }}">
+                                    {{ __('Drafts') }}
+                                    <span class="badge badge-info">{{ Auth::user()->number_of_draft_reviews }}</span>
+                                </a>
+
+                            @endif
+
                             <a class="dropdown-item" href="{{ route('users.settings', Auth::user()) }}">
                                 <i class="fas fa-cog"></i> {{ __('user.settings') }}
                             </a>
@@ -167,9 +177,9 @@
         </div>
     </header>
 
-    <div class="jumbotron py-3 px-0" style="min-height:1000px;">
+    <div class="jumbotron py-3 px-0">
 
-        <main>
+        <main style="min-height:500px;">
 
             <div class="container">
                 {{ \DaveJamesMiller\Breadcrumbs\Facades\Breadcrumbs::render() }}
