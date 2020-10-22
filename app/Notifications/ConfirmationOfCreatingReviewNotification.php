@@ -51,7 +51,7 @@ class ConfirmationOfCreatingReviewNotification extends Notification
             ->subject(__('Confirmation of the review publication'))
             ->line(__('Please click on the button to publish a review'))
             ->action(__('Publish the review'), route('reviews.confirm', [
-                'review' => $this->review,
+                'uuid' => $this->review->uuid,
                 'token' =>  $this->review->token
             ]));
     }

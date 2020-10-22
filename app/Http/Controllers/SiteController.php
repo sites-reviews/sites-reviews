@@ -19,6 +19,7 @@ use GuzzleHttp\Exception\TooManyRedirectsException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Litlife\Url\Url;
 
@@ -282,7 +283,7 @@ class SiteController extends Controller
 
             } catch (TooManyRedirectsException $exception) {
 
-                report($exception);
+                Log::warning($exception);
 
                 return redirect()
                     ->route('sites.search', ['term' => $domain])
@@ -294,7 +295,7 @@ class SiteController extends Controller
 
             } catch (ClientException $exception) {
 
-                report($exception);
+                Log::warning($exception);
 
                 $response = $exception->getResponse();
 
@@ -308,7 +309,7 @@ class SiteController extends Controller
 
             } catch (ConnectException $exception) {
 
-                report($exception);
+                Log::warning($exception);
 
                 $context = $exception->getHandlerContext();
 
@@ -321,7 +322,7 @@ class SiteController extends Controller
                     ])], 'create_site');
             } catch (\Exception $exception) {
 
-                report($exception);
+                Log::warning($exception);
 
                 return redirect()
                     ->route('sites.search', ['term' => $domain])

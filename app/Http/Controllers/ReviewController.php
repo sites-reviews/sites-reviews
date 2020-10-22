@@ -267,9 +267,15 @@ class ReviewController extends Controller
      * @param string $token
      * @return Response
      */
-    public function confirm(TempReview $review, string $token)
+    public function confirm($uuid, string $token)
     {
-        $tempReview = $review;
+        $validator = \Illuminate\Support\Facades\Validator::make(['uuid' => $uuid], ['uuid' => 'uuid|required']);
+
+        if (!$validator->valid())
+            abort(404);
+
+        $tempReview = TempReview::where('uuid', $validator->valid()['uuid'])
+            ->firstOrFail();
 
         if ($tempReview->token != $token)
             abort(404, __('The link is incorrect or outdated'));
@@ -290,7 +296,7 @@ class ReviewController extends Controller
             event(new Registered($user));
         }
 
-        $site = $review->site;
+        $site = $tempReview->site;
 
         $review = new Review();
         $review->fill($tempReview->toArray());

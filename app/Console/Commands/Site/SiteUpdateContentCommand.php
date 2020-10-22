@@ -103,6 +103,8 @@ class SiteUpdateContentCommand extends Command
 
     public function failedAttempt($exception)
     {
+        Log::warning($exception);
+
         $this->site->number_of_attempts_update_the_page++;
 
         if ($this->site->number_of_attempts_update_the_page >= 3)

@@ -8,6 +8,7 @@ use App\Site;
 use App\SitePage;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Litlife\Url\Url;
 use Spatie\Browsershot\Browsershot;
 
@@ -56,7 +57,7 @@ class SitePageSearchForNewDomainsCommand extends Command
                 try {
                     $this->item($page);
                 } catch (\Exception $exception) {
-                    report($exception);
+                    Log::warning($exception);
                     $this->error($exception->getMessage());
                 }
 

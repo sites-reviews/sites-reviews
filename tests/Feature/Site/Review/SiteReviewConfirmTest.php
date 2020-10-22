@@ -21,7 +21,7 @@ class SiteReviewConfirmTest extends TestCase {
         $tempReview = TempReview::factory()
             ->create();
 
-        $this->get(route('reviews.confirm', ['review' => $tempReview, 'token' => $tempReview->token]))
+        $this->get(route('reviews.confirm', ['uuid' => $tempReview->uuid, 'token' => $tempReview->token]))
             ->assertSessionHasNoErrors()
             ->assertRedirect()
             ->assertSessionHas('success', __('A review is successfully published'));
@@ -67,7 +67,7 @@ class SiteReviewConfirmTest extends TestCase {
         $tempReview = TempReview::factory()
             ->create(['email' => $user->email, 'site_id' => $site->id]);
 
-        $response = $this->get(route('reviews.confirm', ['review' => $tempReview, 'token' => $tempReview->token]))
+        $response = $this->get(route('reviews.confirm', ['uuid' => $tempReview->uuid, 'token' => $tempReview->token]))
             ->assertSessionHasNoErrors()
             ->assertRedirect()
             ->assertSessionHas('success', __('You already have a review for this site. Your new review is saved as a draft'));
@@ -99,7 +99,7 @@ class SiteReviewConfirmTest extends TestCase {
         $tempReview = TempReview::factory()
             ->create();
 
-        $response = $this->get(route('reviews.confirm', ['review' => $tempReview, 'token' => Str::random()]))
+        $response = $this->get(route('reviews.confirm', ['uuid' => $tempReview->uuid, 'token' => Str::random()]))
             ->assertNotFound()
             ->assertSeeText(__('The link is incorrect or outdated'));
     }

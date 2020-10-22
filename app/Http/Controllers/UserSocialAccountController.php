@@ -15,6 +15,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use ImagickException;
@@ -192,7 +193,7 @@ class UserSocialAccountController extends Controller
                 ->withErrors(['error' => __('Mailbox not found. Please allow us to use or link your mailbox to a social network')]);
         }
 
-        report($exception);
+        Log::warning($exception);
 
         return redirect()
             ->route('login')
@@ -232,7 +233,7 @@ class UserSocialAccountController extends Controller
                 if (DB::transactionLevel() > 1)
                     DB::rollback();
 
-                report($exception);
+                Log::warning($exception);
 
                 return redirect()
                     ->route('login')

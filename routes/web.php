@@ -120,7 +120,7 @@ Route::prefix('{locale}')
 
         Route::get('/reviews/{site}/create', 'ReviewController@create')->name('reviews.create');
         Route::post('/sites/{site}/review', 'ReviewController@store')->name('reviews.store')->middleware('db.transaction');
-        Route::get('/reviews/{review}/confirm/{token}', 'ReviewController@confirm')->name('reviews.confirm')->middleware('db.transaction');
+        Route::get('/reviews/{uuid}/confirm/{token}', 'ReviewController@confirm')->name('reviews.confirm')->middleware('db.transaction');
         Route::get('/reviews/{uuid}/show/temp', 'ReviewController@showTemp')->name('reviews.show.temp');
 
         Route::get('/ratings_colors', 'SiteController@ratingsColors')->name('ratings.colors');

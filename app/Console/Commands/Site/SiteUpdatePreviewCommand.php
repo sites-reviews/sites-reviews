@@ -6,6 +6,7 @@ use App\Image;
 use App\Site;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Litlife\Url\Url;
 use Spatie\Browsershot\Browsershot;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -83,7 +84,9 @@ class SiteUpdatePreviewCommand extends Command
 
         } catch (ProcessFailedException $exception) {
 
-            if (!$this->isPuppeterNetworkError($exception)) {
+            if ($this->isPuppeterNetworkError($exception)) {
+                Log::warning($exception);
+            } else {
                 report($exception);
             }
 
@@ -124,6 +127,13 @@ class SiteUpdatePreviewCommand extends Command
 
             if (preg_match('/Error\:\ net\:\:([A-Z\_]+)\ at/iu', $proccess->getErrorOutput(), $matches)) {
 
+                $errorCode = $matches[1];
+
+                if (mb_substr($errorCode, 0, 4) == 'ERR_')
+                {
+                    return true;
+                }
+/*
                 if (in_array($matches[1], [
                     'ERR_CONNECTION_RESET',
                     'ERR_INVALID_RESPONSE',
@@ -135,8 +145,9 @@ class SiteUpdatePreviewCommand extends Command
                     'ERR_TIMED_OUT'
                 ],
                 )) {
-                    return true;
+
                 }
+                */
             }
         }
 
