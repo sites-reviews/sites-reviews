@@ -34,12 +34,14 @@
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
-    @foreach (config('app.locales') as $locale)
-        @if ($locale != \Illuminate\Support\Facades\App::getLocale())
-            <link rel="alternate" hreflang="{{ $locale }}"
-                  href="{{ route(\Route::currentRouteName(), array_merge(\Illuminate\Support\Facades\Route::current()->parameters(), \Illuminate\Support\Facades\Request::all(), ['locale' => $locale])) }}"/>
-        @endif
-    @endforeach
+    @if (!empty(\Illuminate\Support\Facades\Route::current()))
+        @foreach (config('app.locales') as $locale)
+            @if ($locale != \Illuminate\Support\Facades\App::getLocale())
+                <link rel="alternate" hreflang="{{ $locale }}"
+                      href="{{ route(\Route::currentRouteName(), array_merge(\Illuminate\Support\Facades\Route::current()->parameters(), \Illuminate\Support\Facades\Request::all(), ['locale' => $locale])) }}"/>
+            @endif
+        @endforeach
+    @endif
     {{--
     <script data-ad-client="ca-pub-8879521378582869" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 --}}
@@ -242,41 +244,45 @@
 
                 <div class=" d-flex flex-sm-row flex-column align-items-center">
 
-                    <button type="button" class="btn btn-light mr-3" data-toggle="modal" data-target="#selectLanguageModal">
-                        {{ __('Language') }}:
+                    @if (!empty(\Illuminate\Support\Facades\Route::current()))
 
-                        <span class="flag-icon flag-icon-{{ config('app.local_flag_map.'.App::getLocale()) }}"></span>
+                        <button type="button" class="btn btn-light mr-3" data-toggle="modal" data-target="#selectLanguageModal">
+                            {{ __('Language') }}:
 
-                        {{ __('app.on_english') }} - {{ __('app.on_origin') }}
-                    </button>
+                            <span class="flag-icon flag-icon-{{ config('app.local_flag_map.'.App::getLocale()) }}"></span>
 
-                    <!-- Modal -->
-                    <div class="modal fade" id="selectLanguageModal" tabindex="-1" role="dialog" aria-labelledby="selectLanguageModalLabel"
-                         aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="selectLanguageModalLabel">{{ __('Select language') }}</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
+                            {{ __('app.on_english') }} - {{ __('app.on_origin') }}
+                        </button>
 
-                                    <ul class="list-group">
-                                        @foreach (config('app.local_flag_map') as $lang => $flag)
-                                            <a href="{{ currentRouteUrlWithParameters(['locale' => $lang]) }}"
-                                               class="list-group-item list-group-item-action @if ($lang == App::getLocale()) active @endif">
-                                                <span class="flag-icon flag-icon-{{ $flag }}"></span>
-                                                {{ __('app.on_english', [], $lang) }} - {{ __('app.on_origin', [], $lang) }}
-                                            </a>
-                                        @endforeach
-                                    </ul>
+                        <!-- Modal -->
+                        <div class="modal fade" id="selectLanguageModal" tabindex="-1" role="dialog" aria-labelledby="selectLanguageModalLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="selectLanguageModalLabel">{{ __('Select language') }}</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
 
+                                        <ul class="list-group">
+                                            @foreach (config('app.local_flag_map') as $lang => $flag)
+                                                <a href="{{ currentRouteUrlWithParameters(['locale' => $lang]) }}"
+                                                   class="list-group-item list-group-item-action @if ($lang == App::getLocale()) active @endif">
+                                                    <span class="flag-icon flag-icon-{{ $flag }}"></span>
+                                                    {{ __('app.on_english', [], $lang) }} - {{ __('app.on_origin', [], $lang) }}
+                                                </a>
+                                            @endforeach
+                                        </ul>
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+
+                    @endif
 
                     <div class="mt-3 mt-sm-0">{{ __('Contacts') }}: sites.reviews.com@gmail.com</div>
                 </div>

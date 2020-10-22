@@ -8,7 +8,6 @@
         @isset ($exception)
             <p>{{ $exception->getMessage() }}</p>
         @endisset
-
     </div>
 
 @endsection
