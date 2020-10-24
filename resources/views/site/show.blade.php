@@ -11,17 +11,19 @@
             <div class="card-body d-flex flex-column flex-sm-row ">
 
                 <div class="flex-shrink-1 text-center mr-3 mb-3" style="width:220px;">
-                    <x-site-preview :site="$site" width="200" height="200" url="0"/>
+                    <a href="{{ $site->getUrlWithUtm() }}" target="_blank">
+                        <x-site-preview :site="$site" width="200" height="200" url="0"/>
+                    </a>
                 </div>
 
                 <div class="w-100">
-                    <a href="{{ $site->getUrl() }}" target="_blank">
+                    <a href="{{ $site->getUrlWithUtm() }}" target="_blank">
                         <h2 itemprop="name">{{ $site->title }}</h2>
                     </a>
                     <h6 itemprop="description">{{ $site->description }}</h6>
 
                     <div class="">
-                        <a href="{{ $site->getUrl() }}" target="_blank" itemprop="url">{{ $site->domain }}</a>
+                        <a href="{{ $site->getUrlWithUtm() }}" target="_blank" itemprop="url">{{ $site->domain }}</a>
                     </div>
 
                     @if ($site->rating > 0 and $site->number_of_reviews > 0)

@@ -554,4 +554,17 @@ class Site extends Model
     {
         return $this->belongsTo('App\User', 'user_owner_id', 'id');
     }
+
+    public function getUrlWithUtm($utm_medium = 'company_profile', $utm_campaign = 'logo_click') :Url
+    {
+        $host = Url::fromString(config('app.url'))
+            ->getHost();
+
+        return Url::fromString('')
+            ->withScheme('http')
+            ->withHost($this->domain)
+            ->withQueryParameter('utm_medium', $utm_medium)
+            ->withQueryParameter('utm_source', $host)
+            ->withQueryParameter('utm_campaign', $utm_campaign);
+    }
 }
