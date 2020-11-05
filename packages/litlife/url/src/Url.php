@@ -307,7 +307,7 @@ class Url
 		if (count($array)) {
 			$array_slice = array_slice($relative->getDirnameArrayWithoutEmpty(), count($array));
 
-			return $relative->withDirname(implode($array_slice, '/'));
+			return $relative->withDirname(implode('/', $array_slice));
 		}
 
 		$array = $absolute->getDirnameArrayWithoutEmpty();
