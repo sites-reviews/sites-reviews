@@ -96,16 +96,16 @@ class SitePossibleHandleCommandTest extends TestCase
 
         $this->artisan('site:possible_handle', ['count' => '1', 'latest_id' => $possibleDomain->id]);
     }
-/*
-    public function test()
+
+    public function testDomainCannotBeEmptyException()
     {
         $possibleDomain = factory(PossibleDomain::class)
-            ->create(['domain' => 'litlife.club']);
+            ->create(['domain' => 'r4---sn-5goeen7d.googlevideo.com']);
 
-        $site = new Site();
-        $site->domain = $possibleDomain->domain;
+        $this->artisan('site:possible_handle', ['count' => '1', 'latest_id' => $possibleDomain->id]);
 
-        dd($site->isAvailableThroughInternet(new Client()));
+        $possibleDomain->refresh();
+
+        $this->assertNotNull($possibleDomain->handeled_at);
     }
-*/
 }

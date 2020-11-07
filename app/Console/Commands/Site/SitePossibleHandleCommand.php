@@ -68,11 +68,21 @@ class SitePossibleHandleCommand extends Command
 
     public function item(PossibleDomain $possibleDomain)
     {
-        $site = new Site();
-        $site->domain = $possibleDomain->domain;
+        try {
+            $site = new Site();
+            $site->domain = $possibleDomain->domain;
 
-        if ($site->isAvailableThroughInternet($this->client)) {
-            $this->call('site:create', ['url' => $site->getUrl()]);
+            if ($site->isAvailableThroughInternet($this->client)) {
+                $this->call('site:create', ['url' => $site->getUrl()]);
+            }
+
+        } catch (\LogicException $exception) {
+           if ($exception->getMessage() == 'The domain cannot be empty')
+           {
+               $possibleDomain->handeled_at = now();
+           } else {
+               throw $exception;
+           }
         }
 
         $possibleDomain->handeled_at = now();
