@@ -196,4 +196,13 @@ class SearchTest extends TestCase
             ->assertViewHas('addSite', true)
             ->assertViewHas('domain', null);
     }
+
+    public function testWrongDomain()
+    {
+        $domain = 'http://:/schermiluminosi.net';
+
+        $response = $this->get(route('sites.search', ['term' => $domain]))
+            ->assertOk()
+            ->assertViewHas('isDomain', false);
+    }
 }

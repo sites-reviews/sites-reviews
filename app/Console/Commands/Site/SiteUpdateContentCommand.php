@@ -62,10 +62,6 @@ class SiteUpdateContentCommand extends Command
                 ->getContents();
 
             if (empty($encoding)) {
-                $encoding = $this->parseEncodingFromHtml($content);
-            }
-
-            if (empty($encoding)) {
                 $headers = $response->getHeaders();
 
                 if (!empty($headers['Content-Type'])) {
@@ -76,6 +72,10 @@ class SiteUpdateContentCommand extends Command
 
                     $encoding = $this->parseEncodingFromHeader($header);
                 }
+            }
+
+            if (empty($encoding)) {
+                $encoding = $this->parseEncodingFromHtml($content);
             }
 
             if ($encoding != 'utf-8') {
@@ -182,11 +182,20 @@ class SiteUpdateContentCommand extends Command
 
     public function convertToUtf8Encoding($content, $encoding): string
     {
-        try {
-            $content = mb_convert_encoding($content, 'utf-8', $encoding);
-        } catch (\Exception $exception) {
-            if ($exception->getCode() == 2) {
-                $content = iconv($encoding, 'utf-8', $content);
+        $encoding = mb_strtolower($encoding);
+
+        if ($encoding == 'cp1251')
+        {
+            $content = iconv($encoding, 'utf-8', $content);
+        }
+        else
+        {
+            try {
+                $content = mb_convert_encoding($content, 'utf-8', $encoding);
+            } catch (\Exception $exception) {
+                if ($exception->getCode() == 2) {
+                    $content = iconv($encoding, 'utf-8', $content);
+                }
             }
         }
 

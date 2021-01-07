@@ -189,7 +189,7 @@ EOF;
      *
      * @return void
      */
-    public function testHtmlEncodingIsPriorityInstedHeader()
+    public function testHtmlHeaderIsPriorityInsteadEncoding()
     {
         $site = factory(Site::class)
             ->create();
@@ -227,7 +227,7 @@ EOF;
         $output = <<<EOF
 <html>
 <head>
-
+<meta http-equiv="content-type" content="text/html;charset=iso-8859-1">
 </head>
 <body>
 &#160;&#160;&#160;
@@ -278,4 +278,59 @@ EOF;
 
         $this->assertTrue($site->is($command->getSite($site->id)));
     }
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testCp1251encoding()
+    {
+        $site = factory(Site::class)
+            ->create();
+
+        $title = $this->faker->realText(100);
+        $description = $this->faker->realText(300);
+
+        $html = <<<EOF
+<html>
+<head>
+<meta charset="utf-8" />
+</head>
+<body>
+привет
+</body>
+</html>
+EOF;
+
+        $response = new Response(200, [
+            'Content-Type' => 'text/html; charset=cp1251'
+        ], iconv('utf-8', 'cp1251', $html));
+
+        $this->mock(Client::class, function ($mock) use ($response) {
+            $mock->shouldReceive('request')
+                ->once()
+                ->andReturn($response);
+        });
+
+        $this->artisan('site:update_content', ['site' => $site->id])
+            ->expectsOutput(__('Site content was updated successfully'))
+            ->assertExitCode(1);
+
+        $site->refresh();
+
+        $output = <<<EOF
+<html>
+<head>
+
+</head>
+<body>
+привет
+</body>
+</html>
+EOF;
+
+        $this->assertEquals($output, $site->page->content);
+    }
+
 }

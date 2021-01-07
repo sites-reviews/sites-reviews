@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Litlife\Url\Exceptions\InvalidArgument;
 use Litlife\Url\Url;
 
 class SiteController extends Controller
@@ -204,13 +205,18 @@ class SiteController extends Controller
             $isDomain = false;
 
         if ($isDomain) {
-            $domain = trim(mb_strtolower(Url::fromString('http://' . $domain)->getHost()));
+            try {
+                $domain = trim(mb_strtolower(Url::fromString('http://' . $domain)->getHost()));
 
-            if (preg_match('/^(?:www\.?)(.*)$/iu', $domain, $matches)) {
-                $domain = $matches[1];
+                if (preg_match('/^(?:www\.?)(.*)$/iu', $domain, $matches)) {
+                    $domain = $matches[1];
+                }
+
+                $query->orWhereDomain($domain);
+
+            } catch (InvalidArgument $exception) {
+                $isDomain = false;
             }
-
-            $query->orWhereDomain($domain);
         }
 
         $sites = $query->orWhere->titleILike($request->term)
