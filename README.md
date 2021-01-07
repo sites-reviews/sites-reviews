@@ -1,3 +1,19 @@
+## Create database and migrate 
+
+`sudo -u postgres psql`
+
+`create database sites_reviews;`
+
+`create user sites_reviews_user with encrypted password 'homestead';`
+
+`grant all privileges on database sites_reviews to sites_reviews_user;`
+
+`exit`
+
+`sudo -u postgres psql -d sites_reviews -c "CREATE EXTENSION pg_trgm;"`
+
+`php artisan migrate`
+
 ## Update node js
 
 `sudo npm cache clean -f`
@@ -16,7 +32,7 @@ or
 
 ## Add SVG image support to Imagick
 
-`sudo apt-get install libmagickcore-6.q16-3 libmagickcore-6.q16-3-extra`
+`sudo apt-get install libmagickcore-6.q16-6 libmagickcore-6.q16-6-extra`
 
 ## Adding cron command
 
